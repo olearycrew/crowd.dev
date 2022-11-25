@@ -366,7 +366,7 @@ export class IntegrationProcessor extends LoggingBase {
             }
           } catch (err) {
             if (stream.metadata?.repo){
-              logger.error(err, stream.metadata?.repo.name, 'Error processing a repo!')
+              logger.error(err, stream.metadata?.repo.name, 'Error processing a steam with repo!')
             }
             else{
               logger.error(err, { stream }, 'Error processing a stream!')
