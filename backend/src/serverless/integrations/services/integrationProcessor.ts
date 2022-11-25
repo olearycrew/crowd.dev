@@ -365,7 +365,12 @@ export class IntegrationProcessor extends LoggingBase {
               }
             }
           } catch (err) {
-            logger.error(err, { stream }, 'Error processing a stream!')
+            if (stream.metadata?.repo){
+              logger.error(err, stream.metadata?.repo.name, 'Error processing a repo!')
+            }
+            else{
+              logger.error(err, { stream }, 'Error processing a stream!')
+            }
             failedStreams.push(stream)
           }
         }
