@@ -134,8 +134,8 @@ export default {
 <script setup>
 import { defineEmits, ref, watch, computed } from 'vue'
 import { useStore } from 'vuex'
-import AppReportDropdown from './report-dropdown'
-import AppReportListToolbar from './report-list-toolbar'
+import AppReportDropdown from './report-dropdown.vue'
+import AppReportListToolbar from './report-list-toolbar.vue'
 import { useRouter } from 'vue-router/dist/vue-router'
 
 const store = useStore()

@@ -6,14 +6,14 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <link rel="apple-touch-icon" sizes="180x180" href="<%= BASE_URL %>icons/apple-touch-icon.png">
-  <link rel="icon" type="image/ico" href="<%= BASE_URL %>favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+  <link rel="icon" type="image/ico" href="favicon.ico">
   <script type="text/javascript">
     !function () {
       var analytics = window.analytics = window.analytics || []; if (!analytics.initialize) if (analytics.invoked) window.console && console.error && console.error("Segment snippet included twice."); else {
         analytics.invoked = !0; analytics.methods = ["trackSubmit", "trackClick", "trackLink", "trackForm", "pageview", "identify", "reset", "group", "track", "ready", "alias", "debug", "page", "once", "off", "on"]; analytics.factory = function (t) { return function () { var e = Array.prototype.slice.call(arguments); e.unshift(t); analytics.push(e); return analytics } }; for (var t = 0; t < analytics.methods.length; t++) { var e = analytics.methods[t]; analytics[e] = analytics.factory(e) } analytics.load = function (t, e) { var n = document.createElement("script"); n.type = "text/javascript"; n.async = !0; n.src = "https://cdn.segment.com/analytics.js/v1/" + t + "/analytics.min.js"; var a = document.getElementsByTagName("script")[0]; a.parentNode.insertBefore(n, a); analytics._loadOptions = e }; analytics.SNIPPET_VERSION = "4.1.0";
 
-        var segmentKey = '<%= process.env.VUE_APP_SEGMENT_KEY %>'
+        // var segmentKey = '<%= process.env.VUE_APP_SEGMENT_KEY %>'
 
         if (!segmentKey) {
           segmentKey = 'CROWD_VUE_APP_SEGMENT_KEY'
@@ -22,7 +22,7 @@
       }
     }();
 
-    var pendoKey = '<%= process.env.VUE_APP_PENDO_KEY %>'
+    // var pendoKey = '<%= process.env.VUE_APP_PENDO_KEY %>'
 
     if (!pendoKey) {
       pendoKey = 'CROWD_VUE_APP_PENDO_KEY'
@@ -50,5 +50,5 @@
   <div id="app"></div>
   <!-- built files will be auto injected -->
 </body>
-
+<script type="module" src="/src/main.js"></script>
 </html>

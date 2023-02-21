@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import AppAuthLayoutSide from '@/modules/auth/components/layout/auth-layout-side'
+import AppAuthLayoutSide from '@/modules/auth/components/layout/auth-layout-side.vue'
 export default {
   name: 'AppAuthLayout',
   components: { AppAuthLayoutSide }

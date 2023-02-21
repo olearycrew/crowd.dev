@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import AppMemberFormGlobalAttributes from './form/member-form-global-attributes'
+import AppMemberFormGlobalAttributes from './form/member-form-global-attributes.vue'
 import { defineProps, defineEmits, computed } from 'vue'
 
 const emit = defineEmits(['update:modelValue'])

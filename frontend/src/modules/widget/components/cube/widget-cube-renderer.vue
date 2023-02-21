@@ -26,7 +26,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import { QueryRenderer } from '@cubejs-client/vue3'
-import WidgetCube from './widget-cube'
+import WidgetCube from './widget-cube.vue'
 import {
   chartOptions,
   mapWidget

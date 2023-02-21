@@ -278,10 +278,10 @@ import {
 import { formatDateToTimeAgo } from '@/utils/date'
 import { formatNumberToCompact } from '@/utils/number'
 import { withHttp } from '@/utils/string'
-import AppOrganizationIdentities from '../organization-identities'
-import AppOrganizationListToolbar from './organization-list-toolbar'
-import AppOrganizationName from '../organization-name'
-import AppOrganizationDropdown from '../organization-dropdown'
+import AppOrganizationIdentities from '../organization-identities.vue'
+import AppOrganizationListToolbar from './organization-list-toolbar.vue'
+import AppOrganizationName from '../organization-name.vue'
+import AppOrganizationDropdown from '../organization-dropdown.vue'
 
 const router = useRouter()
 

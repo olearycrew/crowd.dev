@@ -99,7 +99,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import AppOnboardIntegrationsConnect from '@/modules/onboard/components/onboard-integrations-connect'
+import AppOnboardIntegrationsConnect from '@/modules/onboard/components/onboard-integrations-connect.vue'
 import { TenantService } from '@/modules/tenant/tenant-service'
 import { CrowdIntegrations } from '@/integrations/integrations-config'
 

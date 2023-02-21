@@ -24,7 +24,7 @@ import config from '@/config'
 import { AuthToken } from '@/modules/auth/auth-token'
 import { useRouter, useRoute } from 'vue-router'
 import Message from '@/shared/message/message'
-import AppTwitterConnectDrawer from '@/integrations/twitter/components/twitter-connect-drawer'
+import AppTwitterConnectDrawer from '@/integrations/twitter/components/twitter-connect-drawer.vue'
 
 const route = useRoute()
 const router = useRouter()

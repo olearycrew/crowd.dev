@@ -22,12 +22,12 @@
 <script>
 import { mapGetters } from 'vuex'
 import moment from 'moment'
-import AppDashboardActivities from '@/modules/dashboard/components/dashboard-activities'
-import AppDashboardMembers from '@/modules/dashboard/components/dashboard-members'
-import AppDashboardOrganizations from '@/modules/dashboard/components/dashboard-organizations'
-import AppDashboardHeader from '@/modules/dashboard/components/dashboard-header'
-import AppDashboardTask from '@/modules/dashboard/components/dashboard-task'
-import AppDashboardFilters from '@/modules/dashboard/components/dashboard-filters'
+import AppDashboardActivities from '@/modules/dashboard/components/dashboard-activities.vue'
+import AppDashboardMembers from '@/modules/dashboard/components/dashboard-members.vue'
+import AppDashboardOrganizations from '@/modules/dashboard/components/dashboard-organizations.vue'
+import AppDashboardHeader from '@/modules/dashboard/components/dashboard-header.vue'
+import AppDashboardTask from '@/modules/dashboard/components/dashboard-task.vue'
+import AppDashboardFilters from '@/modules/dashboard/components/dashboard-filters.vue'
 
 export default {
   name: 'AppDashboardPage',

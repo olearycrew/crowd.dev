@@ -66,8 +66,8 @@
 
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
-import ReportGridLayout from '../components/report-grid-layout'
-import ReportDropdown from '../components/report-dropdown'
+import ReportGridLayout from '../components/report-grid-layout.vue'
+import ReportDropdown from '../components/report-dropdown.vue'
 import AuthCurrentTenant from '@/modules/auth/auth-current-tenant'
 import ReportShareButton from '@/modules/report/components/report-share-button.vue'
 

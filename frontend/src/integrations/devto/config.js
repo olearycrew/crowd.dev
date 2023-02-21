@@ -1,6 +1,6 @@
-import DevtoConnect from './components/devto-connect'
-import DevtoActivityMessage from './components/activity/devto-activity-message'
-import DevtoActivityContent from './components/activity/devto-activity-content'
+import DevtoConnect from './components/devto-connect.vue'
+import DevtoActivityMessage from './components/activity/devto-activity-message.vue'
+import DevtoActivityContent from './components/activity/devto-activity-content.vue'
 
 export default {
   enabled: true,

@@ -17,7 +17,7 @@ export default {
 </script>
 <script setup>
 import { computed, defineProps, ref } from 'vue'
-import AppRedditConnectDrawer from '@/integrations/reddit/components/reddit-connect-drawer'
+import AppRedditConnectDrawer from '@/integrations/reddit/components/reddit-connect-drawer.vue'
 
 const props = defineProps({
   integration: {

@@ -94,7 +94,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import AppIntegrationList from './integration-list'
+import AppIntegrationList from './integration-list.vue'
 
 export default {
   name: 'AppIntegrationListPage',

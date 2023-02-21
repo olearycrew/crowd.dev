@@ -1,5 +1,5 @@
-import GithubConnect from './components/github-connect'
-import GithubActivityMessage from './components/activity/github-activity-message'
+import GithubConnect from './components/github-connect.vue'
+import GithubActivityMessage from './components/activity/github-activity-message.vue'
 
 export default {
   enabled: true,

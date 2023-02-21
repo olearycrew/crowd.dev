@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import AppI18n from '@/shared/i18n/i18n'
+import AppI18n from '@/shared/i18n/i18n.vue'
 import isUrl from '@/utils/isUrl'
 export default {
   name: 'AppRedditActivityMessage',

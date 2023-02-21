@@ -1,6 +1,6 @@
-import DiscordConnect from './components/discord-connect'
-import DiscordActivityMessage from './components/activity/discord-activity-message'
-import DiscordActivityContent from './components/activity/discord-activity-content'
+import DiscordConnect from './components/discord-connect.vue'
+import DiscordActivityMessage from './components/activity/discord-activity-message.vue'
+import DiscordActivityContent from './components/activity/discord-activity-content.vue'
 
 export default {
   enabled: true,

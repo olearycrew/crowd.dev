@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import AppI18n from '@/shared/i18n/i18n'
+import AppI18n from '@/shared/i18n/i18n.vue'
 import linkedInConfig from '@/integrations/linkedin/config'
 
 export default {

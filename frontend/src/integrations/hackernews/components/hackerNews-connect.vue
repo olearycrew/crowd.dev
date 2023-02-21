@@ -1,6 +1,6 @@
 <template>
   <slot :connect="connect" />
-  <app-hackerNews-connect-drawer
+  <app-hacker-news-connect-drawer
     v-model="drawerVisible"
     :integration="integration"
   />
@@ -13,7 +13,7 @@ export default {
 </script>
 <script setup>
 import { defineProps, ref } from 'vue'
-import AppHackerNewsConnectDrawer from '@/integrations/hackernews/components/hackerNews-connect-drawer'
+import AppHackerNewsConnectDrawer from '@/integrations/hackernews/components/hackerNews-connect-drawer.vue'
 
 defineProps({
   integration: {

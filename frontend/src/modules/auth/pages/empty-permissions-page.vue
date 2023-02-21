@@ -18,7 +18,7 @@
 
 <script>
 import { mapActions } from 'vuex'
-import AppI18n from '@/shared/i18n/i18n'
+import AppI18n from '@/shared/i18n/i18n.vue'
 
 export default {
   name: 'AppEmptyPermissionsPage',

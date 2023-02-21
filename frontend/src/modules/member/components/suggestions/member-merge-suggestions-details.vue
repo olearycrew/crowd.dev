@@ -132,11 +132,11 @@ export default {
 
 <script setup>
 import { defineProps, computed, defineEmits } from 'vue'
-import AppMemberDisplayName from '@/modules/member/components/member-display-name'
-import AppMemberOrganizations from '@/modules/member/components/member-organizations'
-import AppTagList from '@/modules/tag/components/tag-list'
-import AppMemberEngagementLevel from '../member-engagement-level'
-import AppMemberMergeSuggestionsDetailsIdentities from './member-merge-suggestions-details-identities'
+import AppMemberDisplayName from '@/modules/member/components/member-display-name.vue'
+import AppMemberOrganizations from '@/modules/member/components/member-organizations.vue'
+import AppTagList from '@/modules/tag/components/tag-list.vue'
+import AppMemberEngagementLevel from '../member-engagement-level.vue'
+import AppMemberMergeSuggestionsDetailsIdentities from './member-merge-suggestions-details-identities.vue'
 import { CrowdIntegrations } from '@/integrations/integrations-config'
 
 const props = defineProps({

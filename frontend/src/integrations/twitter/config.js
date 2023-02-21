@@ -1,4 +1,4 @@
-import TwitterConnect from './components/twitter-connect'
+import TwitterConnect from './components/twitter-connect.vue'
 
 export default {
   enabled: true,

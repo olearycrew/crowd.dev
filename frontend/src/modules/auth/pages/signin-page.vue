@@ -143,8 +143,8 @@ const { fields } = UserModel
 import { i18n } from '@/i18n'
 import Message from '@/shared/message/message'
 import config from '@/config'
-import AppI18n from '@/shared/i18n/i18n'
-import AppSvg from '@/shared/svg/svg'
+import AppI18n from '@/shared/i18n/i18n.vue'
+import AppSvg from '@/shared/svg/svg.vue'
 
 export default {
   name: 'AppSigninPage',

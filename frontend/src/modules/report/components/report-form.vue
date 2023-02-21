@@ -32,7 +32,7 @@ import { defineProps, reactive, watch } from 'vue'
 import { mapActions } from '@/shared/vuex/vuex.helpers'
 import { FormSchema } from '@/shared/form/form-schema'
 import { ReportModel } from '@/modules/report/report-model'
-import ReportGridLayout from './report-grid-layout'
+import ReportGridLayout from './report-grid-layout.vue'
 import debounce from 'lodash/debounce'
 
 const props = defineProps({

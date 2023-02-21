@@ -26,7 +26,7 @@ import {
   watch
 } from 'vue'
 import { useRouter } from 'vue-router'
-import AppLinkedinSettingsDrawer from '@/integrations/linkedin/components/linkedin-settings-drawer'
+import AppLinkedinSettingsDrawer from '@/integrations/linkedin/components/linkedin-settings-drawer.vue'
 import config from '@/config'
 import Pizzly from '@nangohq/pizzly-frontend'
 import { useStore } from 'vuex'

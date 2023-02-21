@@ -74,16 +74,16 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import AppWidgetCubeRenderer from '@/modules/widget/components/cube/widget-cube-renderer'
+import AppWidgetCubeRenderer from '@/modules/widget/components/cube/widget-cube-renderer.vue'
 import {
   activitiesChart,
   activitiesCount,
   chartOptions
 } from '@/modules/dashboard/dashboard.cube'
-import AppDashboardConversationList from '@/modules/dashboard/components/conversations/dashboard-conversation-list'
-import AppDashboardActivityList from '@/modules/dashboard/components/activity/dashboard-activity-list'
-import AppDashboardActivitySentiment from '@/modules/dashboard/components/activity/dashboard-activity-sentiment'
-import AppDashboardCount from '@/modules/dashboard/components/dashboard-count'
+import AppDashboardConversationList from '@/modules/dashboard/components/conversations/dashboard-conversation-list.vue'
+import AppDashboardActivityList from '@/modules/dashboard/components/activity/dashboard-activity-list.vue'
+import AppDashboardActivitySentiment from '@/modules/dashboard/components/activity/dashboard-activity-sentiment.vue'
+import AppDashboardCount from '@/modules/dashboard/components/dashboard-count.vue'
 import { formatNumberToCompact } from '@/utils/number'
 
 export default {

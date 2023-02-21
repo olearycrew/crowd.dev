@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import AppDashboardIntegrations from '@/modules/dashboard/components/dashboard-active-integrations'
+import AppDashboardIntegrations from '@/modules/dashboard/components/dashboard-active-integrations.vue'
 import { mapGetters } from 'vuex'
 import moment from 'moment'
 import { activitiesChart } from '@/modules/dashboard/dashboard.cube'

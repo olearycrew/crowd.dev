@@ -1,6 +1,6 @@
-import RedditConnect from './components/reddit-connect'
-import RedditActivityMessage from '@/integrations/reddit/components/activity/reddit-activity-message'
-import RedditActivityContent from '@/integrations/reddit/components/activity/reddit-activity-content'
+import RedditConnect from './components/reddit-connect.vue'
+import RedditActivityMessage from '@/integrations/reddit/components/activity/reddit-activity-message.vue'
+import RedditActivityContent from '@/integrations/reddit/components/activity/reddit-activity-content.vue'
 
 export default {
   enabled: true,

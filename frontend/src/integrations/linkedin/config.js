@@ -1,6 +1,6 @@
-import LinkedInConnect from './components/linkedin-connect'
-import LinkedInActivityMessage from '@/integrations/linkedin/components/activity/linkedin-activity-message'
-import LinkedInActivityContent from '@/integrations/linkedin/components/activity/linkedin-activity-content'
+import LinkedInConnect from './components/linkedin-connect.vue'
+import LinkedInActivityMessage from '@/integrations/linkedin/components/activity/linkedin-activity-message.vue'
+import LinkedInActivityContent from '@/integrations/linkedin/components/activity/linkedin-activity-content.vue'
 
 export default {
   enabled: true,

@@ -75,12 +75,12 @@ import {
   defineExpose
 } from 'vue'
 
-import AppActivityTimeline from '@/modules/activity/components/activity-timeline'
-import AppMemberViewHeader from '@/modules/member/components/view/member-view-header'
-import AppMemberViewAside from '@/modules/member/components/view/member-view-aside'
-import AppMemberViewNotes from '@/modules/member/components/view/member-view-notes'
-import AppMemberViewContributions from '@/modules/member/components/view/member-view-contributions'
-import AppMemberViewTasks from '@/modules/member/components/view/member-view-tasks'
+import AppActivityTimeline from '@/modules/activity/components/activity-timeline.vue'
+import AppMemberViewHeader from '@/modules/member/components/view/member-view-header.vue'
+import AppMemberViewAside from '@/modules/member/components/view/member-view-aside.vue'
+import AppMemberViewNotes from '@/modules/member/components/view/member-view-notes.vue'
+import AppMemberViewContributions from '@/modules/member/components/view/member-view-contributions.vue'
+import AppMemberViewTasks from '@/modules/member/components/view/member-view-tasks.vue'
 import { mapGetters } from '@/shared/vuex/vuex.helpers'
 import { TaskPermissions } from '@/modules/task/task-permissions'
 

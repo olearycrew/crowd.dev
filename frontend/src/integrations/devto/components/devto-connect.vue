@@ -13,7 +13,7 @@ export default {
 </script>
 <script setup>
 import { defineProps, ref } from 'vue'
-import AppDevtoConnectDrawer from '@/integrations/devto/components/devto-connect-drawer'
+import AppDevtoConnectDrawer from '@/integrations/devto/components/devto-connect-drawer.vue'
 
 defineProps({
   integration: {

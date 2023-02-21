@@ -45,7 +45,7 @@ export default {
 import { useStore } from 'vuex'
 import { defineProps, computed, onMounted, ref } from 'vue'
 
-import AppIntegrationListItem from '@/modules/integration/components/integration-list-item'
+import AppIntegrationListItem from '@/modules/integration/components/integration-list-item.vue'
 import { CrowdIntegrations } from '@/integrations/integrations-config'
 
 const store = useStore()

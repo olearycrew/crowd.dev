@@ -61,11 +61,11 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import AppCommunityHelpCenterTable from '@/premium/community-help-center/components/community-help-center-table'
-import AppCommunityHelpCenterTabs from '@/premium/community-help-center/components/community-help-center-tabs'
-import AppCommunityHelpCenterFilter from '@/premium/community-help-center/components/community-help-center-filter'
-import AppCommunityHelpCenterSettings from '@/premium/community-help-center/components/community-help-center-settings'
-import AppCommunityHelpCenterConversationDrawer from '@/premium/community-help-center/components/community-help-center-conversation-drawer'
+import AppCommunityHelpCenterTable from '@/premium/community-help-center/components/community-help-center-table.vue'
+import AppCommunityHelpCenterTabs from '@/premium/community-help-center/components/community-help-center-tabs.vue'
+import AppCommunityHelpCenterFilter from '@/premium/community-help-center/components/community-help-center-filter.vue'
+import AppCommunityHelpCenterSettings from '@/premium/community-help-center/components/community-help-center-settings.vue'
+import AppCommunityHelpCenterConversationDrawer from '@/premium/community-help-center/components/community-help-center-conversation-drawer.vue'
 import config from '@/config'
 import {
   isFeatureEnabled,

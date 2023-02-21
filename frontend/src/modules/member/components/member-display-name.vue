@@ -24,7 +24,7 @@ export default {
 }
 </script>
 <script setup>
-import AppMemberBadge from '@/modules/member/components/member-badge'
+import AppMemberBadge from '@/modules/member/components/member-badge.vue'
 import { defineProps } from 'vue'
 
 const props = defineProps({

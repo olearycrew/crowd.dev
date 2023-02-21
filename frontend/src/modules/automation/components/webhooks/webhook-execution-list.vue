@@ -97,7 +97,7 @@ import moment from 'moment'
 import { i18n } from '@/i18n'
 import { computed, ref, reactive } from 'vue'
 import { AutomationService } from '@/modules/automation/automation-service'
-import AppWebhookExecution from './webhook-execution'
+import AppWebhookExecution from './webhook-execution.vue'
 
 export default {
   name: 'AppAutomationExecutionList',

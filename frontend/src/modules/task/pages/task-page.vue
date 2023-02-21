@@ -64,10 +64,10 @@ export default {
 </script>
 
 <script setup>
-import AppTaskOpen from '@/modules/task/components/task-open'
-import AppTaskClosed from '@/modules/task/components/task-closed'
-import AppTaskSuggested from '@/modules/task/components/task-suggested'
-import AppTaskForm from '@/modules/task/components/task-form'
+import AppTaskOpen from '@/modules/task/components/task-open.vue'
+import AppTaskClosed from '@/modules/task/components/task-closed.vue'
+import AppTaskSuggested from '@/modules/task/components/task-suggested.vue'
+import AppTaskForm from '@/modules/task/components/task-form.vue'
 import {
   onBeforeUnmount,
   onMounted,
@@ -76,7 +76,7 @@ import {
 } from 'vue'
 import { useStore } from 'vuex'
 import { mapActions } from '@/shared/vuex/vuex.helpers'
-import AppTaskArchived from '@/modules/task/components/task-archived'
+import AppTaskArchived from '@/modules/task/components/task-archived.vue'
 
 const store = useStore()
 

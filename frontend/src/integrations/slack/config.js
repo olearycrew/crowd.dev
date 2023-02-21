@@ -1,5 +1,5 @@
-import SlackConnect from './components/slack-connect'
-import SlackActivityMessage from './components/activity/slack-activity-message'
+import SlackConnect from './components/slack-connect.vue'
+import SlackActivityMessage from './components/activity/slack-activity-message.vue'
 
 export default {
   enabled: true,

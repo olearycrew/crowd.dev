@@ -150,7 +150,7 @@ import {
   watch
 } from 'vue'
 import { onSelectMouseLeave } from '@/utils/select'
-import AppSvg from '@/shared/svg/svg'
+import AppSvg from '@/shared/svg/svg.vue'
 
 const CalendarIcon = h(
   'i', // type

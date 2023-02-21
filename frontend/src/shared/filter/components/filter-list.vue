@@ -49,8 +49,8 @@ export default {
 <script setup>
 import { useStore } from 'vuex'
 import { defineProps, computed } from 'vue'
-import AppFilterListItem from './filter-list-item'
-import AppFilterListOperator from './filter-list-operator'
+import AppFilterListItem from './filter-list-item.vue'
+import AppFilterListOperator from './filter-list-operator.vue'
 
 const props = defineProps({
   module: {

@@ -28,10 +28,10 @@ export default {
 
 <script setup>
 import { defineProps } from 'vue'
-import AppMemberEnrichment from '@/modules/member/components/member-enrichment'
-import AppMemberAsideCustomAttributes from './_aside/_aside-custom-attributes'
-import AppMemberAsideIdentities from './_aside/_aside-identities'
-import AppMemberAsideEnriched from './_aside/_aside-enriched'
+import AppMemberEnrichment from '@/modules/member/components/member-enrichment.vue'
+import AppMemberAsideCustomAttributes from './_aside/_aside-custom-attributes.vue'
+import AppMemberAsideIdentities from './_aside/_aside-identities.vue'
+import AppMemberAsideEnriched from './_aside/_aside-enriched.vue'
 
 defineProps({
   member: {

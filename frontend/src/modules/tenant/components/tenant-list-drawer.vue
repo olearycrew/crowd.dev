@@ -89,7 +89,7 @@ import {
   ref,
   reactive
 } from 'vue'
-import AppTenantForm from '@/modules/tenant/components/tenant-form'
+import AppTenantForm from '@/modules/tenant/components/tenant-form.vue'
 import config from '@/config'
 import { getTrialDate } from '@/utils/date'
 

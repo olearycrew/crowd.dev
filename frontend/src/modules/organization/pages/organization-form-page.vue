@@ -99,8 +99,8 @@ export default {
 }
 </script>
 <script setup>
-import AppOrganizationFormDetails from '@/modules/organization/components/form/organization-form-details'
-import AppOrganizationFormIdentities from '@/modules/organization/components/form/organization-form-identities'
+import AppOrganizationFormDetails from '@/modules/organization/components/form/organization-form-details.vue'
+import AppOrganizationFormIdentities from '@/modules/organization/components/form/organization-form-identities.vue'
 import { OrganizationModel } from '@/modules/organization/organization-model'
 import { FormSchema } from '@/shared/form/form-schema'
 import {

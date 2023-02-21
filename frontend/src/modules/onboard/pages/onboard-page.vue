@@ -92,8 +92,8 @@
 </template>
 
 <script>
-import AppOnboardCommunity from '@/modules/onboard/components/onboard-community'
-import AppOnboardIntegrations from '@/modules/onboard/components/onboard-integrations'
+import AppOnboardCommunity from '@/modules/onboard/components/onboard-community.vue'
+import AppOnboardIntegrations from '@/modules/onboard/components/onboard-integrations.vue'
 import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'OnboardPage',

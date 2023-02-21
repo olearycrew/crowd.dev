@@ -1,6 +1,6 @@
-import HackerNewsConnect from './components/hackerNews-connect'
-import HackerNewsActivityMessage from './components/activity/hackerNews-activity-message'
-import HackerNewsActivityContent from './components/activity/hackerNews-activity-content'
+import HackerNewsConnect from './components/hackerNews-connect.vue'
+import HackerNewsActivityMessage from './components/activity/hackerNews-activity-message.vue'
+import HackerNewsActivityContent from './components/activity/hackerNews-activity-content.vue'
 
 export default {
   enabled: true,

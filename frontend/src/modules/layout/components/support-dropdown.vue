@@ -88,7 +88,7 @@ export default {
 <script setup>
 import { useStore } from 'vuex'
 import { computed, ref } from 'vue'
-import AppSvg from '@/shared/svg/svg'
+import AppSvg from '@/shared/svg/svg.vue'
 
 const store = useStore()
 

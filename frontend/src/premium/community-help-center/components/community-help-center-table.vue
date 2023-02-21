@@ -205,8 +205,8 @@ import { defineEmits, ref, watch, computed } from 'vue'
 import { useStore } from 'vuex'
 
 import { formatDateToTimeAgo } from '@/utils/date'
-import AppConversationDropdown from '@/modules/conversation/components/conversation-dropdown'
-import AppCommunityHelpCenterToolbar from './community-help-center-toolbar'
+import AppConversationDropdown from '@/modules/conversation/components/conversation-dropdown.vue'
+import AppCommunityHelpCenterToolbar from './community-help-center-toolbar.vue'
 
 const store = useStore()
 const emit = defineEmits([

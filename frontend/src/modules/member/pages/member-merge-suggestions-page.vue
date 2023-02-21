@@ -214,7 +214,7 @@ import AppMemberChannels from './../components/member-channels.vue'
 import AppMemberOrganizations from '@/modules/member/components/member-organizations.vue'
 import { MemberService } from '../member-service'
 import MemberMergeSuggestionsDetails from '../components/suggestions/member-merge-suggestions-details.vue'
-import AppMemberDisplayName from '@/modules/member/components/member-display-name'
+import AppMemberDisplayName from '@/modules/member/components/member-display-name.vue'
 import Message from '@/shared/message/message'
 
 let membersToMerge = reactive([])

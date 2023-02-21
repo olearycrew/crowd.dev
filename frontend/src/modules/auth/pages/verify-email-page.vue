@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import AppI18n from '@/shared/i18n/i18n'
+import AppI18n from '@/shared/i18n/i18n.vue'
 import { mapActions } from 'vuex'
 
 export default {

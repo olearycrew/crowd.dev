@@ -116,7 +116,7 @@ import { mapGetters, mapActions } from 'vuex'
 import { UserPermissions } from '@/premium/user/user-permissions'
 import UserListToolbar from '@/premium/user/components/list/user-list-toolbar.vue'
 import Roles from '@/security/roles'
-import AppUserDropdown from '../user-dropdown'
+import AppUserDropdown from '../user-dropdown.vue'
 import pluralize from 'pluralize'
 
 const { fields } = UserModel

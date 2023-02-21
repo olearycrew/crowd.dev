@@ -34,11 +34,11 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import { ActivityPermissions } from '@/modules/activity/activity-permissions'
-import AppActivityList from '@/modules/activity/components/activity-list'
-import AppConversationList from '@/modules/conversation/components/conversation-list'
-import AppActivityListTabs from '@/modules/activity/components/activity-list-tabs'
+import AppActivityList from '@/modules/activity/components/activity-list.vue'
+import AppConversationList from '@/modules/conversation/components/conversation-list.vue'
+import AppActivityListTabs from '@/modules/activity/components/activity-list-tabs.vue'
 import AppActivityListFilter from '@/modules/activity/components/list/activity-list-filter.vue'
-import AppI18n from '@/shared/i18n/i18n'
+import AppI18n from '@/shared/i18n/i18n.vue'
 
 export default {
   name: 'AppActivityListPage',

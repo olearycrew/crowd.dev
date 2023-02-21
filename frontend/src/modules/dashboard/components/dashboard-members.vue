@@ -213,10 +213,10 @@
 </template>
 
 <script>
-import AppDashboardTab from '@/modules/dashboard/components/shared/dashboard-tab'
+import AppDashboardTab from '@/modules/dashboard/components/shared/dashboard-tab.vue'
 import { mapGetters } from 'vuex'
 import moment from 'moment'
-import AppWidgetCubeRenderer from '@/modules/widget/components/cube/widget-cube-renderer'
+import AppWidgetCubeRenderer from '@/modules/widget/components/cube/widget-cube-renderer.vue'
 import {
   newMembersChart,
   activeMembersChart,
@@ -225,8 +225,8 @@ import {
   hideLabels,
   newMembersCount
 } from '@/modules/dashboard/dashboard.cube'
-import AppDashboardCount from '@/modules/dashboard/components/dashboard-count'
-import AppDashboardMemberItem from '@/modules/dashboard/components/member/dashboard-member-item'
+import AppDashboardCount from '@/modules/dashboard/components/dashboard-count.vue'
+import AppDashboardMemberItem from '@/modules/dashboard/components/member/dashboard-member-item.vue'
 import { formatNumberToCompact } from '@/utils/number'
 import { CrowdIntegrations } from '@/integrations/integrations-config'
 

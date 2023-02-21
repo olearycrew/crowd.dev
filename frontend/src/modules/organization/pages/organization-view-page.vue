@@ -57,10 +57,10 @@ export default {
 import { useStore } from 'vuex'
 import { defineProps, computed, onMounted, ref } from 'vue'
 
-import AppActivityTimeline from '@/modules/activity/components/activity-timeline'
-import AppOrganizationViewHeader from '@/modules/organization/components/view/organization-view-header'
-import AppOrganizationViewAside from '@/modules/organization/components/view/organization-view-aside'
-import AppOrganizationViewMembers from '@/modules/organization/components/view/organization-view-members'
+import AppActivityTimeline from '@/modules/activity/components/activity-timeline.vue'
+import AppOrganizationViewHeader from '@/modules/organization/components/view/organization-view-header.vue'
+import AppOrganizationViewAside from '@/modules/organization/components/view/organization-view-aside.vue'
+import AppOrganizationViewMembers from '@/modules/organization/components/view/organization-view-members.vue'
 
 const store = useStore()
 const props = defineProps({

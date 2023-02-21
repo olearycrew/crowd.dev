@@ -8,16 +8,16 @@ const OrganizationsMainPage = async () => {
 
 const OrganizationListPage = () =>
   import(
-    '@/modules/organization/pages/organization-list-page'
+    '@/modules/organization/pages/organization-list-page.vue'
   )
 const OrganizationViewPage = () =>
   import(
-    '@/modules/organization/pages/organization-view-page'
+    '@/modules/organization/pages/organization-view-page.vue'
   )
 
 const OrganizationFormPage = () =>
   import(
-    '@/modules/organization/pages/organization-form-page'
+    '@/modules/organization/pages/organization-form-page.vue'
   )
 
 export default [
