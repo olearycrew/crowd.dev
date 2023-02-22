@@ -36,9 +36,9 @@
 <script>
 import { mapGetters } from 'vuex'
 import { activitiesChart } from '@/modules/dashboard/dashboard.cube'
-import AppDashboardBadge from '@/modules/dashboard/components/shared/dashboard-badge'
-import AppCubeRender from '@/shared/cube/cube-render'
-import AppLoading from '@/shared/loading/loading-placeholder'
+import AppDashboardBadge from '@/modules/dashboard/components/shared/dashboard-badge.vue'
+import AppCubeRender from '@/shared/cube/cube-render.vue'
+import AppLoading from '@/shared/loading/loading-placeholder.vue'
 export default {
   name: 'AppDashboardActivityCount',
   components: {

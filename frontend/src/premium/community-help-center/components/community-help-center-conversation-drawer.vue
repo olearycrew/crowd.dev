@@ -114,7 +114,7 @@ import {
   computed
 } from 'vue'
 import { ConversationService } from '@/modules/conversation/conversation-service'
-import AppConversationDetails from '@/modules/conversation/components/conversation-details'
+import AppConversationDetails from '@/modules/conversation/components/conversation-details.vue'
 
 const props = defineProps({
   conversationId: {

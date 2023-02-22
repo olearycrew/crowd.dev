@@ -8,7 +8,7 @@
   />
 </template>
 <script>
-import AppAutocompleteManyInput from '@/shared/form/autocomplete-many-input'
+import AppAutocompleteManyInput from '@/shared/form/autocomplete-many-input.vue'
 export default {
   name: 'AppUserInviteAutocomplete',
   components: {

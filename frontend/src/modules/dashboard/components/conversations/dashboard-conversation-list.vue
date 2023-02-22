@@ -57,8 +57,8 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import AppDashboardConversationItem from '@/modules/dashboard/components/conversations/dashboard-conversation-item'
-import AppConversationDrawer from '@/modules/conversation/components/conversation-drawer'
+import AppDashboardConversationItem from '@/modules/dashboard/components/conversations/dashboard-conversation-item.vue'
+import AppConversationDrawer from '@/modules/conversation/components/conversation-drawer.vue'
 export default {
   name: 'AppDashboardConversationList',
   components: {

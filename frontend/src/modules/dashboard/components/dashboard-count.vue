@@ -57,9 +57,9 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import AppDashboardBadge from '@/modules/dashboard/components/shared/dashboard-badge'
-import AppLoading from '@/shared/loading/loading-placeholder'
-import AppCubeRender from '@/shared/cube/cube-render'
+import AppDashboardBadge from '@/modules/dashboard/components/shared/dashboard-badge.vue'
+import AppLoading from '@/shared/loading/loading-placeholder.vue'
+import AppCubeRender from '@/shared/cube/cube-render.vue'
 import moment from 'moment'
 export default {
   name: 'AppDashboardCount',

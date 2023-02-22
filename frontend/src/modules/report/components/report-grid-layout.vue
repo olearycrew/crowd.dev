@@ -126,8 +126,8 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import WidgetCubeRenderer from '@/modules/widget/components/cube/widget-cube-renderer'
-import WidgetCubeBuilder from '@/modules/widget/components/cube/widget-cube-builder'
+import WidgetCubeRenderer from '@/modules/widget/components/cube/widget-cube-renderer.vue'
+import WidgetCubeBuilder from '@/modules/widget/components/cube/widget-cube-builder.vue'
 import { WidgetService } from '@/modules/widget/widget-service'
 import ConfirmDialog from '@/shared/dialog/confirm-dialog.js'
 

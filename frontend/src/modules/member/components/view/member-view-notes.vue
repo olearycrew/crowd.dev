@@ -34,8 +34,8 @@ export default {
 
 <script setup>
 import { defineProps, onMounted, ref } from 'vue'
-import AppNoteEditor from '@/modules/notes/components/note-editor'
-import AppNoteItem from '@/modules/notes/components/note-item'
+import AppNoteEditor from '@/modules/notes/components/note-editor.vue'
+import AppNoteItem from '@/modules/notes/components/note-item.vue'
 import { NoteService } from '@/modules/notes/note-service'
 
 const props = defineProps({

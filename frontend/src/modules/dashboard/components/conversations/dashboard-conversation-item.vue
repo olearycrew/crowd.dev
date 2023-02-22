@@ -179,16 +179,16 @@
 </template>
 
 <script>
-import AppAvatar from '@/shared/avatar/avatar'
-import AppConversationDropdown from '@/modules/conversation/components/conversation-dropdown'
+import AppAvatar from '@/shared/avatar/avatar.vue'
+import AppConversationDropdown from '@/modules/conversation/components/conversation-dropdown.vue'
 import { formatDateToTimeAgo } from '@/utils/date'
-import AppLoading from '@/shared/loading/loading-placeholder'
-import AppActivityContent from '@/modules/activity/components/activity-content'
-import AppConversationReply from '@/modules/conversation/components/conversation-reply'
-import AppActivitySentiment from '@/modules/activity/components/activity-sentiment'
-import AppMemberDisplayName from '@/modules/member/components/member-display-name'
+import AppLoading from '@/shared/loading/loading-placeholder.vue'
+import AppActivityContent from '@/modules/activity/components/activity-content.vue'
+import AppConversationReply from '@/modules/conversation/components/conversation-reply.vue'
+import AppActivitySentiment from '@/modules/activity/components/activity-sentiment.vue'
+import AppMemberDisplayName from '@/modules/member/components/member-display-name.vue'
 import { CrowdIntegrations } from '@/integrations/integrations-config'
-import AppActivityMessage from '@/modules/activity/components/activity-message'
+import AppActivityMessage from '@/modules/activity/components/activity-message.vue'
 
 export default {
   name: 'AppDashboardConversationItem',

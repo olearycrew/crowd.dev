@@ -107,11 +107,11 @@
 </template>
 
 <script>
-import MemberDropdown from './member-dropdown'
-import TagList from '@/modules/tag/components/tag-list'
-import MemberChannels from './member-channels'
-import MemberEngagementLevel from './member-engagement-level'
-import MemberReach from './member-reach'
+import MemberDropdown from './member-dropdown.vue'
+import TagList from '@/modules/tag/components/tag-list.vue'
+import MemberChannels from './member-channels.vue'
+import MemberEngagementLevel from './member-engagement-level.vue'
+import MemberReach from './member-reach.vue'
 import moment from 'moment'
 import integrationsJson from '@/jsons/integrations'
 

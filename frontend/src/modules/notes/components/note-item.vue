@@ -51,9 +51,9 @@ import {
   nextTick,
   computed
 } from 'vue'
-import AppAvatar from '@/shared/avatar/avatar'
-import AppNoteDropdown from '@/modules/notes/components/note-dropdown'
-import AppNoteEditor from '@/modules/notes/components/note-editor'
+import AppAvatar from '@/shared/avatar/avatar.vue'
+import AppNoteDropdown from '@/modules/notes/components/note-dropdown.vue'
+import AppNoteEditor from '@/modules/notes/components/note-editor.vue'
 import { mapGetters } from '@/shared/vuex/vuex.helpers'
 import { formatDateToTimeAgo } from '@/utils/date'
 

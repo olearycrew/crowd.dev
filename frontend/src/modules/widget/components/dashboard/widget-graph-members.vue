@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import WidgetCubeRenderer from '../cube/widget-cube-renderer'
+import WidgetCubeRenderer from '../cube/widget-cube-renderer.vue'
 
 export default {
   name: 'AppWidgetGraphActivities',

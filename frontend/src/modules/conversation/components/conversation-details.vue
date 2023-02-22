@@ -161,14 +161,14 @@
 </template>
 
 <script>
-import AppActivityMessage from '@/modules/activity/components/activity-message'
-import AppConversationReply from '@/modules/conversation/components/conversation-reply'
-import AppActivityContent from '@/modules/activity/components/activity-content'
-import AppActivitySentiment from '@/modules/activity/components/activity-sentiment'
-import AppLoading from '@/shared/loading/loading-placeholder'
-import AppAvatar from '@/shared/avatar/avatar'
+import AppActivityMessage from '@/modules/activity/components/activity-message.vue'
+import AppConversationReply from '@/modules/conversation/components/conversation-reply.vue'
+import AppActivityContent from '@/modules/activity/components/activity-content.vue'
+import AppActivitySentiment from '@/modules/activity/components/activity-sentiment.vue'
+import AppLoading from '@/shared/loading/loading-placeholder.vue'
+import AppAvatar from '@/shared/avatar/avatar.vue'
 import { formatDateToTimeAgo } from '@/utils/date'
-import AppMemberDisplayName from '@/modules/member/components/member-display-name'
+import AppMemberDisplayName from '@/modules/member/components/member-display-name.vue'
 import { CrowdIntegrations } from '@/integrations/integrations-config'
 
 export default {

@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import Widget from '@/modules/widget/components/widget'
+import Widget from '@/modules/widget/components/widget.vue'
 
 export default {
   name: 'AppWidgetTable',

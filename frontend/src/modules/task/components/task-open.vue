@@ -98,8 +98,8 @@ export default {
 </script>
 
 <script setup>
-import AppTaskItem from '@/modules/task/components/task-item'
-import AppTaskSorting from '@/modules/task/components/task-sorting'
+import AppTaskItem from '@/modules/task/components/task-item.vue'
+import AppTaskSorting from '@/modules/task/components/task-sorting.vue'
 import { ref, onBeforeUnmount, computed } from 'vue'
 import {
   mapActions,

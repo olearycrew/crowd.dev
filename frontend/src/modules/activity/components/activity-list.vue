@@ -76,9 +76,9 @@ export default {
 </script>
 
 <script setup>
-import AppActivityItem from '@/modules/activity/components/activity-item'
-import AppConversationDrawer from '@/modules/conversation/components/conversation-drawer'
-import AppPaginationSorter from '@/shared/pagination/pagination-sorter'
+import AppActivityItem from '@/modules/activity/components/activity-item.vue'
+import AppConversationDrawer from '@/modules/conversation/components/conversation-drawer.vue'
+import AppPaginationSorter from '@/shared/pagination/pagination-sorter.vue'
 import { defineProps, computed, ref } from 'vue'
 import { useStore } from 'vuex'
 

@@ -33,7 +33,7 @@
 import { mapActions } from 'vuex'
 import { FormSchema } from '@/shared/form/form-schema'
 import { MemberModel } from '@/modules/member/member-model'
-import AppTagPopover from '@/modules/tag/components/tag-popover'
+import AppTagPopover from '@/modules/tag/components/tag-popover.vue'
 
 const { fields } = MemberModel
 const formSchema = new FormSchema([

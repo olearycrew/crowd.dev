@@ -46,7 +46,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import AppDashboardActivityItem from '@/modules/dashboard/components/activity/dashboard-activity-item'
+import AppDashboardActivityItem from '@/modules/dashboard/components/activity/dashboard-activity-item.vue'
 export default {
   name: 'AppDashboardActivityList',
   components: { AppDashboardActivityItem },

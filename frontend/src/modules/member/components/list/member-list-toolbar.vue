@@ -78,7 +78,7 @@
 
 <script>
 import { mapGetters, mapActions, mapState } from 'vuex'
-import AppMemberListBulkUpdateTags from '@/modules/member/components/list/member-list-bulk-update-tags'
+import AppMemberListBulkUpdateTags from '@/modules/member/components/list/member-list-bulk-update-tags.vue'
 import { MemberPermissions } from '@/modules/member/member-permissions'
 import ConfirmDialog from '@/shared/dialog/confirm-dialog.js'
 import pluralize from 'pluralize'

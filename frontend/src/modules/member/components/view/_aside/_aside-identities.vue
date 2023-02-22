@@ -87,7 +87,7 @@
 
 <script setup>
 import { computed, defineProps, ref } from 'vue'
-import AppMemberManageIdentitiesDrawer from '../../member-manage-identities-drawer'
+import AppMemberManageIdentitiesDrawer from '../../member-manage-identities-drawer.vue'
 
 const props = defineProps({
   member: {

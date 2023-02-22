@@ -105,9 +105,9 @@ export default {
 <script setup>
 import _ from 'lodash'
 import { useStore } from 'vuex'
-import AppActivityMessage from '@/modules/activity/components/activity-message'
-import AppActivitySentiment from '@/modules/activity/components/activity-sentiment'
-import AppActivityContent from '@/modules/activity/components/activity-content'
+import AppActivityMessage from '@/modules/activity/components/activity-message.vue'
+import AppActivitySentiment from '@/modules/activity/components/activity-sentiment.vue'
+import AppActivityContent from '@/modules/activity/components/activity-content.vue'
 import { onSelectMouseLeave } from '@/utils/select'
 import {
   defineProps,
@@ -122,8 +122,8 @@ import debounce from 'lodash/debounce'
 import authAxios from '@/shared/axios/auth-axios'
 import { formatDateToTimeAgo } from '@/utils/date'
 import { CrowdIntegrations } from '@/integrations/integrations-config'
-import AppMemberDisplayName from '@/modules/member/components/member-display-name'
-import AppActivityLink from '@/modules/activity/components/activity-link'
+import AppMemberDisplayName from '@/modules/member/components/member-display-name.vue'
+import AppActivityLink from '@/modules/activity/components/activity-link.vue'
 
 const SearchIcon = h(
   'i', // type

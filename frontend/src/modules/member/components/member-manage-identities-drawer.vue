@@ -47,7 +47,7 @@ import {
   computed
 } from 'vue'
 import Message from '@/shared/message/message'
-import AppMemberFormIdentities from './form/member-form-identities'
+import AppMemberFormIdentities from './form/member-form-identities.vue'
 import { MemberService } from '@/modules/member/member-service'
 
 const store = useStore()

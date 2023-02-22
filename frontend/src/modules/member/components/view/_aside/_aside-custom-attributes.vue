@@ -89,8 +89,8 @@ import { useStore } from 'vuex'
 import moment from 'moment'
 import { formatDate } from '@/utils/date'
 
-import AppMemberManageAttributesDrawer from '../../member-manage-attributes-drawer'
-import AppMemberCustomAttributesArrayRenderer from './_aside-custom-attributes-array-renderer'
+import AppMemberManageAttributesDrawer from '../../member-manage-attributes-drawer.vue'
+import AppMemberCustomAttributesArrayRenderer from './_aside-custom-attributes-array-renderer.vue'
 
 const props = defineProps({
   member: {

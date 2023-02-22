@@ -13,46 +13,46 @@ const isPlanEnabled = true
 
 const defaultConfig = {
   frontendUrl: {
-    host: process.env.VUE_APP_FRONTEND_HOST,
-    protocol: process.env.VUE_APP_FRONTEND_PROTOCOL
+    host: import.meta.env.VUE_APP_FRONTEND_HOST,
+    protocol: import.meta.env.VUE_APP_FRONTEND_PROTOCOL
   },
-  backendUrl: process.env.VUE_APP_BACKEND_URL,
-  websocketsUrl: process.env.VUE_APP_WEBSOCKETS_URL,
+  backendUrl: import.meta.env.VUE_APP_BACKEND_URL,
+  websocketsUrl: import.meta.env.VUE_APP_WEBSOCKETS_URL,
   tenantMode,
   isPlanEnabled,
   gitHubInstallationUrl:
-    process.env.VUE_APP_GITHUB_INSTALLATION_URL,
+    import.meta.env.VUE_APP_GITHUB_INSTALLATION_URL,
   discordInstallationUrl:
-    process.env.VUE_APP_DISCORD_INSTALLATION_URL,
-  cubejsUrl: process.env.VUE_APP_CUBEJS_URL,
+    import.meta.env.VUE_APP_DISCORD_INSTALLATION_URL,
+  cubejsUrl: import.meta.env.VUE_APP_CUBEJS_URL,
   conversationPublicUrl:
-    process.env.VUE_APP_CONVERSATIONS_PUBLIC_URL,
-  edition: process.env.VUE_APP_EDITION,
-  communityPremium: process.env.VUE_APP_COMMUNITY_PREMIUM,
-  env: process.env.VUE_APP_ENV,
-  hotjarKey: process.env.VUE_APP_HOTJAR_KEY,
-  pizzlyUrl: process.env.VUE_APP_PIZZLY_URL,
+    import.meta.env.VUE_APP_CONVERSATIONS_PUBLIC_URL,
+  edition: import.meta.env.VUE_APP_EDITION,
+  communityPremium: import.meta.env.VUE_APP_COMMUNITY_PREMIUM,
+  env: import.meta.env.VUE_APP_ENV,
+  hotjarKey: import.meta.env.VUE_APP_HOTJAR_KEY,
+  pizzlyUrl: import.meta.env.VUE_APP_PIZZLY_URL,
   pizzlyPublishableKey:
-    process.env.VUE_APP_PIZZLY_PUBLISHABLE_KEY,
-  typeformId: process.env.VUE_APP_TYPEFORM_ID,
-  typeformTitle: process.env.VUE_APP_TYPEFORM_TITLE,
+    import.meta.env.VUE_APP_PIZZLY_PUBLISHABLE_KEY,
+  typeformId: import.meta.env.VUE_APP_TYPEFORM_ID,
+  typeformTitle: import.meta.env.VUE_APP_TYPEFORM_TITLE,
   posthog: {
-    apiKey: process.env.VUE_APP_POSTHOG_API_KEY,
-    host: process.env.VUE_APP_POSTHOG_HOST
+    apiKey: import.meta.env.VUE_APP_POSTHOG_API_KEY,
+    host: import.meta.env.VUE_APP_POSTHOG_HOST
   },
   formbricks: {
-    url: process.env.VUE_APP_FORMBRICKS_URL,
-    formId: process.env.VUE_APP_FORMBRICKS_FORM_ID,
-    pmfFormId: process.env.VUE_APP_FORMBRICKS_PMF_FORM_ID
+    url: import.meta.env.VUE_APP_FORMBRICKS_URL,
+    formId: import.meta.env.VUE_APP_FORMBRICKS_FORM_ID,
+    pmfFormId: import.meta.env.VUE_APP_FORMBRICKS_PMF_FORM_ID
   },
   stripe: {
     publishableKey:
-      process.env.VUE_APP_STRIPE_PUBLISHABLE_KEY || '',
+      import.meta.env.VUE_APP_STRIPE_PUBLISHABLE_KEY || '',
     growthPlanPaymentLink:
-      process.env.VUE_APP_STRIPE_GROWTH_PLAN_PAYMENT_LINK ||
+      import.meta.env.VUE_APP_STRIPE_GROWTH_PLAN_PAYMENT_LINK ||
       '',
     customerPortalLink:
-      process.env.VUE_APP_STRIPE_CUSTOMER_PORTAL_LINK || ''
+      import.meta.env.VUE_APP_STRIPE_CUSTOMER_PORTAL_LINK || ''
   }
 }
 

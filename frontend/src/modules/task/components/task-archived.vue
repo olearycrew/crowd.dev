@@ -84,7 +84,7 @@ import {
   onMounted,
   onBeforeUnmount
 } from 'vue'
-import AppTaskItem from '@/modules/task/components/task-item'
+import AppTaskItem from '@/modules/task/components/task-item.vue'
 import { TaskService } from '@/modules/task/task-service'
 import Message from '@/shared/message/message'
 import { useStore } from 'vuex'
@@ -94,7 +94,8 @@ import {
 } from '@/shared/vuex/vuex.helpers'
 import ConfirmDialog from '@/shared/dialog/confirm-dialog'
 import { TaskPermissions } from '@/modules/task/task-permissions'
-import AppDrawer from '@/shared/drawer/drawer'
+import AppDrawer from '@/shared/drawer/drawer.vue'
+
 const props = defineProps({
   modelValue: {
     type: Boolean,

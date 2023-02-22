@@ -79,9 +79,9 @@
 
 <script>
 import moment from 'moment'
-import WidgetTable from '../widget-table'
-import WidgetNumber from '../widget-number'
-import Widget from '@/modules/widget/components/widget'
+import WidgetTable from '../widget-table.vue'
+import WidgetNumber from '../widget-number.vue'
+import Widget from '@/modules/widget/components/widget.vue'
 import { i18n } from '@/i18n'
 
 export default {

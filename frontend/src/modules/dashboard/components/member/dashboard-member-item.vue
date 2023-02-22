@@ -32,9 +32,9 @@
 </template>
 
 <script>
-import AppAvatar from '@/shared/avatar/avatar'
-import AppLoading from '@/shared/loading/loading-placeholder'
-import AppMemberDisplayName from '@/modules/member/components/member-display-name'
+import AppAvatar from '@/shared/avatar/avatar.vue'
+import AppLoading from '@/shared/loading/loading-placeholder.vue'
+import AppMemberDisplayName from '@/modules/member/components/member-display-name.vue'
 
 export default {
   name: 'AppDashboardMemberItem',

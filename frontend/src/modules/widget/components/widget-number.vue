@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import Widget from './widget'
+import Widget from './widget.vue'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {

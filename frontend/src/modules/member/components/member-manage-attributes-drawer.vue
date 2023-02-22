@@ -115,8 +115,8 @@ import {
   computed
 } from 'vue'
 import Message from '@/shared/message/message'
-import AppMemberFormAttributes from './form/member-form-attributes'
-import AppMemberFormGlobalAttributes from './form/member-form-global-attributes'
+import AppMemberFormAttributes from './form/member-form-attributes.vue'
+import AppMemberFormGlobalAttributes from './form/member-form-global-attributes.vue'
 import { MemberService } from '@/modules/member/member-service'
 import getAttributesModel from '@/shared/attributes/get-attributes-model.js'
 import getParsedAttributes from '@/shared/attributes/get-parsed-attributes.js'

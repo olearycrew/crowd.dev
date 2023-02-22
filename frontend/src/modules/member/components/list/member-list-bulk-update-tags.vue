@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import AppTagPopover from '@/modules/tag/components/tag-popover'
+import AppTagPopover from '@/modules/tag/components/tag-popover.vue'
 import { MemberModel } from '../../member-model'
 import { FormSchema } from '@/shared/form/form-schema'
 import { mapActions } from 'vuex'

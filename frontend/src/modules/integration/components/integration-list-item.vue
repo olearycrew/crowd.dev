@@ -107,7 +107,7 @@ export default {
 <script setup>
 import { useStore } from 'vuex'
 import { defineProps, computed, ref } from 'vue'
-import AppIntegrationConnect from '@/modules/integration/components/integration-connect'
+import AppIntegrationConnect from '@/modules/integration/components/integration-connect.vue'
 import { premiumFeatureCopy } from '@/utils/posthog'
 
 const store = useStore()

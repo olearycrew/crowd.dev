@@ -101,8 +101,8 @@ import {
 import { TaskService } from '@/modules/task/task-service'
 import Message from '@/shared/message/message'
 import { useStore } from 'vuex'
-import AppTaskItem from '@/modules/task/components/task-item'
-import AppTaskForm from '@/modules/task/components/task-form'
+import AppTaskItem from '@/modules/task/components/task-item.vue'
+import AppTaskForm from '@/modules/task/components/task-form.vue'
 import { TaskPermissions } from '@/modules/task/task-permissions'
 import { mapGetters } from '@/shared/vuex/vuex.helpers'
 

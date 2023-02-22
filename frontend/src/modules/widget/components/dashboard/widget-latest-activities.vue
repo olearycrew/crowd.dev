@@ -25,10 +25,10 @@
 </template>
 
 <script>
-import Widget from '../widget'
+import Widget from '../widget.vue'
 import { ActivityService } from '@/modules/activity/activity-service'
-import ActivityDropdown from '@/modules/activity/components/activity-dropdown'
-import ActivityHeader from '@/modules/activity/components/activity-header'
+import ActivityDropdown from '@/modules/activity/components/activity-dropdown.vue'
+import ActivityHeader from '@/modules/activity/components/activity-header.vue'
 import { mapGetters } from 'vuex'
 
 export default {

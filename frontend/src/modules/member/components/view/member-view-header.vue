@@ -122,13 +122,13 @@ export default {
 <script setup>
 import { defineProps } from 'vue'
 import moment from 'moment/moment'
-import AppMemberReach from '@/modules/member/components/member-reach'
-import AppMemberSentiment from '@/modules/member/components/member-sentiment'
-import AppMemberEngagementLevel from '@/modules/member/components/member-engagement-level'
-import AppMemberDropdown from '@/modules/member/components/member-dropdown'
-import AppMemberBadge from '@/modules/member/components/member-badge'
+import AppMemberReach from '@/modules/member/components/member-reach.vue'
+import AppMemberSentiment from '@/modules/member/components/member-sentiment.vue'
+import AppMemberEngagementLevel from '@/modules/member/components/member-engagement-level.vue'
+import AppMemberDropdown from '@/modules/member/components/member-dropdown.vue'
+import AppMemberBadge from '@/modules/member/components/member-badge.vue'
 import AppMemberOrganizations from '@/modules/member/components/member-organizations.vue'
-import AppTags from '@/modules/tag/components/tag-list'
+import AppTags from '@/modules/tag/components/tag-list.vue'
 import {
   formatNumberToCompact,
   formatNumber

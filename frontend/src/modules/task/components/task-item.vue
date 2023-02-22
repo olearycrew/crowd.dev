@@ -196,10 +196,10 @@ import {
   onMounted,
   ref
 } from 'vue'
-import AppTaskDropdown from '@/modules/task/components/task-dropdown'
-import AppAvatar from '@/shared/avatar/avatar'
+import AppTaskDropdown from '@/modules/task/components/task-dropdown.vue'
+import AppAvatar from '@/shared/avatar/avatar.vue'
 import moment from 'moment'
-import AppLoading from '@/shared/loading/loading-placeholder'
+import AppLoading from '@/shared/loading/loading-placeholder.vue'
 import { TaskService } from '@/modules/task/task-service'
 import Message from '@/shared/message/message'
 import { mapActions } from '@/shared/vuex/vuex.helpers'

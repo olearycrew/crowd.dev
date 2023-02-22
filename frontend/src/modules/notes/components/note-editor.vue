@@ -90,7 +90,7 @@ export default {
 </script>
 
 <script setup>
-import AppEditor from '@/shared/form/editor'
+import AppEditor from '@/shared/form/editor.vue'
 import {
   computed,
   ref,
@@ -100,7 +100,7 @@ import {
   defineExpose
 } from 'vue'
 import { mapGetters } from '@/shared/vuex/vuex.helpers'
-import AppAvatar from '@/shared/avatar/avatar'
+import AppAvatar from '@/shared/avatar/avatar.vue'
 import { NoteService } from '@/modules/notes/note-service'
 
 const props = defineProps({

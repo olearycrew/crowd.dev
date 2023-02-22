@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import AppActivityMessage from '@/modules/activity/components/activity-message'
+import AppActivityMessage from '@/modules/activity/components/activity-message.vue'
 import { formatDateToTimeAgo } from '@/utils/date'
 import AppSvg from '@/shared/svg/svg.vue'
 import { CrowdIntegrations } from '@/integrations/integrations-config'

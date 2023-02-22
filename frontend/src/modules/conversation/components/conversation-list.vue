@@ -73,9 +73,9 @@ export default {
 </script>
 
 <script setup>
-import AppConversationItem from '@/modules/conversation/components/conversation-item'
-import AppConversationDrawer from '@/modules/conversation/components/conversation-drawer'
-import AppPaginationSorter from '@/shared/pagination/pagination-sorter'
+import AppConversationItem from '@/modules/conversation/components/conversation-item.vue'
+import AppConversationDrawer from '@/modules/conversation/components/conversation-drawer.vue'
+import AppPaginationSorter from '@/shared/pagination/pagination-sorter.vue'
 import { defineProps, computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import { TRENDING_CONVERSATIONS_FILTER } from '@/modules/activity/store/constants'

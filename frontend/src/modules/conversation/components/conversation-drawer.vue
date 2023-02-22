@@ -39,8 +39,8 @@
 
 <script>
 import { ConversationService } from '@/modules/conversation/conversation-service'
-import AppActivityLink from '@/modules/activity/components/activity-link'
-import AppConversationDetails from '@/modules/conversation/components/conversation-details'
+import AppActivityLink from '@/modules/activity/components/activity-link.vue'
+import AppConversationDetails from '@/modules/conversation/components/conversation-details.vue'
 
 export default {
   name: 'AppConversationDrawer',

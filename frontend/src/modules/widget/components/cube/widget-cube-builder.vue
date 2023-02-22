@@ -252,20 +252,20 @@
 <script>
 import { QueryBuilder } from '@cubejs-client/vue3'
 
-import WidgetCube from '@/modules/widget/components/cube/widget-cube'
+import WidgetCube from '@/modules/widget/components/cube/widget-cube.vue'
 import { mapGetters, mapActions } from 'vuex'
 import { i18n } from '@/i18n'
 
-import SyncModel from './_query_builder/SyncModel'
-import MeasureSelect from './_query_builder/MeasureSelect'
-import ChartType from './_query_builder/ChartType'
-import DimensionSelect from './_query_builder/DimensionSelect'
-import GranularitySelect from './_query_builder/GranularitySelect'
-import TimeDimensionSelect from './_query_builder/TimeDimensionSelect'
-import DateRangeSelect from './_query_builder/DateRangeSelect'
+import SyncModel from './_query_builder/SyncModel.vue'
+import MeasureSelect from './_query_builder/MeasureSelect.vue'
+import ChartType from './_query_builder/ChartType.vue'
+import DimensionSelect from './_query_builder/DimensionSelect.vue'
+import GranularitySelect from './_query_builder/GranularitySelect.vue'
+import TimeDimensionSelect from './_query_builder/TimeDimensionSelect.vue'
+import DateRangeSelect from './_query_builder/DateRangeSelect.vue'
 
-import Order from './_query_builder/Order'
-import Limit from './_query_builder/Limit'
+import Order from './_query_builder/Order.vue'
+import Limit from './_query_builder/Limit.vue'
 
 import FilterComponent from '@/modules/widget/components/cube/_query_builder/FilterComponent.vue'
 import {

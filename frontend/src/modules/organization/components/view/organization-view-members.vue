@@ -100,9 +100,9 @@ import {
 } from 'vue'
 import debounce from 'lodash/debounce'
 import authAxios from '@/shared/axios/auth-axios'
-import AppMemberEngagementLevel from '@/modules/member/components/member-engagement-level'
-import AppMemberChannels from '@/modules/member/components/member-channels'
-import AppMemberDisplayName from '@/modules/member/components/member-display-name'
+import AppMemberEngagementLevel from '@/modules/member/components/member-engagement-level.vue'
+import AppMemberChannels from '@/modules/member/components/member-channels.vue'
+import AppMemberDisplayName from '@/modules/member/components/member-display-name.vue'
 
 const SearchIcon = h(
   'i', // type

@@ -56,12 +56,12 @@
 </template>
 
 <script>
-import AppAvatar from '@/shared/avatar/avatar'
+import AppAvatar from '@/shared/avatar/avatar.vue'
 import { formatDateToTimeAgo } from '@/utils/date'
-import AppLoading from '@/shared/loading/loading-placeholder'
-import AppMemberDisplayName from '@/modules/member/components/member-display-name'
-import AppActivityContent from '@/modules/activity/components/activity-content'
-import AppActivitySentiment from '@/modules/activity/components/activity-sentiment'
+import AppLoading from '@/shared/loading/loading-placeholder.vue'
+import AppMemberDisplayName from '@/modules/member/components/member-display-name.vue'
+import AppActivityContent from '@/modules/activity/components/activity-content.vue'
+import AppActivitySentiment from '@/modules/activity/components/activity-sentiment.vue'
 
 export default {
   name: 'AppConversationReply',

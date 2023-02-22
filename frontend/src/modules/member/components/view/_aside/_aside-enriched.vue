@@ -102,7 +102,7 @@
 </template>
 
 <script setup>
-import AppMemberCustomAttributesArrayRenderer from './_aside-custom-attributes-array-renderer'
+import AppMemberCustomAttributesArrayRenderer from './_aside-custom-attributes-array-renderer.vue'
 import { defineProps } from 'vue'
 
 defineProps({

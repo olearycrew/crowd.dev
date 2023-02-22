@@ -77,8 +77,8 @@ export default {
 </script>
 
 <script setup>
-import AppTaskClosedDropdown from '@/modules/task/components/task-closed-dropdown'
-import AppTaskItem from '@/modules/task/components/task-item'
+import AppTaskClosedDropdown from '@/modules/task/components/task-closed-dropdown.vue'
+import AppTaskItem from '@/modules/task/components/task-item.vue'
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { TaskService } from '@/modules/task/task-service'
 import Message from '@/shared/message/message'

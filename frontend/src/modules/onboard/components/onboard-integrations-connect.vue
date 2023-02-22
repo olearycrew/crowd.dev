@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import AppIntegrationConnect from '@/modules/integration/components/integration-connect'
+import AppIntegrationConnect from '@/modules/integration/components/integration-connect.vue'
 
 export default {
   name: 'AppOnboardIntegrationsConnect',

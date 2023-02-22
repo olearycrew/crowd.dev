@@ -249,11 +249,11 @@ import { TaskModel } from '@/modules/task/task-model'
 import { FormSchema } from '@/shared/form/form-schema'
 import Message from '@/shared/message/message'
 import { TaskService } from '@/modules/task/task-service'
-import AppAutocompleteManyInput from '@/shared/form/autocomplete-many-input'
+import AppAutocompleteManyInput from '@/shared/form/autocomplete-many-input.vue'
 import { mapActions } from '@/shared/vuex/vuex.helpers'
-import AppDrawer from '@/shared/drawer/drawer'
-import AppAvatar from '@/shared/avatar/avatar'
-import AppEditor from '@/shared/form/editor'
+import AppDrawer from '@/shared/drawer/drawer.vue'
+import AppAvatar from '@/shared/avatar/avatar.vue'
+import AppEditor from '@/shared/form/editor.vue'
 
 const { fields } = TaskModel
 const formSchema = new FormSchema([

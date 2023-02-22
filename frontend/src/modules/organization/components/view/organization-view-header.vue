@@ -148,7 +148,7 @@ export default {
 
 <script setup>
 import { defineProps } from 'vue'
-import AppOrganizationDropdown from '@/modules/organization/components/organization-dropdown'
+import AppOrganizationDropdown from '@/modules/organization/components/organization-dropdown.vue'
 import moment from 'moment'
 import {
   formatDate,

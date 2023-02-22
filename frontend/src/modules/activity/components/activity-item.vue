@@ -117,15 +117,15 @@
 </template>
 
 <script>
-import AppAvatar from '@/shared/avatar/avatar'
+import AppAvatar from '@/shared/avatar/avatar.vue'
 import { formatDateToTimeAgo } from '@/utils/date'
-import AppActivityDropdown from '@/modules/activity/components/activity-dropdown'
-import AppLoading from '@/shared/loading/loading-placeholder'
-import AppActivityMessage from '@/modules/activity/components/activity-message'
-import AppActivityContent from '@/modules/activity/components/activity-content'
-import AppActivityLink from '@/modules/activity/components/activity-link'
-import AppActivitySentiment from '@/modules/activity/components/activity-sentiment'
-import AppMemberDisplayName from '@/modules/member/components/member-display-name'
+import AppActivityDropdown from '@/modules/activity/components/activity-dropdown.vue'
+import AppLoading from '@/shared/loading/loading-placeholder.vue'
+import AppActivityMessage from '@/modules/activity/components/activity-message.vue'
+import AppActivityContent from '@/modules/activity/components/activity-content.vue'
+import AppActivityLink from '@/modules/activity/components/activity-link.vue'
+import AppActivitySentiment from '@/modules/activity/components/activity-sentiment.vue'
+import AppMemberDisplayName from '@/modules/member/components/member-display-name.vue'
 import { CrowdIntegrations } from '@/integrations/integrations-config'
 
 export default {
