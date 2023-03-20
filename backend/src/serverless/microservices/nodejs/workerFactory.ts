@@ -11,6 +11,7 @@ import {
   BulkEnrichMessage,
   EagleEyeEmailDigestMessage,
   IntegrationDataCheckerMessage,
+  QdrantSyncMessage,
 } from './messageTypes'
 import { AutomationTrigger, AutomationType } from '../../../types/automationTypes'
 import newActivityWorker from './automation/workers/newActivityWorker'
@@ -22,6 +23,7 @@ import { processSendgridWebhook } from '../../integrations/workers/sendgridWebho
 import { bulkEnrichmentWorker } from './bulk-enrichment/bulkEnrichmentWorker'
 import { eagleEyeEmailDigestWorker } from './eagle-eye-email-digest/eagleEyeEmailDigestWorker'
 import { integrationDataCheckerWorker } from './integration-data-checker/integrationDataCheckerWorker'
+import { qdrantSyncWorker } from './qdrant-sync/qdrantSyncWorker'
 
 /**
  * Worker factory for spawning different microservices
@@ -49,6 +51,10 @@ async function workerFactory(event: NodeMicroserviceMessage): Promise<any> {
         integrationDataCheckerMessage.integrationId,
         integrationDataCheckerMessage.tenantId,
       )
+    case 'qdrant-sync':
+      const qdrantSyncMessage = event as QdrantSyncMessage
+      return qdrantSyncWorker(qdrantSyncMessage.tenantId)
+
     case 'csv-export':
       const csvExportMessage = event as CsvExportMessage
       return csvExportWorker(

@@ -204,3 +204,10 @@ export interface UnleashConfiguration {
 export interface SlackAlertingConfiguration {
   url: string
 }
+
+export interface QdrantSyncConfiguration {
+  qdrantHost: string
+  qdrantApiKey: string
+  qdrantCollection: string
+  openaiApiKey: string
+}

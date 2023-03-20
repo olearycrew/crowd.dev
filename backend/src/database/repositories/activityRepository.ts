@@ -1,6 +1,7 @@
 import sanitizeHtml from 'sanitize-html'
 import lodash from 'lodash'
-import Sequelize from 'sequelize'
+import Sequelize, { QueryTypes } from 'sequelize'
+import moment from 'moment'
 import SequelizeRepository from './sequelizeRepository'
 import AuditLogRepository from './auditLogRepository'
 import SequelizeFilterUtils from '../utils/sequelizeFilterUtils'
@@ -693,6 +694,34 @@ class ActivityRepository {
     })
 
     return output
+  }
+
+  static async findForQdrant(createdAt, options: IRepositoryOptions) {
+    if (!createdAt) {
+      // If not send, set to moment(0) and convert to YYYY-MM-DD HH:mm:ss
+      createdAt = moment(0).format('YYYY-MM-DD HH:mm:ss')
+    }
+
+    const activities = await options.database.sequelize.query(
+      `SELECT 
+        activities.*,
+        members.id AS "memberId",
+        members."displayName" AS "memberDisplayName",
+        COALESCE((members.attributes->'isTeamMember'->>'default')::boolean, FALSE) AS "isByTeamMember"
+      FROM 
+        activities
+      LEFT JOIN 
+        members ON activities."memberId" = members.id
+      WHERE 
+        (activities.body != '' OR activities.title != '') AND
+        activities."tenantId" = '${options.currentTenant.id}' AND
+        activities."createdAt" > '${createdAt}'
+      `,
+      {
+        type: QueryTypes.SELECT,
+      },
+    )
+    return activities
   }
 }
 

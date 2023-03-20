@@ -24,6 +24,10 @@ export type IntegrationDataCheckerMessage = BaseNodeMicroserviceMessage & {
   tenantId: string
 }
 
+export type QdrantSyncMessage = BaseNodeMicroserviceMessage & {
+  tenantId: string
+}
+
 export type ActivityAutomationData = {
   activityId?: string
   activity?: any

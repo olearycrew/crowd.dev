@@ -26,6 +26,7 @@ import {
   EagleEyeConfiguration,
   UnleashConfiguration,
   SlackAlertingConfiguration,
+  QdrantSyncConfiguration,
 } from './configTypes'
 
 // TODO-kube
@@ -239,4 +240,13 @@ export const SLACK_ALERTING_CONFIG: SlackAlertingConfiguration = KUBE_MODE
   ? config.get<SlackAlertingConfiguration>('slackAlerting')
   : {
       url: process.env.SLACK_ALERTING_URL,
+    }
+
+export const QDRANT_SYNC_CONFIG: QdrantSyncConfiguration = KUBE_MODE
+  ? config.get<QdrantSyncConfiguration>('qdrantSync')
+  : {
+      qdrantHost: process.env.QDRANT_HOST,
+      qdrantApiKey: process.env.QDRANT_API_KEY,
+      qdrantCollection: process.env.QDRANT_COLLECTION,
+      openaiApiKey: process.env.OPENAI_API_KEY,
     }

@@ -40,5 +40,11 @@
   },
   "slackAlerting": {
     "url": ""
+  },
+  "qdrantSync": {
+    "qdrantHost": "",
+    "qdrantApiKey": "",
+    "qdrantCollection": "",
+    "openaiApiKey": ""
   }
 }
