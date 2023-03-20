@@ -57,8 +57,10 @@ async function qdrantSyncWorker(tenantId): Promise<void> {
 
   let createdAt
   if (!isOnboarded) {
+    settings.aiSupportSettings.isOnboarded = 'in-progress'
+    await SettingsRepository.save(settings, userContext)
     // 1970 to isostring
-    createdAt = '1970-01-01T00:00:00.000Z'
+    createdAt = false
   } else {
     // 2h ago to isostring
     createdAt = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
@@ -89,7 +91,7 @@ async function qdrantSyncWorker(tenantId): Promise<void> {
     console.log(await upsertPoints(points))
   }
 
-  if (!isOnboarded) {
+  if (!createdAt) {
     settings.aiSupportSettings.isOnboarded = true
     await SettingsRepository.save(settings, userContext)
   }
