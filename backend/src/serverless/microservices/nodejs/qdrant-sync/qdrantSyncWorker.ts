@@ -4,6 +4,7 @@ import { IRepositoryOptions } from '../../../../database/repositories/IRepositor
 import { createServiceChildLogger } from '../../../../utils/logging'
 import ActivityRepository from '../../../../database/repositories/activityRepository'
 import { QDRANT_SYNC_CONFIG } from '../../../../config'
+import SettingsRepository from '../../../../database/repositories/settingsRepository'
 
 const log = createServiceChildLogger('qdrantSyncWorker')
 
@@ -36,9 +37,9 @@ async function upsertPoints(points) {
           'Content-Type': 'application/json',
           'api-key': QDRANT_SYNC_CONFIG.qdrantApiKey,
         },
-        params: {
-          wait: true,
-        },
+        // params: {
+        //   wait: true,
+        // },
       },
     )
     return response.data
@@ -48,43 +49,14 @@ async function upsertPoints(points) {
   }
 }
 
-async function countPoints(tenantId) {
-  try {
-    const response = await axios.post(
-      `${QDRANT_SYNC_CONFIG.qdrantHost}/collections/${QDRANT_SYNC_CONFIG.qdrantCollection}/points/count`,
-      {
-        filter: {
-          must: [
-            {
-              key: 'tenantId',
-              match: {
-                value: tenantId,
-              },
-            },
-          ],
-        },
-        exact: true,
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'api-key': QDRANT_SYNC_CONFIG.qdrantApiKey,
-        },
-      },
-    )
-    return response.data.result.count
-  } catch (e) {
-    log.error('Error while upserting points', e)
-    throw e
-  }
-}
-
 async function qdrantSyncWorker(tenantId): Promise<void> {
   const userContext: IRepositoryOptions = await getUserContext(tenantId)
 
-  const count = await countPoints(tenantId)
+  const settings = userContext.currentTenant.settings[0].get({ plain: true })
+  const isOnboarded = settings.aiSupportSettings?.isOnboarded
+
   let createdAt
-  if (!count) {
+  if (!isOnboarded) {
     // 1970 to isostring
     createdAt = '1970-01-01T00:00:00.000Z'
   } else {
@@ -94,8 +66,9 @@ async function qdrantSyncWorker(tenantId): Promise<void> {
 
   const activities = await ActivityRepository.findForQdrant(createdAt, userContext)
 
-  console.log('Count', count)
-  console.log('createdAt', createdAt)
+  log.info('isOnboarded', isOnboarded)
+  log.info('createdAt', createdAt)
+  log.info('activities', activities.length)
 
   // Split the activities list into chunks of N
   const chunkSize = 100
@@ -114,6 +87,11 @@ async function qdrantSyncWorker(tenantId): Promise<void> {
       })
     }
     console.log(await upsertPoints(points))
+  }
+
+  if (!isOnboarded) {
+    settings.aiSupportSettings.isOnboarded = true
+    await SettingsRepository.save(settings, userContext)
   }
 }
 
