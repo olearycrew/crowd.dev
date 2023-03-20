@@ -7,8 +7,8 @@ import { NodeWorkerMessageBase } from '../../types/mq/nodeWorkerMessageBase'
 
 const job: CrowdJob = {
   name: 'Sync data to Qdrant',
-  // every minute
-  cronTime: '* * * * *',
+  // every hour
+  cronTime: '0 * * * *',
   onTrigger: async () => {
     const options = await SequelizeRepository.getDefaultIRepositoryOptions()
 
