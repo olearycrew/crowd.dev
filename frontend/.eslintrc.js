@@ -2,17 +2,16 @@ module.exports = {
   root: true,
 
   env: {
-    node: true
+    node: true,
   },
 
   extends: [
     'plugin:vue/vue3-recommended',
-    'eslint:recommended',
-    '@vue/prettier'
+    '@vue/airbnb',
   ],
 
   parserOptions: {
-    ecmaVersion: 2020
+    ecmaVersion: 2020,
   },
 
   rules: {
@@ -26,6 +25,14 @@ module.exports = {
         : 'off',
     'vue/no-v-html': 'off',
     'vue/no-unused-components': 'warn',
-    'no-unused-vars': 'warn'
-  }
-}
+    'no-unused-vars': 'warn',
+    'max-len': [
+      'error',
+      {
+        code: 150,
+        ignoreComments: true,
+        ignoreUrls: true,
+      },
+    ],
+  },
+};

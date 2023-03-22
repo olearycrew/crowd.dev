@@ -1,42 +1,42 @@
-import { createStore as createVuexStore } from 'vuex'
-import createPlugin from 'logrocket-vuex'
-import config from '@/config'
+import { createStore as createVuexStore } from 'vuex';
+import createPlugin from 'logrocket-vuex';
+import config from '@/config';
 
-import modules from '@/modules'
-let store
+import modules from '@/modules';
+
+let store;
 
 /**
  * Creates/Sets the Vuex store
  */
 const createStore = (LogRocket) => {
-  const plugins =
-    config.env === 'production'
-      ? [createPlugin(LogRocket)]
-      : []
+  const plugins = config.env === 'production'
+    ? [createPlugin(LogRocket)]
+    : [];
   if (!store) {
     store = createVuexStore({
       modules: buildStores(),
-      plugins
-    })
+      plugins,
+    });
   }
-  return store
-}
+  return store;
+};
 
 /**
  * Loads all the stores from the src/modules/ folders
  * @returns {{}}
  */
 const buildStores = () => {
-  const output = {}
+  const output = {};
 
   Object.keys(modules)
     .filter((key) => Boolean(modules[key].store))
     .forEach((key) => {
-      output[key] = modules[key].store
-    })
+      output[key] = modules[key].store;
+    });
 
-  return output
-}
+  return output;
+};
 
 /**
  * Builds an initial state for our application store
@@ -47,31 +47,31 @@ const buildStores = () => {
  * @returns {{}}
  */
 const buildInitialState = (excludeAuth = false) => {
-  const modules = buildStores()
+  const modules = buildStores();
 
   return Object.keys(modules).reduce((acc, moduleKey) => {
-    acc[moduleKey] = {}
+    acc[moduleKey] = {};
     if (
-      ['auth', 'tenant'].includes(moduleKey) &&
-      excludeAuth
+      ['auth', 'tenant'].includes(moduleKey)
+      && excludeAuth
     ) {
-      acc[moduleKey] = store.state[moduleKey]
+      acc[moduleKey] = store.state[moduleKey];
     } else if (modules[moduleKey].state) {
       acc[moduleKey] = JSON.parse(
-        JSON.stringify(modules[moduleKey].state())
-      )
+        JSON.stringify(modules[moduleKey].state()),
+      );
     }
 
-    const subModules = modules[moduleKey].modules
+    const subModules = modules[moduleKey].modules;
     if (subModules) {
       for (const subModuleKey of Object.keys(subModules)) {
         acc[moduleKey][subModuleKey] = JSON.parse(
-          JSON.stringify(subModules[subModuleKey].state())
-        )
+          JSON.stringify(subModules[subModuleKey].state()),
+        );
       }
     }
-    return acc
-  }, {})
-}
+    return acc;
+  }, {});
+};
 
-export { createStore, buildInitialState, store }
+export { createStore, buildInitialState, store };

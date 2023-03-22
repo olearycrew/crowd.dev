@@ -1,6 +1,6 @@
-import LinkedInConnect from './components/linkedin-connect'
-import LinkedInActivityMessage from '@/integrations/linkedin/components/activity/linkedin-activity-message'
-import LinkedInActivityContent from '@/integrations/linkedin/components/activity/linkedin-activity-content'
+import LinkedInConnect from './components/linkedin-connect';
+import LinkedInActivityMessage from '@/integrations/linkedin/components/activity/linkedin-activity-message';
+import LinkedInActivityContent from '@/integrations/linkedin/components/activity/linkedin-activity-content';
 
 export default {
   enabled: true,
@@ -20,7 +20,7 @@ export default {
     empathy: 'Love',
     interest: 'Insightful',
     appreciation: 'Support',
-    entertainment: 'Funny'
+    entertainment: 'Funny',
   },
-  premium: true
-}
+  premium: true,
+};

@@ -71,7 +71,7 @@ export const vueSanitizeOptions = {
     'thead',
     'tr',
     '<br>',
-    'input'
+    'input',
   ],
   disallowedTagsMode: 'discard',
   allowedAttributes: {
@@ -84,9 +84,9 @@ export const vueSanitizeOptions = {
       'title',
       'width',
       'height',
-      'loading'
+      'loading',
     ],
-    input: ['checked', 'disabled', 'type']
+    input: ['checked', 'disabled', 'type'],
   },
   selfClosing: [
     'img',
@@ -97,7 +97,7 @@ export const vueSanitizeOptions = {
     'basefont',
     'input',
     'link',
-    'meta'
+    'meta',
   ],
   allowedSchemes: [
     'http',
@@ -105,14 +105,14 @@ export const vueSanitizeOptions = {
     'ftp',
     'mailto',
     'tel',
-    'data'
+    'data',
   ],
   allowedSchemesByTag: {},
   allowedSchemesAppliedToAttributes: [
     'href',
     'src',
-    'cite'
+    'cite',
   ],
   allowProtocolRelative: true,
-  enforceHtmlBoundary: false
-}
+  enforceHtmlBoundary: false,
+};

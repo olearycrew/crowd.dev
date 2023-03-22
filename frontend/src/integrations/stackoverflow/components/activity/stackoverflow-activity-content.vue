@@ -6,7 +6,7 @@
         v-html="
           $sanitize($marked(activity.parent.body)).slice(
             0,
-            100
+            100,
           ) + '...'
         "
       />
@@ -27,23 +27,23 @@ export default {
   props: {
     activity: {
       type: Object,
-      required: true
+      required: true,
     },
     bodyClass: {
       type: String,
       required: false,
-      default: ''
+      default: '',
     },
     displayThread: {
       type: Boolean,
       required: false,
-      default: true
+      default: true,
     },
     displayBody: {
       type: Boolean,
       required: false,
-      default: true
-    }
-  }
-}
+      default: true,
+    },
+  },
+};
 </script>

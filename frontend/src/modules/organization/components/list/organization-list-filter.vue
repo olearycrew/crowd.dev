@@ -16,22 +16,21 @@
 </template>
 
 <script>
-export default {
-  name: 'AppOrganizationListFilter'
-}
 </script>
 
 <script setup>
-import { OrganizationModel } from '@/modules/organization/organization-model'
-import { computed } from 'vue'
+import { computed } from 'vue';
+import { OrganizationModel } from '@/modules/organization/organization-model';
+
+export default {
+  name: 'AppOrganizationListFilter',
+};
 
 const organizationAttributes = Object.values(
-  OrganizationModel.fields
-).filter((f) => f.filterable)
+  OrganizationModel.fields,
+).filter((f) => f.filterable);
 
-const organizationSearch = computed(() => {
-  return OrganizationModel.fields.search.forFilter()
-})
+const organizationSearch = computed(() => OrganizationModel.fields.search.forFilter());
 </script>
 
 <style></style>

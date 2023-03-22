@@ -2,13 +2,12 @@
   <div>
     <label
       class="block leading-none text-xs font-semibold mb-2"
-      >Limit</label
-    >
+    >Limit</label>
     <el-input
       v-model="value"
       placeholder="10000"
       :disabled="disabled"
-    ></el-input>
+    />
   </div>
 </template>
 
@@ -18,23 +17,23 @@ export default {
   props: {
     limit: {
       type: Number,
-      required: true
+      required: true,
     },
     disabled: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   emits: ['update'],
   computed: {
     value: {
       get() {
-        return this.limit
+        return this.limit;
       },
       set(value) {
-        this.$emit('update', value)
-      }
-    }
-  }
-}
+        this.$emit('update', value);
+      },
+    },
+  },
+};
 </script>

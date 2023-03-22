@@ -1,5 +1,5 @@
-import { ElMessageBox } from 'element-plus'
-import { h } from 'vue'
+import { ElMessageBox } from 'element-plus';
+import { h } from 'vue';
 
 export default async ({
   type = 'info',
@@ -9,20 +9,20 @@ export default async ({
   customClass = 'information-dialog',
   confirmButtonText = 'Upgrade plan',
   confirmButtonClass = 'btn btn--md btn--primary w-full',
-  icon = 'ri-error-warning-line'
+  icon = 'ri-error-warning-line',
 }) => {
-  let iconColorClass = 'text-yellow-600'
-  let iconBgColorClass = 'bg-yellow-100'
+  let iconColorClass = 'text-yellow-600';
+  let iconBgColorClass = 'bg-yellow-100';
 
   if (type === 'danger') {
-    iconColorClass = 'text-red-600'
-    iconBgColorClass = 'bg-red-100'
+    iconColorClass = 'text-red-600';
+    iconBgColorClass = 'bg-red-100';
   } else if (type === 'info') {
-    iconColorClass = 'text-gray-500'
-    iconBgColorClass = 'bg-gray-100'
+    iconColorClass = 'text-gray-500';
+    iconBgColorClass = 'bg-gray-100';
   } else if (type === 'success') {
-    iconColorClass = 'text-green-500'
-    iconBgColorClass = 'bg-green-100'
+    iconColorClass = 'text-green-500';
+    iconBgColorClass = 'bg-green-100';
   }
 
   const content = h(
@@ -36,17 +36,17 @@ export default async ({
           h(
             'span', // type
             {
-              class: `rounded-full ${iconBgColorClass} w-10 h-10 flex items-center justify-center custom-icon`
+              class: `rounded-full ${iconBgColorClass} w-10 h-10 flex items-center justify-center custom-icon`,
             }, // props
             [
               h(
                 'i', // type
                 {
-                  class: `${icon} text-lg ${iconColorClass} leading-none`
+                  class: `${icon} text-lg ${iconColorClass} leading-none`,
                 }, // props
-                []
-              )
-            ]
+                [],
+              ),
+            ],
           ),
           h(
             'button',
@@ -57,39 +57,39 @@ export default async ({
               onClick: () => {
                 document
                   .querySelector(
-                    '.el-message-box__headerbtn'
+                    '.el-message-box__headerbtn',
                   )
-                  .dispatchEvent(new Event('click'))
-              }
+                  .dispatchEvent(new Event('click'));
+              },
             },
             [
               h(
                 'i', // type
                 {
-                  class: `text-lg ri-close-line leading-none`
+                  class: 'text-lg ri-close-line leading-none',
                 }, // props
-                []
-              )
-            ]
-          )
-        ]
+                [],
+              ),
+            ],
+          ),
+        ],
       ),
       h('h6', {
         innerHTML: title,
-        class: 'text-black mb-2'
+        class: 'text-black mb-2',
       }),
       label
         ? h('div', {
-            class: 'badge badge--sm mb-4 inline-flex',
-            innerHTML: label
-          })
+          class: 'badge badge--sm mb-4 inline-flex',
+          innerHTML: label,
+        })
         : undefined,
       h('p', {
         innerHTML: message,
-        class: 'text-gray-500 text-sm'
-      })
-    ]
-  )
+        class: 'text-gray-500 text-sm',
+      }),
+    ],
+  );
   return ElMessageBox({
     title: '',
     message: content,
@@ -97,6 +97,6 @@ export default async ({
     showCancelButton: false,
     customClass,
     confirmButtonText,
-    confirmButtonClass
-  })
-}
+    confirmButtonClass,
+  });
+};

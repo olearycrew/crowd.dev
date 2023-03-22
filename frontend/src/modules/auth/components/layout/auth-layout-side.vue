@@ -101,8 +101,8 @@
 
 <script>
 export default {
-  name: 'AppAuthLayoutSide'
-}
+  name: 'AppAuthLayoutSide',
+};
 </script>
 
 <style scoped></style>

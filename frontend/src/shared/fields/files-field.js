@@ -1,30 +1,30 @@
-import * as yup from 'yup'
-import GenericField from '@/shared/fields/generic-field'
-import { i18n } from '@/i18n'
+import * as yup from 'yup';
+import GenericField from '@/shared/fields/generic-field';
+import { i18n } from '@/i18n';
 
 export default class FilesField extends GenericField {
   constructor(name, label, storage, config = {}) {
-    super(name, label)
+    super(name, label);
 
-    this.storage = storage
-    this.required = config.required
-    this.min = config.min
-    this.max = config.max
-    this.formats = config.formats
-    this.hint = config.hint
-    this.filterable = config.filterable || false
+    this.storage = storage;
+    this.required = config.required;
+    this.min = config.min;
+    this.max = config.max;
+    this.formats = config.formats;
+    this.hint = config.hint;
+    this.filterable = config.filterable || false;
   }
 
   forPresenter(value) {
-    return value || []
+    return value || [];
   }
 
   forFormInitialValue(value) {
-    return value || []
+    return value || [];
   }
 
   forFormRules() {
-    const output = []
+    const output = [];
 
     if (this.required) {
       output.push({
@@ -32,9 +32,9 @@ export default class FilesField extends GenericField {
         required: Boolean(this.required),
         message: i18n('validation.mixed.required').replace(
           '${path}',
-          this.label
-        )
-      })
+          this.label,
+        ),
+      });
     }
 
     if (this.min || this.min === 0) {
@@ -43,8 +43,8 @@ export default class FilesField extends GenericField {
         min: this.min,
         message: i18n('validation.array.min')
           .replace('${path}', this.label)
-          .replace('${min}', this.min)
-      })
+          .replace('${min}', this.min),
+      });
     }
 
     if (this.max || this.max === 0) {
@@ -53,15 +53,15 @@ export default class FilesField extends GenericField {
         max: this.max,
         message: i18n('validation.array.max')
           .replace('${path}', this.label)
-          .replace('${max}', this.max)
-      })
+          .replace('${max}', this.max),
+      });
     }
 
-    return output
+    return output;
   }
 
   forFormCast() {
-    return yup.array().nullable(true).label(this.label)
+    return yup.array().nullable(true).label(this.label);
   }
 
   forExport() {
@@ -70,13 +70,13 @@ export default class FilesField extends GenericField {
       .label(this.label)
       .transform((value, originalValue) => {
         if (!originalValue || !originalValue.length) {
-          return null
+          return null;
         }
 
         return originalValue
           .map((value) => value.downloadUrl)
-          .join(' ')
-      })
+          .join(' ');
+      });
   }
 
   forImport() {
@@ -88,39 +88,37 @@ export default class FilesField extends GenericField {
       .nullable(true)
       .transform((value, originalValue) => {
         if (!originalValue) {
-          return null
+          return null;
         }
 
         if (Array.isArray(originalValue)) {
-          return originalValue
+          return originalValue;
         }
 
         return originalValue
           .trim()
           .split(' ')
-          .map((value) => {
-            return {
-              name: value.trim(),
-              publicUrl: value.trim(),
-              new: true
-            }
-          })
-      })
+          .map((value) => ({
+            name: value.trim(),
+            publicUrl: value.trim(),
+            new: true,
+          }));
+      });
 
     if (this.required || this.min) {
-      yupChain = yupChain.required()
+      yupChain = yupChain.required();
     }
 
     if (this.min || this.min === 0) {
-      yupChain = yupChain.min(this.min)
+      yupChain = yupChain.min(this.min);
     } else if (this.required) {
-      yupChain = yupChain.min(1)
+      yupChain = yupChain.min(1);
     }
 
     if (this.max) {
-      yupChain = yupChain.max(this.max)
+      yupChain = yupChain.max(this.max);
     }
 
-    return yupChain
+    return yupChain;
   }
 }

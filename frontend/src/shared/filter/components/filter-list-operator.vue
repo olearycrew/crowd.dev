@@ -4,10 +4,12 @@
     placement="bottom-start"
     class="filter-list-operator"
   >
-    <el-button class="filter-list-operator-btn">{{
-      operator.slice(0, 1).toUpperCase() +
-      operator.slice(1, operator.length)
-    }}</el-button>
+    <el-button class="filter-list-operator-btn">
+      {{
+        operator.slice(0, 1).toUpperCase()
+          + operator.slice(1, operator.length)
+      }}
+    </el-button>
     <template #dropdown>
       <el-dropdown-item
         class="filter-list-operator-option"
@@ -28,25 +30,26 @@
 </template>
 
 <script>
-export default {
-  name: 'AppFilterListOperator'
-}
 </script>
 
 <script setup>
-import { defineProps, defineEmits } from 'vue'
+import { defineProps, defineEmits } from 'vue';
+
+export default {
+  name: 'AppFilterListOperator',
+};
 defineProps({
   operator: {
     type: String,
-    default: 'and'
-  }
-})
+    default: 'and',
+  },
+});
 
-const emit = defineEmits(['change'])
+const emit = defineEmits(['change']);
 
 const handleClick = (value) => {
-  emit('change', value)
-}
+  emit('change', value);
+};
 </script>
 
 <style lang="scss">

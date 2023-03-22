@@ -17,32 +17,29 @@
 </template>
 
 <script>
-export default {
-  name: 'AppMemberListFilter'
-}
 </script>
 
 <script setup>
-import { MemberModel } from '@/modules/member/member-model'
-import { useStore } from 'vuex'
-import { computed } from 'vue'
-import getCustomAttributes from '@/shared/fields/get-custom-attributes.js'
+import { useStore } from 'vuex';
+import { computed } from 'vue';
+import { MemberModel } from '@/modules/member/member-model';
+import getCustomAttributes from '@/shared/fields/get-custom-attributes.js';
 
-const store = useStore()
+export default {
+  name: 'AppMemberListFilter',
+};
+
+const store = useStore();
 
 const memberAttributes = Object.values(
-  MemberModel.fields
-).filter((f) => f.filterable)
-const customAttributes = computed(() => {
-  return getCustomAttributes({
-    customAttributes: store.state.member.customAttributes,
-    considerShowProperty: true
-  })
-})
+  MemberModel.fields,
+).filter((f) => f.filterable);
+const customAttributes = computed(() => getCustomAttributes({
+  customAttributes: store.state.member.customAttributes,
+  considerShowProperty: true,
+}));
 
-const memberSearch = computed(() => {
-  return MemberModel.fields.search.forFilter()
-})
+const memberSearch = computed(() => MemberModel.fields.search.forFilter());
 </script>
 
 <style></style>

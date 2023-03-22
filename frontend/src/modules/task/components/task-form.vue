@@ -2,9 +2,9 @@
   <app-drawer
     v-model="isExpanded"
     :title="
-      props.task &&
-      props.task.id &&
-      props.task.type !== 'suggested'
+      props.task
+        && props.task.id
+        && props.task.type !== 'suggested'
         ? 'Edit task'
         : 'New task'
     "
@@ -27,25 +27,23 @@
           >
             <label
               class="text-sm mb-1 leading-5 font-medium"
-              >{{ fields.title.label }}
-              <span class="text-brand-500">*</span></label
-            >
+            >{{ fields.title.label }}
+              <span class="text-brand-500">*</span></label>
             <el-input
               id="title"
               ref="focus"
               v-model="model[fields.title.name]"
               autocomplete="disable-autocomplete"
               type="text"
-            ></el-input>
+            />
             <template #error="{ error }">
               <div class="flex items-center mt-1">
                 <i
                   class="h-4 flex items-center ri-error-warning-line text-base text-red-500"
-                ></i>
+                />
                 <span
                   class="pl-1 text-2xs text-red-500 leading-4.5"
-                  >{{ error }}</span
-                >
+                >{{ error }}</span>
               </div>
             </template>
           </el-form-item>
@@ -55,8 +53,7 @@
           >
             <label
               class="text-sm mb-1 leading-5 font-medium"
-              >{{ fields.description.label }}</label
-            >
+            >{{ fields.description.label }}</label>
             <app-editor
               id="description"
               v-model="model[fields.description.name]"
@@ -67,20 +64,19 @@
               :class="{
                 'border-gray-600': noteEditorFocused,
                 'border-gray-300': !noteEditorFocused,
-                'hover:border-gray-400': !noteEditorFocused
+                'hover:border-gray-400': !noteEditorFocused,
               }"
               @focus="noteEditorFocused = true"
               @blur="noteEditorFocused = false"
-            ></app-editor>
+            />
             <template #error="{ error }">
               <div class="flex items-center mt-1">
                 <i
                   class="h-4 flex items-center ri-error-warning-line text-base text-red-500"
-                ></i>
+                />
                 <span
                   class="pl-1 text-2xs text-red-500 leading-4.5"
-                  >{{ error }}</span
-                >
+                >{{ error }}</span>
               </div>
             </template>
           </el-form-item>
@@ -91,7 +87,7 @@
           >
             <label
               class="text-sm mb-1 leading-5 font-medium"
-              >{{ fields.relatedMembers.label }}
+            >{{ fields.relatedMembers.label }}
             </label>
             <app-autocomplete-many-input
               id="relatedMembers"
@@ -106,10 +102,12 @@
                     size="xxs"
                     :entity="{
                       displayName: item.label,
-                      avatar: item.avatar
+                      avatar: item.avatar,
                     }"
-                  ></app-avatar>
-                  <p class="pl-2">{{ item.label }}</p>
+                  />
+                  <p class="pl-2">
+                    {{ item.label }}
+                  </p>
                 </div>
               </template>
             </app-autocomplete-many-input>
@@ -117,11 +115,10 @@
               <div class="flex items-center mt-1">
                 <i
                   class="h-4 flex items-center ri-error-warning-line text-base text-red-500"
-                ></i>
+                />
                 <span
                   class="pl-1 text-2xs text-red-500 leading-4.5"
-                  >{{ error }}</span
-                >
+                >{{ error }}</span>
               </div>
             </template>
           </el-form-item>
@@ -132,9 +129,8 @@
           >
             <label
               class="text-sm mb-1 leading-5 font-medium"
-              >{{ fields.assignees.label }}
-              <span class="text-brand-500">*</span></label
-            >
+            >{{ fields.assignees.label }}
+              <span class="text-brand-500">*</span></label>
             <app-autocomplete-many-input
               id="assignees"
               v-model="model[fields.assignees.name]"
@@ -148,7 +144,7 @@
                   <app-avatar
                     size="xxs"
                     :entity="item"
-                  ></app-avatar>
+                  />
                   <p class="pl-2">
                     {{ item.displayName || item.label }}
                   </p>
@@ -159,11 +155,10 @@
               <div class="flex items-center mt-1">
                 <i
                   class="h-4 flex items-center ri-error-warning-line text-base text-red-500"
-                ></i>
+                />
                 <span
                   class="pl-1 text-2xs text-red-500 leading-4.5"
-                  >{{ error }}</span
-                >
+                >{{ error }}</span>
               </div>
             </template>
           </el-form-item>
@@ -173,8 +168,7 @@
           >
             <label
               class="text-sm mb-1 leading-5 font-medium"
-              >{{ fields.dueDate.label }}</label
-            >
+            >{{ fields.dueDate.label }}</label>
             <el-date-picker
               v-model="model[fields.dueDate.name]"
               :prefix-icon="CalendarIcon"
@@ -189,11 +183,10 @@
               <div class="flex items-center mt-1">
                 <i
                   class="h-4 flex items-center ri-error-warning-line text-base text-red-500"
-                ></i>
+                />
                 <span
                   class="pl-1 text-2xs text-red-500 leading-4.5"
-                  >{{ error }}</span
-                >
+                >{{ error }}</span>
               </div>
             </template>
           </el-form-item>
@@ -216,12 +209,11 @@
         >
           <span
             v-if="
-              props.task &&
-              props.task.id &&
-              props.task.type !== 'suggested'
+              props.task
+                && props.task.id
+                && props.task.type !== 'suggested'
             "
-            >Update</span
-          >
+          >Update</span>
           <span v-else>Add task</span>
         </el-button>
       </div>
@@ -230,9 +222,6 @@
 </template>
 
 <script>
-export default {
-  name: 'AppTaskForm'
-}
 </script>
 
 <script setup>
@@ -244,102 +233,104 @@ import {
   ref,
   watch,
   h,
-  onMounted
-} from 'vue'
-import { TaskModel } from '@/modules/task/task-model'
-import { FormSchema } from '@/shared/form/form-schema'
-import Message from '@/shared/message/message'
-import { TaskService } from '@/modules/task/task-service'
-import AppAutocompleteManyInput from '@/shared/form/autocomplete-many-input'
-import { mapActions } from '@/shared/vuex/vuex.helpers'
-import AppDrawer from '@/shared/drawer/drawer'
-import AppAvatar from '@/shared/avatar/avatar'
-import AppEditor from '@/shared/form/editor'
+  onMounted,
+} from 'vue';
+import { TaskModel } from '@/modules/task/task-model';
+import { FormSchema } from '@/shared/form/form-schema';
+import Message from '@/shared/message/message';
+import { TaskService } from '@/modules/task/task-service';
+import AppAutocompleteManyInput from '@/shared/form/autocomplete-many-input';
+import { mapActions } from '@/shared/vuex/vuex.helpers';
+import AppDrawer from '@/shared/drawer/drawer';
+import AppAvatar from '@/shared/avatar/avatar';
+import AppEditor from '@/shared/form/editor';
 
-const { fields } = TaskModel
+export default {
+  name: 'AppTaskForm',
+};
+
+const { fields } = TaskModel;
 const formSchema = new FormSchema([
   fields.title,
   fields.description,
   fields.dueDate,
-  fields.assignees
-])
+  fields.assignees,
+]);
 const props = defineProps({
   modelValue: {
     type: Boolean,
     required: false,
-    default: false
+    default: false,
   },
   task: {
     type: Object,
     required: false,
-    default: () => null
-  }
-})
+    default: () => null,
+  },
+});
 
-const emit = defineEmits(['update:modelValue', 'close'])
-const noteEditorFocused = ref(false)
+const emit = defineEmits(['update:modelValue', 'close']);
+const noteEditorFocused = ref(false);
 
-const { reloadTaskPage, reloadSuggestedTasks } =
-  mapActions('task')
+const { reloadTaskPage, reloadSuggestedTasks } = mapActions('task');
 
 const CalendarIcon = h(
   'i',
   {
     class:
-      'ri-calendar-line text-base leading-none text-gray-400'
+      'ri-calendar-line text-base leading-none text-gray-400',
   },
-  []
-)
+  [],
+);
 
 const rules = ref({
   title: fields.title.forFormRules(),
   description: fields.description.forFormRules(),
   dueDate: fields.dueDate.forFormRules(),
-  assignees: fields.assignees.forFormRules()
-})
+  assignees: fields.assignees.forFormRules(),
+});
 const model = ref({
   [fields.assignees.name]: [],
-  [fields.relatedMembers.name]: []
-})
+  [fields.relatedMembers.name]: [],
+});
 
-const assigneesFormItem = ref(null)
-const relatedMembersFormItem = ref(null)
+const assigneesFormItem = ref(null);
+const relatedMembersFormItem = ref(null);
 
-const loading = ref(false)
+const loading = ref(false);
 
 const isExpanded = computed({
   get() {
-    return props.modelValue
+    return props.modelValue;
   },
   set(expanded) {
-    emit('update:modelValue', expanded)
+    emit('update:modelValue', expanded);
     if (!expanded) {
-      emit('close')
+      emit('close');
     }
-  }
-})
+  },
+});
 
 const isFormValid = computed(
-  () =>
-    formSchema.isValidSync(model.value) &&
-    (model.value.assignees || []).length > 0
-)
+  () => formSchema.isValidSync(model.value)
+    && (model.value.assignees || []).length > 0,
+);
 
 const reset = () => {
   model.value = {
     [fields.assignees.name]: [],
-    [fields.relatedMembers.name]: []
-  }
+    [fields.relatedMembers.name]: [],
+  };
   if (assigneesFormItem.value) {
-    assigneesFormItem.value.resetField()
+    assigneesFormItem.value.resetField();
   }
   if (relatedMembersFormItem.value) {
-    relatedMembersFormItem.value.resetField()
+    relatedMembersFormItem.value.resetField();
   }
-}
+};
 
 const fillForm = () => {
-  reset()
+  reset();
   if (props.task) {
     model.value = {
       name: props.task.name,
@@ -347,85 +338,85 @@ const fillForm = () => {
       members:
         props.task.members?.map((m) => ({
           ...m,
-          label: m.displayName
+          label: m.displayName,
         })) || [],
       assignees:
         props.task.assignees?.map((a) => ({
           ...a,
-          label: a.fullName
+          label: a.fullName,
         })) || [],
-      dueDate: props.task.dueDate
-    }
+      dueDate: props.task.dueDate,
+    };
   } else {
     model.value = {
       members: [],
-      assignees: []
-    }
+      assignees: [],
+    };
   }
-}
+};
 
 watch(
   () => props.task,
   () => {
-    fillForm()
+    fillForm();
   },
   {
     deep: true,
-    immediate: true
-  }
-)
+    immediate: true,
+  },
+);
 
 const doSubmit = () => {
-  loading.value = true
+  loading.value = true;
   if (props.task && props.task.id) {
     TaskService.update(props.task.id, {
       ...model.value,
       type: 'regular',
       members: model.value.members.map((m) => m.id),
-      assignees: model.value.assignees.map((m) => m.id)
+      assignees: model.value.assignees.map((m) => m.id),
     })
       .then(() => {
-        Message.success('Task successfully updated!')
+        Message.success('Task successfully updated!');
         if (props.task.type === 'suggested') {
-          reloadSuggestedTasks()
+          reloadSuggestedTasks();
         }
-        reloadTaskPage()
-        reset()
-        isExpanded.value = false
+        reloadTaskPage();
+        reset();
+        isExpanded.value = false;
       })
       .catch(() => {
-        Message.error('There was an error updating task')
+        Message.error('There was an error updating task');
       })
       .finally(() => {
-        loading.value = false
-      })
+        loading.value = false;
+      });
   } else {
     TaskService.create({
       ...model.value,
       status: 'in-progress',
       members: (model.value.members || []).map((m) => m.id),
       assignees: (model.value.assignees || []).map(
-        (m) => m.id
-      )
+        (m) => m.id,
+      ),
     })
       .then(() => {
-        Message.success('Task successfully created!')
-        reloadTaskPage()
-        reset()
-        isExpanded.value = false
+        Message.success('Task successfully created!');
+        reloadTaskPage();
+        reset();
+        isExpanded.value = false;
       })
       .catch(() => {
-        Message.error('There was an error creating task')
+        Message.error('There was an error creating task');
       })
       .finally(() => {
-        loading.value = false
-      })
+        loading.value = false;
+      });
   }
-}
+};
 
 onMounted(() => {
-  fillForm()
-})
+  fillForm();
+});
 
-defineExpose({ assigneesFormItem, relatedMembersFormItem })
+defineExpose({ assigneesFormItem, relatedMembersFormItem });
 </script>

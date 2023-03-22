@@ -1,12 +1,10 @@
-import moment from 'moment'
+import moment from 'moment';
 
 export const dashboardChartOptions = {
   legend: false,
   yTicks: false,
   yLines: false,
-  xTicksCallback: (label) => {
-    return moment(label).format('MMM DD')
-  },
+  xTicksCallback: (label) => moment(label).format('MMM DD'),
   gradient: {
     x0: 0,
     y0: 0,
@@ -15,47 +13,47 @@ export const dashboardChartOptions = {
     stops: [
       {
         offset: 0.38,
-        color: 'rgba(253,237, 234,1)'
+        color: 'rgba(253,237, 234,1)',
       },
       {
         offset: 1,
-        color: 'rgba(253,237, 234,0)'
-      }
-    ]
-  }
-}
+        color: 'rgba(253,237, 234,0)',
+      },
+    ],
+  },
+};
 
 export function dateRange(period) {
-  const end = moment().utc().endOf('day')
+  const end = moment().utc().endOf('day');
   const start = moment()
     .subtract(
       period.granularity === 'day'
         ? period.value - 1
         : period.value,
-      period.granularity
+      period.granularity,
     )
     .utc()
-    .startOf('day')
-  return [start, end]
+    .startOf('day');
+  return [start, end];
 }
 
 export const hideLabels = {
   scales: {
     x: {
       ticks: {
-        display: false
-      }
+        display: false,
+      },
     },
     y: {
       ticks: {
-        display: false
+        display: false,
       },
       grid: {
-        drawBorder: false
-      }
-    }
-  }
-}
+        drawBorder: false,
+      },
+    },
+  },
+};
 
 export function activitiesChart(period, platform) {
   return {
@@ -64,20 +62,20 @@ export function activitiesChart(period, platform) {
       {
         dimension: 'Activities.date',
         granularity: 'day',
-        dateRange: dateRange(period)
-      }
+        dateRange: dateRange(period),
+      },
     ],
     filters:
       platform !== 'all'
         ? [
-            {
-              member: 'Activities.platform',
-              operator: 'equals',
-              values: [platform]
-            }
-          ]
-        : undefined
-  }
+          {
+            member: 'Activities.platform',
+            operator: 'equals',
+            values: [platform],
+          },
+        ]
+        : undefined,
+  };
 }
 
 export function activitiesCount(dateRange, platform) {
@@ -86,46 +84,46 @@ export function activitiesCount(dateRange, platform) {
     timeDimensions: [
       {
         dimension: 'Activities.date',
-        dateRange
-      }
+        dateRange,
+      },
     ],
     filters:
       platform !== 'all'
         ? [
-            {
-              member: 'Activities.platform',
-              operator: 'equals',
-              values: [platform]
-            }
-          ]
-        : undefined
-  }
+          {
+            member: 'Activities.platform',
+            operator: 'equals',
+            values: [platform],
+          },
+        ]
+        : undefined,
+  };
 }
 
 export function activityTypes(period, platform) {
   return {
     measures: ['Activities.count'],
     order: {
-      'Activities.count': 'desc'
+      'Activities.count': 'desc',
     },
     dimensions: ['Activities.platform', 'Activities.type'],
     timeDimensions: [
       {
         dimension: 'Activities.date',
-        dateRange: dateRange(period)
-      }
+        dateRange: dateRange(period),
+      },
     ],
     filters:
       platform !== 'all'
         ? [
-            {
-              member: 'Activities.platform',
-              operator: 'equals',
-              values: [platform]
-            }
-          ]
-        : undefined
-  }
+          {
+            member: 'Activities.platform',
+            operator: 'equals',
+            values: [platform],
+          },
+        ]
+        : undefined,
+  };
 }
 
 const getMembersFilters = (platform) => {
@@ -133,20 +131,20 @@ const getMembersFilters = (platform) => {
     {
       member: 'Members.isOrganization',
       operator: 'equals',
-      values: ['0']
-    }
-  ]
+      values: ['0'],
+    },
+  ];
 
   if (platform !== 'all') {
     filters.push({
       member: 'Activities.platform',
       operator: 'equals',
-      values: [platform]
-    })
+      values: [platform],
+    });
   }
 
-  return filters
-}
+  return filters;
+};
 
 export function newMembersChart(period, platform) {
   return {
@@ -155,11 +153,11 @@ export function newMembersChart(period, platform) {
       {
         dimension: 'Members.joinedAt',
         granularity: 'day',
-        dateRange: dateRange(period)
-      }
+        dateRange: dateRange(period),
+      },
     ],
-    filters: getMembersFilters(platform)
-  }
+    filters: getMembersFilters(platform),
+  };
 }
 
 export function newMembersCount(dateRange, platform) {
@@ -168,11 +166,11 @@ export function newMembersCount(dateRange, platform) {
     timeDimensions: [
       {
         dimension: 'Members.joinedAt',
-        dateRange
-      }
+        dateRange,
+      },
     ],
-    filters: getMembersFilters(platform)
-  }
+    filters: getMembersFilters(platform),
+  };
 }
 
 export function activeMembersChart(period, platform) {
@@ -182,11 +180,11 @@ export function activeMembersChart(period, platform) {
       {
         dimension: 'Activities.date',
         granularity: 'day',
-        dateRange: dateRange(period)
-      }
+        dateRange: dateRange(period),
+      },
     ],
-    filters: getMembersFilters(platform)
-  }
+    filters: getMembersFilters(platform),
+  };
 }
 
 export function activeMembersCount(dateRange, platform) {
@@ -195,11 +193,11 @@ export function activeMembersCount(dateRange, platform) {
     timeDimensions: [
       {
         dimension: 'Activities.date',
-        dateRange
-      }
+        dateRange,
+      },
     ],
-    filters: getMembersFilters(platform)
-  }
+    filters: getMembersFilters(platform),
+  };
 }
 
 export function newOrganizationChart(period, platform) {
@@ -209,20 +207,20 @@ export function newOrganizationChart(period, platform) {
       {
         dimension: 'Organizations.joinedAt',
         granularity: 'day',
-        dateRange: dateRange(period)
-      }
+        dateRange: dateRange(period),
+      },
     ],
     filters:
       platform !== 'all'
         ? [
-            {
-              member: 'Activities.platform',
-              operator: 'equals',
-              values: [platform]
-            }
-          ]
-        : undefined
-  }
+          {
+            member: 'Activities.platform',
+            operator: 'equals',
+            values: [platform],
+          },
+        ]
+        : undefined,
+  };
 }
 
 export function newOrganizationCount(dateRange, platform) {
@@ -231,20 +229,20 @@ export function newOrganizationCount(dateRange, platform) {
     timeDimensions: [
       {
         dimension: 'Organizations.joinedAt',
-        dateRange
-      }
+        dateRange,
+      },
     ],
     filters:
       platform !== 'all'
         ? [
-            {
-              member: 'Activities.platform',
-              operator: 'equals',
-              values: [platform]
-            }
-          ]
-        : undefined
-  }
+          {
+            member: 'Activities.platform',
+            operator: 'equals',
+            values: [platform],
+          },
+        ]
+        : undefined,
+  };
 }
 
 export function activeOrganizationChart(period, platform) {
@@ -254,45 +252,45 @@ export function activeOrganizationChart(period, platform) {
       {
         dimension: 'Activities.date',
         granularity: 'day',
-        dateRange: dateRange(period)
-      }
+        dateRange: dateRange(period),
+      },
     ],
     filters:
       platform !== 'all'
         ? [
-            {
-              member: 'Activities.platform',
-              operator: 'equals',
-              values: [platform]
-            }
-          ]
-        : undefined
-  }
+          {
+            member: 'Activities.platform',
+            operator: 'equals',
+            values: [platform],
+          },
+        ]
+        : undefined,
+  };
 }
 
 export function activeOrganizationCount(
   dateRange,
-  platform
+  platform,
 ) {
   return {
     measures: ['Organizations.count'],
     timeDimensions: [
       {
         dimension: 'Activities.date',
-        dateRange
-      }
+        dateRange,
+      },
     ],
     filters:
       platform !== 'all'
         ? [
-            {
-              member: 'Activities.platform',
-              operator: 'equals',
-              values: [platform]
-            }
-          ]
-        : undefined
-  }
+          {
+            member: 'Activities.platform',
+            operator: 'equals',
+            values: [platform],
+          },
+        ]
+        : undefined,
+  };
 }
 
 export function sentimentQuery(period, platform) {
@@ -302,18 +300,18 @@ export function sentimentQuery(period, platform) {
     timeDimensions: [
       {
         dimension: 'Activities.date',
-        dateRange: dateRange(period)
-      }
+        dateRange: dateRange(period),
+      },
     ],
     filters:
       platform !== 'all'
         ? [
-            {
-              member: 'Activities.platform',
-              operator: 'equals',
-              values: [platform]
-            }
-          ]
-        : undefined
-  }
+          {
+            member: 'Activities.platform',
+            operator: 'equals',
+            values: [platform],
+          },
+        ]
+        : undefined,
+  };
 }

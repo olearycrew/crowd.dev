@@ -6,6 +6,6 @@
  * el-option components
  * @param {*} el DOM element
  */
-export const onSelectMouseLeave = (el) => {
-  el.target.classList.remove('hover')
-}
+export default (el) => {
+  el.target.classList.remove('hover');
+};

@@ -96,29 +96,29 @@
 </template>
 
 <script>
-import Widget from '../widget'
-import { mapGetters, mapActions } from 'vuex'
-import integrationsJson from '@/jsons/integrations'
+import { mapGetters, mapActions } from 'vuex';
+import Widget from '../widget';
+import integrationsJson from '@/jsons/integrations';
 
 export default {
   name: 'WidgetIntegrations',
   components: {
-    'app-widget': Widget
+    'app-widget': Widget,
   },
   data() {
     return {
-      loading: false
-    }
+      loading: false,
+    };
   },
   computed: {
     ...mapGetters({
       widgetFindByType: 'widget/findByType',
       integrations: 'integration/listByPlatform',
       integrationsArray: 'integration/array',
-      integrationsCount: 'integration/count'
+      integrationsCount: 'integration/count',
     }),
     widget() {
-      return this.widgetFindByType('integrations')
+      return this.widgetFindByType('integrations');
     },
     config() {
       return {
@@ -128,41 +128,39 @@ export default {
         loading: this.loading,
         link: {
           name: 'settings',
-          query: { activeTab: 'integrations' }
+          query: { activeTab: 'integrations' },
         },
-        linkLabel: 'View all'
-      }
+        linkLabel: 'View all',
+      };
     },
     inactiveIntegrations() {
-      return integrationsJson.filter((i) => {
-        return (
-          this.integrations[i.platform] === undefined &&
-          i.platform !== 'other'
-        )
-      })
+      return integrationsJson.filter((i) => (
+        this.integrations[i.platform] === undefined
+          && i.platform !== 'other'
+      ));
     },
     activeIntegrationsByStatus() {
       return this.integrationsArray.reduce((acc, item) => {
         if (!(item.status in acc)) {
-          acc[item.status] = [item]
+          acc[item.status] = [item];
         } else {
-          acc[item.status].push(item)
+          acc[item.status].push(item);
         }
-        return acc
-      }, {})
-    }
+        return acc;
+      }, {});
+    },
   },
   async created() {
     if (this.integrationsCount === 0) {
-      await this.doFetch()
+      await this.doFetch();
     }
   },
   methods: {
     ...mapActions({
-      doFetch: 'integration/doFetch'
-    })
-  }
-}
+      doFetch: 'integration/doFetch',
+    }),
+  },
+};
 </script>
 
 <style lang="scss">

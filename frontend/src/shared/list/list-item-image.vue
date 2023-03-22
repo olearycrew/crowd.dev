@@ -14,16 +14,16 @@ export default {
   props: {
     value: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
 
   computed: {
     isBlank() {
-      return !this.value || !this.value.length
-    }
-  }
-}
+      return !this.value || !this.value.length;
+    },
+  },
+};
 </script>
 
 <style></style>

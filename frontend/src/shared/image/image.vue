@@ -8,24 +8,25 @@
 </template>
 
 <script>
-export default {
-  name: 'AppImage'
-}
 </script>
 
 <script setup>
-import { defineProps } from 'vue'
+import { defineProps } from 'vue';
+
+export default {
+  name: 'AppImage',
+};
 
 defineProps({
   src: {
     type: String,
-    required: true
+    required: true,
   },
   alt: {
     type: String,
-    required: true
-  }
-})
+    required: true,
+  },
+});
 </script>
 
 <style lang="scss" scoped>

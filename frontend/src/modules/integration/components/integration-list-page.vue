@@ -10,17 +10,16 @@
         <span class="text-base">🧐</span> Missing something?
         <a
           href="https://github.com/CrowdDotDev/crowd.dev/issues?q=is%3Aopen+is%3Aissue+label%3A%22Integration+%F0%9F%94%8C%22+"
-          >Open an issue</a
-        >
+        >Open an issue</a>
       </div>
     </div>
     <div class="mt-10">
       <div class="mb-6">
         <app-alert
           v-if="
-            integrations.github &&
-            integrations.github.status ===
-              'waiting-approval'
+            integrations.github
+              && integrations.github.status
+                === 'waiting-approval'
           "
         >
           <template #body>
@@ -30,14 +29,13 @@
               href="https://docs.crowd.dev/docs/github-integration#set-up-with-missing-permissions"
               class="font-semibold absolute right-0 inset-y-0 flex items-center pr-4"
               target="_blank"
-              >Read more</a
-            >
+            >Read more</a>
           </template>
         </app-alert>
         <app-alert
           v-if="
-            integrations.slack &&
-            integrations.slack.status === 'in-progress'
+            integrations.slack
+              && integrations.slack.status === 'in-progress'
           "
         >
           <template #body>
@@ -46,14 +44,13 @@
               href="https://docs.crowd.dev/docs/slack-integration#how-to-install"
               class="font-semibold absolute right-0 inset-y-0 flex items-center pr-4"
               target="_blank"
-              >Read more</a
-            >
+            >Read more</a>
           </template>
         </app-alert>
         <app-alert
           v-if="
-            integrations.discord &&
-            integrations.discord.status === 'in-progress'
+            integrations.discord
+              && integrations.discord.status === 'in-progress'
           "
         >
           <template #body>
@@ -63,8 +60,7 @@
               href="https://docs.crowd.dev/docs/discord-integration#how-to-install"
               class="font-semibold absolute right-0 inset-y-0 flex items-center pr-4"
               target="_blank"
-              >Read more</a
-            >
+            >Read more</a>
           </template>
         </app-alert>
         <app-alert v-if="integrationsWithErrors.length > 0">
@@ -75,15 +71,13 @@
             <a
               href="mailto:help@crowd.dev"
               class="font-semibold"
-              >email</a
-            >
+            >email</a>
             or engage within our
             <a
               href="https://crowd.dev/discord"
               class="font-semibold"
             >
-              Discord community</a
-            >.
+              Discord community</a>.
           </template>
         </app-alert>
         <app-alert v-if="integrationsWithNoData.length > 0">
@@ -93,23 +87,20 @@
               href="https://docs.crowd.dev/integrations"
               class="font-semibold"
               target="_blank"
-              >documentation</a
-            >
+            >documentation</a>
             for integrations with no activities to make sure
             they are set up correctly. If the setup is
             correct, contact us via
             <a
               href="mailto:help@crowd.dev"
               class="font-semibold"
-              >email</a
-            >
+            >email</a>
             or engage within our
             <a
               href="https://crowd.dev/discord"
               class="font-semibold"
             >
-              Discord community</a
-            >.
+              Discord community</a>.
           </template>
         </app-alert>
       </div>
@@ -119,8 +110,8 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import AppIntegrationList from './integration-list'
+import { mapGetters } from 'vuex';
+import AppIntegrationList from './integration-list';
 
 export default {
   name: 'AppIntegrationListPage',
@@ -131,8 +122,8 @@ export default {
     ...mapGetters({
       integrations: 'integration/listByPlatform',
       integrationsWithErrors: 'integration/withErrors',
-      integrationsWithNoData: 'integration/withNoData'
-    })
-  }
-}
+      integrationsWithNoData: 'integration/withNoData',
+    }),
+  },
+};
 </script>

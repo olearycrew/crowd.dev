@@ -31,15 +31,15 @@
           :to="{
             name: 'reportTemplate',
             params: {
-              id: reportId(props.reportName)
-            }
+              id: reportId(props.reportName),
+            },
           }"
           class="ml-4"
         >
           <el-button class="btn btn--bordered">
             <i
               class="ri-bar-chart-line text-base text-gray-600 mr-2"
-            ></i>
+            />
             <span class="text-xs">View report</span>
           </el-button>
         </router-link>
@@ -49,61 +49,62 @@
 </template>
 
 <script>
-export default {
-  name: 'AppDashboardWidgetHeader'
-}
 </script>
 
 <script setup>
-import { defineProps } from 'vue'
-import AppLoading from '@/shared/loading/loading-placeholder.vue'
-import { formatNumberToCompact } from '@/utils/number'
-import { mapGetters } from '@/shared/vuex/vuex.helpers'
+import { defineProps } from 'vue';
+import AppLoading from '@/shared/loading/loading-placeholder.vue';
+import { formatNumberToCompact } from '@/utils/number';
+import { mapGetters } from '@/shared/vuex/vuex.helpers';
+
+export default {
+  name: 'AppDashboardWidgetHeader',
+};
 
 const props = defineProps({
   title: {
     type: String,
-    required: true
+    required: true,
   },
   reportName: {
     type: String,
     required: false,
-    default: ''
+    default: '',
   },
   totalLoading: {
     type: Boolean,
     required: false,
-    default: false
+    default: false,
   },
   total: {
     type: Number,
     required: false,
-    default: null
+    default: null,
   },
   route: {
     type: Object,
     required: false,
-    default: null
+    default: null,
   },
   buttonTitle: {
     type: String,
     required: false,
-    default: ''
-  }
-})
+    default: '',
+  },
+});
 
-const { rows } = mapGetters('report')
+const { rows } = mapGetters('report');
 
 const reportId = (reportName) => {
   if (!reportName) {
-    return null
+    return null;
   }
   const report = rows.value.find(
-    (r) => r.isTemplate && r.name === reportName
-  )
+    (r) => r.isTemplate && r.name === reportName,
+  );
   if (!report) {
-    return null
+    return null;
   }
-  return report.id
-}
+  return report.id;
+};
 </script>

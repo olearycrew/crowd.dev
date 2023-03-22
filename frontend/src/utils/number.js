@@ -15,14 +15,14 @@
  */
 export const formatNumberToCompact = (number) => {
   if (typeof number !== 'number') {
-    return '-'
+    return '-';
   }
 
   return Intl.NumberFormat('en-US', {
     notation: 'compact',
-    maximumFractionDigits: 1
-  }).format(number)
-}
+    maximumFractionDigits: 1,
+  }).format(number);
+};
 
 /**
  *
@@ -30,42 +30,34 @@ export const formatNumberToCompact = (number) => {
  * @returns returns a string with a language-sensitive representation
  * of the original number
  */
-export const formatNumber = (number) => {
-  return number.toLocaleString('en-US')
-}
+export const formatNumber = (number) => number.toLocaleString('en-US');
 
-export const formatPercentage = (percentage) => {
-  return `${Math.ceil(
-    percentage < 0 ? percentage * -1 : percentage
-  )} %`
-}
+export const formatPercentage = (percentage) => `${Math.ceil(
+  percentage < 0 ? percentage * -1 : percentage,
+)} %`;
 
 export const formatNumberToRange = (number) => {
-  if (!number) {
-    return '-'
+  if (number >= 1 && number <= 10) {
+    return '1-10';
+  } if (number >= 11 && number <= 50) {
+    return '11-50';
+  } if (number >= 51 && number <= 200) {
+    return '51-200';
+  } if (number >= 501 && number <= 1000) {
+    return '501-1000';
+  } if (number >= 1001 && number <= 5000) {
+    return '1001-5000';
+  } if (number >= 5001 && number <= 10000) {
+    return '5001-10000';
+  } if (number >= 10001) {
+    return '10001+';
   }
 
-  if (number >= 1 && number <= 10) {
-    return '1-10'
-  } else if (number >= 11 && number <= 50) {
-    return '11-50'
-  } else if (number >= 51 && number <= 200) {
-    return '51-200'
-  } else if (number >= 501 && number <= 1000) {
-    return '501-1000'
-  } else if (number >= 1001 && number <= 5000) {
-    return '1001-5000'
-  } else if (number >= 5001 && number <= 10000) {
-    return '5001-10000'
-  } else if (number >= 10001) {
-    return '10001+'
-  }
-}
+  return '-';
+};
 
 export const formatRevenueRange = (range) => {
-  const min =
-    range.min > 1000 ? `$${range.min}B` : `$${range.min}M`
-  const max =
-    range.max > 1000 ? `$${range.max}B` : `$${range.max}M`
-  return `${min}-${max}`
-}
+  const min = range.min > 1000 ? `$${range.min}B` : `$${range.min}M`;
+  const max = range.max > 1000 ? `$${range.max}B` : `$${range.max}M`;
+  return `${min}-${max}`;
+};

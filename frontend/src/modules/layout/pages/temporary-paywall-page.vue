@@ -37,19 +37,20 @@
 </template>
 
 <script>
-export default {
-  name: 'AppPaywallPage'
-}
 </script>
 
 <script setup>
-import { useRoute } from 'vue-router'
+import { useRoute } from 'vue-router';
 
-const route = useRoute()
+export default {
+  name: 'AppPaywallPage',
+};
+
+const route = useRoute();
 
 const onCtaClick = () => {
   window.analytics.track('Upgrade Plan Contact', {
-    route: route.path
-  })
-}
+    route: route.path,
+  });
+};
 </script>

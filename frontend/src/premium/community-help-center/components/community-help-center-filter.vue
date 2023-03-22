@@ -16,38 +16,37 @@
 </template>
 
 <script>
-export default {
-  name: 'AppCommunityHelpCenterFilter'
-}
 </script>
 
 <script setup>
-import { ConversationModel } from '@/modules/conversation/conversation-model'
-import { useStore } from 'vuex'
-import { onMounted, computed } from 'vue'
+import { useStore } from 'vuex';
+import { onMounted, computed } from 'vue';
+import { ConversationModel } from '@/modules/conversation/conversation-model';
 
-const store = useStore()
+export default {
+  name: 'AppCommunityHelpCenterFilter',
+};
+
+const store = useStore();
 
 const conversationAttributes = Object.values(
-  ConversationModel.fields
-).filter((f) => f.filterable)
+  ConversationModel.fields,
+).filter((f) => f.filterable);
 
-const conversationSearch = computed(() => {
-  return ConversationModel.fields.search.forFilter()
-})
+const conversationSearch = computed(() => ConversationModel.fields.search.forFilter());
 
 async function doFetch() {
-  const { filter } = store.state.communityHelpCenter
+  const { filter } = store.state.communityHelpCenter;
 
   await store.dispatch('communityHelpCenter/doFetch', {
     filter,
-    keepPagination: true
-  })
+    keepPagination: true,
+  });
 }
 
 onMounted(async () => {
-  await doFetch()
-})
+  await doFetch();
+});
 </script>
 
 <style></style>

@@ -23,79 +23,74 @@
       >
         <div>
           {{
-            nestedOption.label.charAt(0).toUpperCase() +
-            nestedOption.label.slice(1)
+            nestedOption.label.charAt(0).toUpperCase()
+              + nestedOption.label.slice(1)
           }}
         </div>
         <i
           v-if="nestedOption.selected"
           class="ri-check-line text-brand-600"
-        ></i>
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-export default {
-  name: 'AppFilterTypeSelectGroup'
-}
 </script>
 
 <script setup>
-import { defineProps, defineEmits, computed } from 'vue'
+import { defineProps, defineEmits, computed } from 'vue';
+
+export default {
+  name: 'AppFilterTypeSelectGroup',
+};
 
 const props = defineProps({
   options: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
   value: {
     type: Object,
-    default: () => {}
+    default: () => {},
   },
   isExpanded: {
     type: Boolean,
-    default: false
-  }
-})
+    default: false,
+  },
+});
 
-const emit = defineEmits(['update:value'])
-const computedOptions = computed(() => {
-  return props.options.map((o) => {
-    return {
-      ...o,
-      nestedOptions: o.nestedOptions.map((n) => {
-        return {
-          ...n,
-          selected:
-            model.value?.value === n.value &&
-            model.value?.key === o.label.key
-        }
-      })
-    }
-  })
-})
+const emit = defineEmits(['update:value']);
+const computedOptions = computed(() => props.options.map((o) => ({
+  ...o,
+  nestedOptions: o.nestedOptions.map((n) => ({
+    ...n,
+    selected:
+            model.value?.value === n.value
+            && model.value?.key === o.label.key,
+  })),
+})));
 const model = computed({
   get() {
-    return props.value
+    return props.value;
   },
   set(v) {
-    emit('update:value', v)
-  }
-})
+    emit('update:value', v);
+  },
+});
 
 const handleOptionClick = (option, label) => {
   model.value = {
     displayValue:
-      option.label.charAt(0).toUpperCase() +
-      option.label.slice(1),
+      option.label.charAt(0).toUpperCase()
+      + option.label.slice(1),
     displayKey: label.value,
     type: label.type,
     key: label.key,
-    value: option.value
-  }
-}
+    value: option.value,
+  };
+};
 </script>
 
 <style lang="scss">

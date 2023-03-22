@@ -31,7 +31,7 @@
             setLimit,
             orderMembers,
             updateOrder,
-            isQueryPresent
+            isQueryPresent,
           }"
         >
           <SyncModel
@@ -45,11 +45,8 @@
               <div class="w-full mb-6">
                 <label
                   class="block text-xs leading-none font-semibold mb-1"
-                  >Name
-                  <span class="text-brand-500 ml-0.5"
-                    >*</span
-                  ></label
-                >
+                >Name
+                  <span class="text-brand-500 ml-0.5">*</span></label>
                 <el-input
                   v-model="model.title"
                   type="text"
@@ -61,7 +58,7 @@
                 <ChartType
                   v-model="model.settings.chartType"
                   :update-chart-type="updateChartType"
-                ></ChartType>
+                />
               </div>
               <div class="w-full mb-6">
                 <MeasureSelect
@@ -69,7 +66,7 @@
                   :measures="measures"
                   :available-measures="
                     availableMeasures.filter(
-                      (m) => m.name !== 'Identities.count'
+                      (m) => m.name !== 'Identities.count',
                     )
                   "
                   :set-measures="setMeasures"
@@ -108,10 +105,10 @@
 
               <div
                 v-if="
-                  model.settings.chartType === 'area' ||
-                  model.settings.chartType === 'line' ||
-                  model.settings.chartType === 'bar' ||
-                  model.settings.chartType === 'table'
+                  model.settings.chartType === 'area'
+                    || model.settings.chartType === 'line'
+                    || model.settings.chartType === 'bar'
+                    || model.settings.chartType === 'table'
                 "
                 class="w-full mb-6"
               >
@@ -137,7 +134,7 @@
                         ? 'ri-arrow-up-s-line'
                         : 'ri-arrow-down-s-line'
                     "
-                  ></i>
+                  />
                   Additional settings
                 </button>
                 <div
@@ -169,7 +166,7 @@
                   :available-dimensions="
                     translatedOptions(availableDimensions)
                   "
-                ></FilterComponent>
+                />
               </div>
             </div>
           </div>
@@ -178,7 +175,7 @@
           <SyncModel
             v-model:model-query="model.settings.query"
             :query="validatedQuery"
-          ></SyncModel>
+          />
           <div class="border-t border-gray-200">
             <div
               class="preview-collapse"
@@ -191,7 +188,7 @@
                     : 'ri-arrow-up-s-line'
                 "
                 class="text-base mr-1"
-              ></i>
+              />
               Preview
             </div>
             <div
@@ -200,16 +197,16 @@
             >
               <app-widget-cube
                 v-if="
-                  model.settings.chartType &&
-                  model.settings.query
+                  model.settings.chartType
+                    && model.settings.query
                 "
                 :widget="
                   mapWidget(
                     buildWidgetPreview({
                       chartType: model.settings.chartType,
-                      query: model.settings.query
+                      query: model.settings.query,
                     }),
-                    resultSet
+                    resultSet,
                   )
                 "
                 :result-set="resultSet"
@@ -217,12 +214,12 @@
                   chartOptions(
                     buildWidgetPreview({
                       chartType: model.settings.chartType,
-                      query: model.settings.query
+                      query: model.settings.query,
                     }),
-                    resultSet
+                    resultSet,
                   )
                 "
-              ></app-widget-cube>
+              />
             </div>
           </div>
         </template>
@@ -235,7 +232,7 @@
             class="btn btn--bordered btn--md mr-3"
             @click="visible = false"
           >
-            <app-i18n code="common.cancel"></app-i18n>
+            <app-i18n code="common.cancel" />
           </el-button>
           <el-button
             class="btn btn--primary btn--md"
@@ -250,28 +247,28 @@
 </template>
 
 <script>
-import { QueryBuilder } from '@cubejs-client/vue3'
+import { QueryBuilder } from '@cubejs-client/vue3';
 
-import WidgetCube from '@/modules/widget/components/cube/widget-cube'
-import { mapGetters, mapActions } from 'vuex'
-import { i18n } from '@/i18n'
+import { mapGetters, mapActions } from 'vuex';
+import WidgetCube from '@/modules/widget/components/cube/widget-cube';
+import { i18n } from '@/i18n';
 
-import SyncModel from './_query_builder/SyncModel'
-import MeasureSelect from './_query_builder/MeasureSelect'
-import ChartType from './_query_builder/ChartType'
-import DimensionSelect from './_query_builder/DimensionSelect'
-import GranularitySelect from './_query_builder/GranularitySelect'
-import TimeDimensionSelect from './_query_builder/TimeDimensionSelect'
-import DateRangeSelect from './_query_builder/DateRangeSelect'
+import SyncModel from './_query_builder/SyncModel';
+import MeasureSelect from './_query_builder/MeasureSelect';
+import ChartType from './_query_builder/ChartType';
+import DimensionSelect from './_query_builder/DimensionSelect';
+import GranularitySelect from './_query_builder/GranularitySelect';
+import TimeDimensionSelect from './_query_builder/TimeDimensionSelect';
+import DateRangeSelect from './_query_builder/DateRangeSelect';
 
-import Order from './_query_builder/Order'
-import Limit from './_query_builder/Limit'
+import Order from './_query_builder/Order';
+import Limit from './_query_builder/Limit';
 
-import FilterComponent from '@/modules/widget/components/cube/_query_builder/FilterComponent.vue'
+import FilterComponent from '@/modules/widget/components/cube/_query_builder/FilterComponent.vue';
 import {
   chartOptions,
-  mapWidget
-} from '@/modules/report/report-charts'
+  mapWidget,
+} from '@/modules/report/report-charts';
 
 export default {
   name: 'WidgetCubeBuilder',
@@ -288,39 +285,38 @@ export default {
     Order,
     Limit,
     FilterComponent,
-    'app-widget-cube': WidgetCube
+    'app-widget-cube': WidgetCube,
   },
 
   props: {
     drawer: {
       type: Boolean,
-      default: false
+      default: false,
     },
     widget: {
       type: Object,
-      default: () => {}
-    }
+      default: () => {},
+    },
   },
   emits: ['update:widget', 'update:drawer', 'submit'],
 
   data() {
     const initialQuery = this.widget.settings?.query
       ? JSON.parse(
-          JSON.stringify(this.widget.settings.query)
-        )
+        JSON.stringify(this.widget.settings.query),
+      )
       : {
-          measures: ['Activities.count'],
-          timeDimensions: [
-            {
-              dimension: 'Activities.date',
-              granularity: 'week',
-              dateRange: 'Last 30 days'
-            }
-          ]
-        }
+        measures: ['Activities.count'],
+        timeDimensions: [
+          {
+            dimension: 'Activities.date',
+            granularity: 'week',
+            dateRange: 'Last 30 days',
+          },
+        ],
+      };
 
-    const initialCharType =
-      this.widget.settings?.chartType || 'line'
+    const initialCharType = this.widget.settings?.chartType || 'line';
 
     return {
       mapWidget,
@@ -329,39 +325,39 @@ export default {
         ...this.widget,
         settings: {
           chartType: initialCharType,
-          query: initialQuery
-        }
+          query: initialQuery,
+        },
       },
-      initialQuery: initialQuery,
+      initialQuery,
       initialChartType: initialCharType,
       additionalSettingsVisible: false,
-      previewExpanded: false
-    }
+      previewExpanded: false,
+    };
   },
 
   computed: {
     ...mapGetters({
-      cubejsApi: 'widget/cubejsApi'
+      cubejsApi: 'widget/cubejsApi',
     }),
     visible: {
       get() {
-        return this.drawer
+        return this.drawer;
       },
       set(value) {
-        this.$emit('update:drawer', value)
-      }
-    }
+        this.$emit('update:drawer', value);
+      },
+    },
   },
 
   async created() {
     if (this.cubejsApi === null) {
-      await this.getCubeToken()
+      await this.getCubeToken();
     }
   },
 
   methods: {
     ...mapActions({
-      getCubeToken: 'widget/getCubeToken'
+      getCubeToken: 'widget/getCubeToken',
     }),
     handleSubmit() {
       const objToSubmit = {
@@ -371,36 +367,33 @@ export default {
         reportId: this.widget.reportId,
         settings: {
           ...this.widget.settings,
-          ...JSON.parse(JSON.stringify(this.model.settings))
-        }
-      }
-      this.$emit('submit', objToSubmit)
-      this.visible = false
+          ...JSON.parse(JSON.stringify(this.model.settings)),
+        },
+      };
+      this.$emit('submit', objToSubmit);
+      this.visible = false;
     },
     buildWidgetPreview(settings) {
       return {
         title: this.model.title,
-        settings
-      }
+        settings,
+      };
     },
     translatedOptions(list) {
-      return list.map((i) => {
-        return {
-          ...i,
-          value: i.name,
-          label: i18n(`widget.cubejs.${i.name}`)
-        }
-      })
+      return list.map((i) => ({
+        ...i,
+        value: i.name,
+        label: i18n(`widget.cubejs.${i.name}`),
+      }));
     },
     handleAdditionalSettingsClick() {
-      this.additionalSettingsVisible =
-        !this.additionalSettingsVisible
+      this.additionalSettingsVisible = !this.additionalSettingsVisible;
     },
     handlePreviewChange() {
-      this.previewExpanded = !this.previewExpanded
-    }
-  }
-}
+      this.previewExpanded = !this.previewExpanded;
+    },
+  },
+};
 </script>
 
 <style lang="scss">

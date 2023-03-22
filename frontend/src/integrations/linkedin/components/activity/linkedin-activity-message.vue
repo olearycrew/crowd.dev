@@ -4,13 +4,12 @@
       :code="computedMessage"
       :fallback="'entities.activity.fallback'"
       :class="{ truncate: short }"
-    ></app-i18n>
+    />
   </span>
   <span
     v-if="!short && activity.type === 'reaction'"
     class="mx-0.5"
-    >with</span
-  >
+  >with</span>
   <el-tooltip
     v-if="activity.type === 'reaction'"
     placement="top"
@@ -30,8 +29,8 @@
 </template>
 
 <script>
-import AppI18n from '@/shared/i18n/i18n'
-import linkedInConfig from '@/integrations/linkedin/config'
+import AppI18n from '@/shared/i18n/i18n';
+import linkedInConfig from '@/integrations/linkedin/config';
 
 export default {
   name: 'AppLinkedInActivityMessage',
@@ -39,51 +38,51 @@ export default {
   props: {
     activity: {
       type: Object,
-      required: true
+      required: true,
     },
     short: {
       type: Boolean,
       required: false,
-      default: false
-    }
+      default: false,
+    },
   },
   computed: {
     isComment() {
-      return this.activity.type === 'comment'
+      return this.activity.type === 'comment';
     },
     computedMessage() {
-      return `entities.activity.${this.activity.platform}.${this.activity.type}`
+      return `entities.activity.${this.activity.platform}.${this.activity.type}`;
     },
     computedPostTitle() {
-      let postBody = this.activity.attributes.postBody
+      let { postBody } = this.activity.attributes;
 
-      const firstRegex = /@\[/i // to look/remove the "@["
-      const secondRegex = /]\([^)]*\)/i // to look/remove the "](urn:something...)", and the entity name will remain
+      const firstRegex = /@\[/i; // to look/remove the "@["
+      const secondRegex = /]\([^)]*\)/i; // to look/remove the "](urn:something...)", and the entity name will remain
 
       while (firstRegex.test(postBody)) {
         postBody = postBody
           .replace(firstRegex, '')
-          .replace(secondRegex, '')
+          .replace(secondRegex, '');
       }
 
       if (postBody.length > 40) {
-        return postBody.substring(0, 40) + '...'
+        return `${postBody.substring(0, 40)}...`;
       }
-      return postBody
+      return postBody;
     },
     computedPostUrl() {
-      return this.activity.attributes.postUrl
+      return this.activity.attributes.postUrl;
     },
     computedReactionSVG() {
       return this.activity.type === 'reaction'
         ? `/images/integrations/linkedin-reactions/${this.activity.attributes.reactionType}.svg`
-        : null
+        : null;
     },
     computedReactionLabel() {
       return linkedInConfig.reactions[
         this.activity.attributes.reactionType
-      ]
-    }
-  }
-}
+      ];
+    },
+  },
+};
 </script>

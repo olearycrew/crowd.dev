@@ -9,9 +9,6 @@
 </template>
 
 <script>
-export default {
-  name: 'AppFilterTypeKeywords'
-}
 </script>
 
 <script setup>
@@ -19,47 +16,51 @@ import {
   defineProps,
   defineEmits,
   computed,
-  watch
-} from 'vue'
+  watch,
+} from 'vue';
+
+export default {
+  name: 'AppFilterTypeKeywords',
+};
 
 const props = defineProps({
   value: {
     type: String,
-    default: null
+    default: null,
   },
   operator: {
     type: String,
-    default: null
+    default: null,
   },
   isExpanded: {
     type: Boolean,
-    default: false
-  }
-})
+    default: false,
+  },
+});
 
 const emit = defineEmits([
   'update:value',
-  'update:operator'
-])
+  'update:operator',
+]);
 const model = computed({
   get() {
-    return props.value
+    return props.value;
   },
   set(v) {
-    emit('update:value', v)
-  }
-})
-const expanded = computed(() => props.isExpanded)
+    emit('update:value', v);
+  },
+});
+const expanded = computed(() => props.isExpanded);
 
 watch(expanded, (newValue) => {
   if (newValue) {
     document
       .querySelector(
-        '.filter-list-item-popper .el-keywords-input'
+        '.filter-list-item-popper .el-keywords-input',
       )
-      .focus()
+      .focus();
   }
-})
+});
 </script>
 
 <style lang="scss">

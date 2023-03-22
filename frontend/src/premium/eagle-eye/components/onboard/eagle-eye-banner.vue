@@ -23,20 +23,20 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue'
+import { defineProps } from 'vue';
 
 defineProps({
   preTitle: {
     type: String,
-    required: true
+    required: true,
   },
   title: {
     type: String,
-    required: true
+    required: true,
   },
   showImage: {
     type: Boolean,
-    default: false
-  }
-})
+    default: false,
+  },
+});
 </script>

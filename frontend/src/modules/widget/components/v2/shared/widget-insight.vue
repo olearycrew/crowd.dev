@@ -10,7 +10,9 @@
       />
     </div>
     <div>
-      <div class="text-black text-sm">Insight</div>
+      <div class="text-black text-sm">
+        Insight
+      </div>
       <div class="mt-1 text-gray-600 text-xs">
         {{ description }}
       </div>
@@ -19,18 +21,19 @@
 </template>
 
 <script>
-export default {
-  name: 'AppWidgetInsight'
-}
 </script>
 
 <script setup>
-import { defineProps } from 'vue'
+import { defineProps } from 'vue';
+
+export default {
+  name: 'AppWidgetInsight',
+};
 
 defineProps({
   description: {
     type: String,
-    required: true
-  }
-})
+    required: true,
+  },
+});
 </script>

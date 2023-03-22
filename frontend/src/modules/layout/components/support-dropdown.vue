@@ -16,7 +16,7 @@
           "
         >
           <div class="el-menu-item">
-            <i class="ri-question-line"></i>
+            <i class="ri-question-line" />
             <span v-if="!isCollapsed">Help</span>
           </div>
         </div>
@@ -31,15 +31,14 @@
           <div class="flex gap-2">
             <i
               class="text-base text-gray-400 ri-book-open-line"
-            ></i>
+            />
             <span class="text-xs text-gray-900">
-              <app-i18n code="external.docs"></app-i18n
-            ></span>
+              <app-i18n code="external.docs" /></span>
           </div>
 
           <i
             class="text-base ri-external-link-line text-gray-300"
-          ></i>
+          />
         </div>
       </a>
 
@@ -53,13 +52,12 @@
               class="w-4 h-4 svg-icon"
             />
             <span class="text-xs text-gray-900">
-              <app-i18n code="external.community"></app-i18n
-            ></span>
+              <app-i18n code="external.community" /></span>
           </div>
 
           <i
             class="text-base ri-external-link-line text-gray-300"
-          ></i>
+          />
         </div>
       </a>
 
@@ -68,10 +66,8 @@
           <div class="flex gap-2 items-center">
             <i
               class="text-base text-gray-400 ri-mail-line"
-            ></i>
-            <span class="text-xs text-gray-900"
-              >Contact us</span
-            >
+            />
+            <span class="text-xs text-gray-900">Contact us</span>
           </div>
         </div>
       </a>
@@ -80,23 +76,24 @@
 </template>
 
 <script>
-export default {
-  name: 'AppWorkspaceDropdown'
-}
 </script>
 
 <script setup>
-import { useStore } from 'vuex'
-import { computed, ref } from 'vue'
-import AppSvg from '@/shared/svg/svg'
+import { useStore } from 'vuex';
+import { computed, ref } from 'vue';
+import AppSvg from '@/shared/svg/svg';
 
-const store = useStore()
+export default {
+  name: 'AppWorkspaceDropdown',
+};
 
-const isDropdownOpen = ref(false)
+const store = useStore();
+
+const isDropdownOpen = ref(false);
 
 const isCollapsed = computed(
-  () => store.getters['layout/menuCollapsed']
-)
+  () => store.getters['layout/menuCollapsed'],
+);
 </script>
 
 <style lang="scss">

@@ -1,15 +1,15 @@
-import { i18n, init as i18nInit } from '@/i18n'
-import IdField from '@/shared/fields/id-field'
-import { GenericModel } from '@/shared/model/generic-model'
-import StringField from '@/shared/fields/string-field'
-import EagleEyePlatformField from '@/premium/eagle-eye/eagle-eye-platform-field'
-import EagleEyeDateField from '@/premium/eagle-eye/eagle-eye-date-field'
+import { i18n, init as i18nInit } from '@/i18n';
+import IdField from '@/shared/fields/id-field';
+import { GenericModel } from '@/shared/model/generic-model';
+import StringField from '@/shared/fields/string-field';
+import EagleEyePlatformField from '@/premium/eagle-eye/eagle-eye-platform-field';
+import EagleEyeDateField from '@/premium/eagle-eye/eagle-eye-date-field';
 
 function label(name) {
-  return i18n(`entities.activity.fields.${name}`)
+  return i18n(`entities.activity.fields.${name}`);
 }
 
-i18nInit()
+i18nInit();
 
 const fields = {
   id: new IdField('id', label('id')),
@@ -21,16 +21,16 @@ const fields = {
     'platform',
     label('platform'),
     {
-      filterable: true
-    }
+      filterable: true,
+    },
   ),
   date: new EagleEyeDateField('timestamp', label('date'), {
-    filterable: true
-  })
-}
+    filterable: true,
+  }),
+};
 
 export class EagleEyeModel extends GenericModel {
   static get fields() {
-    return fields
+    return fields;
   }
 }

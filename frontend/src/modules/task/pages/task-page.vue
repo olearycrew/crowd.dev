@@ -58,67 +58,68 @@
 </template>
 
 <script>
-export default {
-  name: 'AppTaskPage'
-}
 </script>
 
 <script setup>
-import AppTaskOpen from '@/modules/task/components/task-open'
-import AppTaskClosed from '@/modules/task/components/task-closed'
-import AppTaskSuggested from '@/modules/task/components/task-suggested'
-import AppTaskForm from '@/modules/task/components/task-form'
 import {
   onBeforeUnmount,
   onMounted,
   ref,
-  defineExpose
-} from 'vue'
-import { useStore } from 'vuex'
-import { mapActions } from '@/shared/vuex/vuex.helpers'
-import AppTaskArchived from '@/modules/task/components/task-archived'
+  defineExpose,
+} from 'vue';
+import { useStore } from 'vuex';
+import AppTaskOpen from '@/modules/task/components/task-open';
+import AppTaskClosed from '@/modules/task/components/task-closed';
+import AppTaskSuggested from '@/modules/task/components/task-suggested';
+import AppTaskForm from '@/modules/task/components/task-form';
+import { mapActions } from '@/shared/vuex/vuex.helpers';
+import AppTaskArchived from '@/modules/task/components/task-archived';
 
-const store = useStore()
+export default {
+  name: 'AppTaskPage',
+};
 
-const openForm = ref(false)
-const selectedTask = ref(null)
-const archivedTasks = ref(false)
+const store = useStore();
 
-const suggestedTasks = ref(null)
+const openForm = ref(false);
+const selectedTask = ref(null);
+const archivedTasks = ref(false);
 
-const { reloadTaskPage } = mapActions('task')
+const suggestedTasks = ref(null);
+
+const { reloadTaskPage } = mapActions('task');
 
 const addTask = () => {
-  openForm.value = true
-  selectedTask.value = null
-}
+  openForm.value = true;
+  selectedTask.value = null;
+};
 
 const editTask = (task) => {
-  openForm.value = true
-  selectedTask.value = task
-}
+  openForm.value = true;
+  selectedTask.value = task;
+};
 
 const storeUnsubscribe = store.subscribeAction((action) => {
   if (action.type === 'task/addTask') {
-    addTask()
+    addTask();
   }
   if (action.type === 'task/editTask') {
-    editTask(action.payload)
+    editTask(action.payload);
   }
   if (action.type === 'task/openArchivedTasks') {
-    archivedTasks.value = true
+    archivedTasks.value = true;
   }
-})
+});
 
 onMounted(() => {
-  reloadTaskPage()
-})
+  reloadTaskPage();
+});
 
 onBeforeUnmount(() => {
-  storeUnsubscribe()
-})
+  storeUnsubscribe();
+});
 
 defineExpose({
-  suggestedTasks
-})
+  suggestedTasks,
+});
 </script>

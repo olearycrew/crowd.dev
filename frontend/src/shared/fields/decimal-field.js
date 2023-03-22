@@ -1,31 +1,31 @@
-import * as yup from 'yup'
-import GenericField from '@/shared/fields/generic-field'
-import { i18n } from '@/i18n'
+import * as yup from 'yup';
+import GenericField from '@/shared/fields/generic-field';
+import { i18n } from '@/i18n';
 
 export default class DecimalField extends GenericField {
   constructor(name, label, config = {}) {
-    super(name, label)
+    super(name, label);
 
-    this.required = config.required
-    this.min = config.min
-    this.max = config.max
-    this.scale = config.scale
-    this.placeholder = config.placeholder
-    this.hint = config.hint
-    this.filterable = config.filterable || false
-    this.custom = config.custom
+    this.required = config.required;
+    this.min = config.min;
+    this.max = config.max;
+    this.scale = config.scale;
+    this.placeholder = config.placeholder;
+    this.hint = config.hint;
+    this.filterable = config.filterable || false;
+    this.custom = config.custom;
   }
 
   forPresenter(value) {
     if (!value) {
-      return value
+      return value;
     }
 
     if (this.scale === undefined || this.scale === null) {
-      return value
+      return value;
     }
 
-    return Number(value).toFixed(this.scale)
+    return Number(value).toFixed(this.scale);
   }
 
   forFilter() {
@@ -38,8 +38,8 @@ export default class DecimalField extends GenericField {
       value: [],
       defaultOperator: 'eq',
       operator: 'eq',
-      type: 'number'
-    }
+      type: 'number',
+    };
   }
 
   forFilterPreview(value) {
@@ -47,35 +47,35 @@ export default class DecimalField extends GenericField {
       ? this.scale
         ? Number(value).toFixed(this.scale)
         : Number(value)
-      : null
+      : null;
   }
 
   forFormInitialValue(value) {
-    return value
+    return value;
   }
 
   forFilterInitialValue(value) {
-    return value
+    return value;
   }
 
   forFilterCast() {
-    return yup.number().nullable(true).label(this.label)
+    return yup.number().nullable(true).label(this.label);
   }
 
   forFormCast() {
-    return yup.number().nullable(true).label(this.label)
+    return yup.number().nullable(true).label(this.label);
   }
 
   forFormRules() {
-    const output = []
+    const output = [];
 
     output.push({
       type: 'number',
       message: i18n('validation.number.invalid').replace(
         '${path}',
-        this.label
-      )
-    })
+        this.label,
+      ),
+    });
 
     if (this.required) {
       output.push({
@@ -83,9 +83,9 @@ export default class DecimalField extends GenericField {
         required: Boolean(this.required),
         message: i18n('validation.mixed.required').replace(
           '${path}',
-          this.label
-        )
-      })
+          this.label,
+        ),
+      });
     }
 
     if (this.min || this.min === 0) {
@@ -94,8 +94,8 @@ export default class DecimalField extends GenericField {
         min: this.min,
         message: i18n('validation.number.min')
           .replace('${path}', this.label)
-          .replace('${min}', this.min)
-      })
+          .replace('${min}', this.min),
+      });
     }
 
     if (this.max || this.max === 0) {
@@ -104,38 +104,38 @@ export default class DecimalField extends GenericField {
         max: this.max,
         message: i18n('validation.number.max')
           .replace('${path}', this.label)
-          .replace('${max}', this.max)
-      })
+          .replace('${max}', this.max),
+      });
     }
 
-    return output
+    return output;
   }
 
   forExport() {
     return yup
       .mixed()
       .label(this.label)
-      .transform((value) => this.forPresenter(value))
+      .transform((value) => this.forPresenter(value));
   }
 
   forImport() {
     let yupChain = yup
       .number()
       .nullable(true)
-      .label(this.label)
+      .label(this.label);
 
     if (this.required) {
-      yupChain = yupChain.required()
+      yupChain = yupChain.required();
     }
 
     if (this.min || this.min === 0) {
-      yupChain = yupChain.min(this.min)
+      yupChain = yupChain.min(this.min);
     }
 
     if (this.max) {
-      yupChain = yupChain.max(this.max)
+      yupChain = yupChain.max(this.max);
     }
 
-    return yupChain
+    return yupChain;
   }
 }

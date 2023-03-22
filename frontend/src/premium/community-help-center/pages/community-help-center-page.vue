@@ -7,8 +7,7 @@
           <span
             v-if="!hasPremiumPlan"
             class="badge badge--sm"
-            >Free</span
-          >
+          >Free</span>
         </div>
         <div class="flex items-center">
           <app-community-help-center-settings
@@ -32,11 +31,9 @@
                 target="_blank"
                 class="btn btn-brand--secondary btn--md"
                 :class="{
-                  disabled: !isConfigured
+                  disabled: !isConfigured,
                 }"
-                ><i class="ri-external-link-line mr-2"></i
-                >Open public page</a
-              >
+              ><i class="ri-external-link-line mr-2" />Open public page</a>
             </div>
           </el-tooltip>
         </div>
@@ -55,19 +52,19 @@
       :expanded="!!drawerConversationId"
       :conversation-id="drawerConversationId"
       @close="onConversationDrawerClose"
-    ></app-community-help-center-conversation-drawer>
+    />
   </app-page-wrapper>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
-import AppCommunityHelpCenterTable from '@/premium/community-help-center/components/community-help-center-table'
-import AppCommunityHelpCenterTabs from '@/premium/community-help-center/components/community-help-center-tabs'
-import AppCommunityHelpCenterFilter from '@/premium/community-help-center/components/community-help-center-filter'
-import AppCommunityHelpCenterSettings from '@/premium/community-help-center/components/community-help-center-settings'
-import AppCommunityHelpCenterConversationDrawer from '@/premium/community-help-center/components/community-help-center-conversation-drawer'
-import config from '@/config'
-import { FeatureFlag } from '@/featureFlag'
+import { mapGetters, mapActions } from 'vuex';
+import AppCommunityHelpCenterTable from '@/premium/community-help-center/components/community-help-center-table';
+import AppCommunityHelpCenterTabs from '@/premium/community-help-center/components/community-help-center-tabs';
+import AppCommunityHelpCenterFilter from '@/premium/community-help-center/components/community-help-center-filter';
+import AppCommunityHelpCenterSettings from '@/premium/community-help-center/components/community-help-center-settings';
+import AppCommunityHelpCenterConversationDrawer from '@/premium/community-help-center/components/community-help-center-conversation-drawer';
+import config from '@/config';
+import { FeatureFlag } from '@/featureFlag';
 
 export default {
   name: 'AppConversationListPage',
@@ -77,14 +74,14 @@ export default {
     AppCommunityHelpCenterTabs,
     AppCommunityHelpCenterFilter,
     AppCommunityHelpCenterSettings,
-    AppCommunityHelpCenterConversationDrawer
+    AppCommunityHelpCenterConversationDrawer,
   },
 
   data() {
     return {
       drawerConversationId: null,
-      hasPremiumPlan: false
-    }
+      hasPremiumPlan: false,
+    };
   },
 
   computed: {
@@ -92,24 +89,23 @@ export default {
       currentTenant: 'auth/currentTenant',
       isConfigured: 'communityHelpCenter/isConfigured',
       hasSettingsVisible:
-        'communityHelpCenter/hasSettingsVisible'
+        'communityHelpCenter/hasSettingsVisible',
     }),
     computedCrowdOpenLink() {
-      return `${config.conversationPublicUrl}/${this.currentTenant.url}`
-    }
+      return `${config.conversationPublicUrl}/${this.currentTenant.url}`;
+    },
   },
 
   async created() {
     const isFeatureEnabled = FeatureFlag.isFlagEnabled(
-      FeatureFlag.flags.communityCenterPro
-    )
+      FeatureFlag.flags.communityCenterPro,
+    );
 
-    this.hasPremiumPlan =
-      config.hasPremiumModules && isFeatureEnabled
+    this.hasPremiumPlan = config.hasPremiumModules && isFeatureEnabled;
   },
 
   async mounted() {
-    window.analytics.page('Community Help Center')
+    window.analytics.page('Community Help Center');
   },
 
   methods: {
@@ -117,16 +113,16 @@ export default {
       doOpenSettingsDrawer:
         'communityHelpCenter/doOpenSettingsDrawer',
       doCloseSettingsDrawer:
-        'communityHelpCenter/doCloseSettingsDrawer'
+        'communityHelpCenter/doCloseSettingsDrawer',
     }),
     onConversationDrawerOpen(id) {
-      this.drawerConversationId = id
+      this.drawerConversationId = id;
     },
     onConversationDrawerClose() {
-      this.drawerConversationId = null
-    }
-  }
-}
+      this.drawerConversationId = null;
+    },
+  },
+};
 </script>
 
 <style></style>

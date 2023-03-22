@@ -23,50 +23,51 @@
 </template>
 
 <script>
-export default {
-  name: 'AppReportForm'
-}
 </script>
 <script setup>
-import { defineProps, reactive, watch } from 'vue'
-import { mapActions } from '@/shared/vuex/vuex.helpers'
-import { FormSchema } from '@/shared/form/form-schema'
-import { ReportModel } from '@/modules/report/report-model'
-import ReportGridLayout from './report-grid-layout'
-import debounce from 'lodash/debounce'
+import { defineProps, reactive, watch } from 'vue';
+import debounce from 'lodash/debounce';
+import { mapActions } from '@/shared/vuex/vuex.helpers';
+import { FormSchema } from '@/shared/form/form-schema';
+import { ReportModel } from '@/modules/report/report-model';
+import ReportGridLayout from './report-grid-layout';
+
+export default {
+  name: 'AppReportForm',
+};
 
 const props = defineProps({
   record: {
     type: Object,
-    default: () => {}
-  }
-})
+    default: () => {},
+  },
+});
 
-const { fields } = ReportModel
+const { fields } = ReportModel;
 const formSchema = new FormSchema([
   fields.name,
   fields.widgets,
   fields.settings,
-  fields.public
-])
+  fields.public,
+]);
 
-const rules = formSchema.rules()
+const rules = formSchema.rules();
 const model = reactive(
-  JSON.parse(JSON.stringify(props.record))
-)
+  JSON.parse(JSON.stringify(props.record)),
+);
 
-const { doUpdate } = mapActions('report')
+const { doUpdate } = mapActions('report');
 
 const debouncedChange = debounce(async () => {
   await doUpdate({
     id: props.record && props.record.id,
-    values: formSchema.cast(model)
-  })
-}, 1000)
+    values: formSchema.cast(model),
+  });
+}, 1000);
 
 watch(model, () => {
-  debouncedChange()
-})
+  debouncedChange();
+});
 </script>
 
 <style lang="scss">

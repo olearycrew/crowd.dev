@@ -23,7 +23,7 @@
       v-if="!editing"
       class="c-content text-sm leading-5"
       v-html="$sanitize(props.note.body)"
-    ></div>
+    />
     <app-note-editor
       v-else
       ref="editor"
@@ -37,9 +37,6 @@
 </template>
 
 <script>
-export default {
-  name: 'AppNoteItem'
-}
 </script>
 
 <script setup>
@@ -49,47 +46,49 @@ import {
   defineEmits,
   defineExpose,
   nextTick,
-  computed
-} from 'vue'
-import AppAvatar from '@/shared/avatar/avatar'
-import AppNoteDropdown from '@/modules/notes/components/note-dropdown'
-import AppNoteEditor from '@/modules/notes/components/note-editor'
-import { mapGetters } from '@/shared/vuex/vuex.helpers'
-import { formatDateToTimeAgo } from '@/utils/date'
+  computed,
+} from 'vue';
+import AppAvatar from '@/shared/avatar/avatar';
+import AppNoteDropdown from '@/modules/notes/components/note-dropdown';
+import AppNoteEditor from '@/modules/notes/components/note-editor';
+import { mapGetters } from '@/shared/vuex/vuex.helpers';
+import { formatDateToTimeAgo } from '@/utils/date';
+
+export default {
+  name: 'AppNoteItem',
+};
 
 const props = defineProps({
   note: {
     type: Object,
-    required: true
-  }
-})
+    required: true,
+  },
+});
 
-const emit = defineEmits(['reload'])
+const emit = defineEmits(['reload']);
 
-const { currentUser } = mapGetters('auth')
+const { currentUser } = mapGetters('auth');
 
-const timeAgo = formatDateToTimeAgo
-const editor = ref(null)
-const editing = ref(false)
+const timeAgo = formatDateToTimeAgo;
+const editor = ref(null);
+const editing = ref(false);
 
-const entity = computed(() => {
-  return {
-    avatar: props.note.createdBy.avatarUrl,
-    displayName: props.note.createdBy.fullName
-  }
-})
+const entity = computed(() => ({
+  avatar: props.note.createdBy.avatarUrl,
+  displayName: props.note.createdBy.fullName,
+}));
 
 const edit = () => {
-  editing.value = true
+  editing.value = true;
   nextTick(() => {
-    editor.value.focus()
-  })
-}
+    editor.value.focus();
+  });
+};
 
 const updated = () => {
-  editing.value = false
-  emit('reload')
-}
+  editing.value = false;
+  emit('reload');
+};
 
-defineExpose({ editor })
+defineExpose({ editor });
 </script>

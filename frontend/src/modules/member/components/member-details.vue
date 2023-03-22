@@ -1,7 +1,7 @@
 <template>
   <div class="panel member-details">
     <div class="member-details-header">
-      <app-avatar size="xl" :entity="member"> </app-avatar>
+      <app-avatar size="xl" :entity="member" />
       <div class="font-semibold text-lg mt-2">
         {{ computedUsername }}
       </div>
@@ -10,16 +10,18 @@
         v-if="showDropdown"
         :show-view-member="false"
         :member="member"
-      ></app-member-dropdown>
+      />
     </div>
     <div class="mt-8">
       <div class="text-sm">
         <div class="flex items-center mb-2">
-          <i class="ri-map-pin-fill text-blue-500 mr-1"></i>
+          <i class="ri-map-pin-fill text-blue-500 mr-1" />
           <div v-if="member.location">
             {{ member.location.split('(timezone)')[0] }}
           </div>
-          <div v-else>No location added</div>
+          <div v-else>
+            No location added
+          </div>
         </div>
         <div v-if="member.bio" class="mb-4">
           {{ member.bio }}
@@ -33,12 +35,14 @@
       <app-member-channels
         :member="member"
         class="mb-4 mt-8"
-      ></app-member-channels>
+      />
     </div>
     <hr class="mt-6 pb-6" />
     <div class="member-details-info">
       <div class="member-details-info-general">
-        <div class="font-semibold mb-1">General</div>
+        <div class="font-semibold mb-1">
+          General
+        </div>
         <div
           class="flex justify-between items-center w-full"
         >
@@ -73,13 +77,11 @@
               <el-tooltip placement="top">
                 <template #content>
                   Combined followers on connected social
-                  channels<br /><span class="italic"
-                    >(Requires Twitter Integration)</span
-                  >
+                  channels<br /><span class="italic">(Requires Twitter Integration)</span>
                 </template>
                 <i
                   class="ri-information-line inline-flex items-center mr-2"
-                ></i>
+                />
               </el-tooltip>
             </span>
           </div>
@@ -107,13 +109,13 @@
 </template>
 
 <script>
-import MemberDropdown from './member-dropdown'
-import TagList from '@/modules/tag/components/tag-list'
-import MemberChannels from './member-channels'
-import MemberEngagementLevel from './member-engagement-level'
-import MemberReach from './member-reach'
-import moment from 'moment'
-import integrationsJson from '@/jsons/integrations'
+import moment from 'moment';
+import MemberDropdown from './member-dropdown';
+import TagList from '@/modules/tag/components/tag-list';
+import MemberChannels from './member-channels';
+import MemberEngagementLevel from './member-engagement-level';
+import MemberReach from './member-reach';
+import integrationsJson from '@/jsons/integrations';
 
 export default {
   name: 'AppMemberDetails',
@@ -122,61 +124,52 @@ export default {
     'app-member-channels': MemberChannels,
     'app-tag-list': TagList,
     'app-member-engagement-level': MemberEngagementLevel,
-    'app-member-reach': MemberReach
+    'app-member-reach': MemberReach,
   },
   props: {
     member: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
     showDropdown: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   emits: ['updated'],
   computed: {
     userActivities() {
-      return this.member.activities.map((a) => {
-        return Object.assign({}, a, {
-          member: this.record
-        })
-      })
+      return this.member.activities.map((a) => ({ ...a, member: this.record }));
     },
 
     userIntegrations() {
       return Object.keys(this.member.crowdInfo)
-        .filter((k) =>
-          integrationsJson
-            .map((i) => i.platform)
-            .includes(k)
-        )
+        .filter((k) => integrationsJson
+          .map((i) => i.platform)
+          .includes(k))
         .filter(
-          (k) =>
-            Object.values(this.member.crowdInfo[k]).length >
-            0
-        )
+          (k) => Object.values(this.member.crowdInfo[k]).length
+            > 0,
+        );
     },
 
     computedUsername() {
-      return this.member.displayName
-    }
+      return this.member.displayName;
+    },
   },
 
   methods: {
     formattedDate(value, format) {
-      return moment(value).format(format)
+      return moment(value).format(format);
     },
     capitalizeWords(value) {
       return value
         .split(' ')
-        .map((c) => {
-          return c.charAt(0).toUpperCase() + c.slice(1)
-        })
-        .join(' ')
-    }
-  }
-}
+        .map((c) => c.charAt(0).toUpperCase() + c.slice(1))
+        .join(' ');
+    },
+  },
+};
 </script>
 
 <style lang="scss">

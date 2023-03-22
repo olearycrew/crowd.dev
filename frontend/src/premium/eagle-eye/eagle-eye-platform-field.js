@@ -1,43 +1,43 @@
-import StringField from '@/shared/fields/string-field'
+import StringField from '@/shared/fields/string-field';
 
 export default class EagleEyePlatformField extends StringField {
   constructor(name, label, config = {}) {
-    super(name, label)
+    super(name, label);
 
-    this.placeholder = config.placeholder
-    this.hint = config.hint
-    this.required = config.required
-    this.matches = config.matches
-    this.filterable = config.filterable || false
-    this.custom = config.custom || false
+    this.placeholder = config.placeholder;
+    this.hint = config.hint;
+    this.required = config.required;
+    this.matches = config.matches;
+    this.filterable = config.filterable || false;
+    this.custom = config.custom || false;
   }
 
   dropdownOptions() {
     return [
       {
         value: 'hacker_news',
-        label: 'Hackernews'
+        label: 'Hackernews',
       },
       {
         value: 'devto',
-        label: 'DEV'
+        label: 'DEV',
       },
       {
         value: 'github',
         label: 'GitHub',
-        soon: true
+        soon: true,
       },
       {
         value: 'twitter',
         label: 'Twitter',
-        soon: true
+        soon: true,
       },
       {
         value: 'stackoverflow',
         label: 'Stack Overflow',
-        soon: true
-      }
-    ]
+        soon: true,
+      },
+    ];
   }
 
   forFilter() {
@@ -46,13 +46,13 @@ export default class EagleEyePlatformField extends StringField {
       label: this.label,
       custom: this.custom,
       props: {
-        options: this.dropdownOptions()
+        options: this.dropdownOptions(),
       },
       defaultValue: [],
       value: [],
       defaultOperator: null,
       operator: null,
-      type: 'select-multi'
-    }
+      type: 'select-multi',
+    };
   }
 }

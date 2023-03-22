@@ -1,7 +1,7 @@
-import RelationToOneField from '@/shared/fields/relation-to-one-field'
-import { UserService } from '@/modules/user/user-service'
-import RelationToManyField from '@/shared/fields/relation-to-many-field'
-import Permissions from '@/security/permissions'
+import RelationToOneField from '@/shared/fields/relation-to-one-field';
+import { UserService } from '@/modules/user/user-service';
+import RelationToManyField from '@/shared/fields/relation-to-many-field';
+import Permissions from '@/security/permissions';
 
 export class UserField {
   static relationToOne(name, label, options) {
@@ -13,22 +13,22 @@ export class UserField {
       UserService.fetchUserAutocomplete,
       (record) => {
         if (!record) {
-          return null
+          return null;
         }
 
-        let label = record.email
+        let label = record.email;
 
         if (record.fullName) {
-          label = `${record.fullName} <${record.email}>`
+          label = `${record.fullName} <${record.email}>`;
         }
 
         return {
           id: record.id,
-          label
-        }
+          label,
+        };
       },
-      options
-    )
+      options,
+    );
   }
 
   static relationToMany(name, label, options) {
@@ -40,21 +40,21 @@ export class UserField {
       UserService.fetchUserAutocomplete,
       (record) => {
         if (!record) {
-          return null
+          return null;
         }
 
-        let label = record.email
+        let label = record.email;
 
         if (record.fullName) {
-          label = `${record.fullName} <${record.email}>`
+          label = `${record.fullName} <${record.email}>`;
         }
 
         return {
           id: record.id,
-          label
-        }
+          label,
+        };
       },
-      options
-    )
+      options,
+    );
   }
 }

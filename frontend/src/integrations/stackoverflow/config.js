@@ -1,6 +1,6 @@
-import StackOverflowConnect from './components/stackoverflow-connect'
-import StackOverflowActivityMessage from './components/activity/stackoverflow-activity-message'
-import StackOverflowActivityContent from './components/activity/stackoverflow-activity-content'
+import StackOverflowConnect from './components/stackoverflow-connect';
+import StackOverflowActivityMessage from './components/activity/stackoverflow-activity-message';
+import StackOverflowActivityContent from './components/activity/stackoverflow-activity-content';
 
 export default {
   enabled: true,
@@ -13,5 +13,5 @@ export default {
     'https://cdn-icons-png.flaticon.com/512/2111/2111628.png',
   connectComponent: StackOverflowConnect,
   activityMessage: StackOverflowActivityMessage,
-  activityContent: StackOverflowActivityContent
-}
+  activityContent: StackOverflowActivityContent,
+};

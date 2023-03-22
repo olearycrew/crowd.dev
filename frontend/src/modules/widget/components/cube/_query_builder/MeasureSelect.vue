@@ -2,9 +2,8 @@
   <div class="w-full">
     <label
       class="block text-xs leading-none font-semibold mb-1"
-      >Measure
-      <span class="text-brand-500 ml-0.5">*</span></label
-    >
+    >Measure
+      <span class="text-brand-500 ml-0.5">*</span></label>
     <el-select
       clearable
       filterable
@@ -20,49 +19,49 @@
         :label="item.label"
         :value="item.value"
         :class="{
-          selected: selectedMeasure.includes(item.value)
+          selected: selectedMeasure.includes(item.value),
         }"
         @mouseleave="onSelectMouseLeave"
-      ></el-option>
+      />
     </el-select>
   </div>
 </template>
 
 <script>
-import { onSelectMouseLeave } from '@/utils/select'
+import { onSelectMouseLeave } from '@/utils/select';
 
 export default {
   name: 'MeasureSelect',
   props: {
     measures: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     availableMeasures: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     setMeasures: {
       type: Function,
-      default: () => {}
+      default: () => {},
     },
     translatedOptions: {
       type: Function,
-      default: () => {}
-    }
+      default: () => {},
+    },
   },
   data() {
     return {
-      selectedMeasure: []
-    }
+      selectedMeasure: [],
+    };
   },
   methods: {
     onSelectMouseLeave,
 
     onSelectChange(m) {
-      this.selectedMeasure = [m]
-      this.setMeasures([m])
-    }
-  }
-}
+      this.selectedMeasure = [m];
+      this.setMeasures([m]);
+    },
+  },
+};
 </script>

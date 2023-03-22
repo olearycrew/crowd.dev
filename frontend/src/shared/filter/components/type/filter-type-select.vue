@@ -14,58 +14,55 @@
         <i
           v-if="option.selected"
           class="ri-check-line text-brand-600 absolute right-0 mr-4"
-        ></i>
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-export default {
-  name: 'AppFilterTypeSelect'
-}
 </script>
 
 <script setup>
-import { defineProps, defineEmits, computed } from 'vue'
+import { defineProps, defineEmits, computed } from 'vue';
+
+export default {
+  name: 'AppFilterTypeSelect',
+};
 
 const props = defineProps({
   options: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
   value: {
     type: String,
-    default: () => ''
+    default: () => '',
   },
   isExpanded: {
     type: Boolean,
-    default: false
-  }
-})
-const emit = defineEmits(['update:value'])
-const computedOptions = computed(() => {
-  return props.options.map((o) => {
-    return {
-      ...o,
-      selected:
-        JSON.stringify(model.value) ===
-        JSON.stringify(o.value)
-    }
-  })
-})
+    default: false,
+  },
+});
+const emit = defineEmits(['update:value']);
+const computedOptions = computed(() => props.options.map((o) => ({
+  ...o,
+  selected:
+        JSON.stringify(model.value)
+        === JSON.stringify(o.value),
+})));
 const model = computed({
   get() {
-    return props.value
+    return props.value;
   },
   set(v) {
-    emit('update:value', v)
-  }
-})
+    emit('update:value', v);
+  },
+});
 
 const handleOptionClick = (option) => {
-  model.value = option.value
-}
+  model.value = option.value;
+};
 </script>
 
 <style lang="scss">

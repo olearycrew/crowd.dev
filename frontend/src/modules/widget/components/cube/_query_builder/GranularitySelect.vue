@@ -2,8 +2,7 @@
   <div class="w-full">
     <label
       class="block text-xs leading-none font-semibold mb-1"
-      >Granularity</label
-    >
+    >Granularity</label>
     <el-select
       item-text="title"
       item-value="name"
@@ -20,55 +19,55 @@
         :key="item.name"
         :value="item.name"
         @mouseleave="onSelectMouseLeave"
-        >{{ item.name }}</el-option
       >
+        {{ item.name }}
+      </el-option>
     </el-select>
   </div>
 </template>
 
 <script>
-import { GRANULARITIES } from '@cubejs-client/vue3'
-import { onSelectMouseLeave } from '@/utils/select'
+import { GRANULARITIES } from '@cubejs-client/vue3';
+import { onSelectMouseLeave } from '@/utils/select';
 
 export default {
   name: 'GranularitySelect',
   props: {
     timeDimensions: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     setTimeDimensions: {
       type: Function,
-      default: () => {}
-    }
+      default: () => {},
+    },
   },
   data() {
     return {
       granularityOptions: GRANULARITIES.filter(
-        (g) =>
-          !['second', 'minute', 'hour', 'quarter'].includes(
-            g.name
-          )
+        (g) => !['second', 'minute', 'hour', 'quarter'].includes(
+          g.name,
+        ),
       ),
       selectedGranularity: {
         name: 'day',
-        title: 'Day'
-      }
-    }
+        title: 'Day',
+      },
+    };
   },
   methods: {
     handleChange(value) {
       this.setTimeDimensions([
         {
           dimension:
-            this.timeDimensions[0]['dimension']['name'],
+            this.timeDimensions[0].dimension.name,
           granularity: value !== '' ? value : undefined,
-          dateRange: this.timeDimensions[0]['dateRange']
-        }
-      ])
+          dateRange: this.timeDimensions[0].dateRange,
+        },
+      ]);
     },
 
-    onSelectMouseLeave
-  }
-}
+    onSelectMouseLeave,
+  },
+};
 </script>

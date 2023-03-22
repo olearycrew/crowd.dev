@@ -1,44 +1,44 @@
-import * as yup from 'yup'
-import GenericField from '@/shared/fields/generic-field'
-import moment from 'moment'
+import * as yup from 'yup';
+import moment from 'moment';
+import GenericField from '@/shared/fields/generic-field';
 
 export default class DateTimeRangeField extends GenericField {
   forFilterInitialValue(value) {
-    return value || []
+    return value || [];
   }
 
   forFilterCast() {
-    return yup.mixed()
+    return yup.mixed();
   }
 
   forFilterPreview(value) {
     if (!value || !value.length) {
-      return null
+      return null;
     }
 
-    const start = value[0]
-    const end = value.length === 2 && value[1]
+    const start = value[0];
+    const end = value.length === 2 && value[1];
 
     if (!start && !end) {
-      return null
+      return null;
     }
 
     if (start && !end) {
-      return `> ${formatDatetime(start)}`
+      return `> ${formatDatetime(start)}`;
     }
 
     if (!start && end) {
-      return `< ${formatDatetime(end)}`
+      return `< ${formatDatetime(end)}`;
     }
 
     return `${formatDatetime(start)} - ${formatDatetime(
-      end
-    )}`
+      end,
+    )}`;
   }
 }
 
 function formatDatetime(value) {
   return value
     ? moment(value).format('YYYY-MM-DD HH:mm')
-    : null
+    : null;
 }

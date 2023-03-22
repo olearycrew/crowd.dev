@@ -28,7 +28,7 @@
         <router-link
           :to="{
             name: 'memberView',
-            params: { id: activity.member.id }
+            params: { id: activity.member.id },
           }"
           target="_blank"
         >
@@ -65,9 +65,7 @@
                 />
                 <span
                   class="whitespace-nowrap text-gray-500"
-                  ><span class="mx-1">·</span
-                  >{{ timeAgo }}</span
-                >
+                ><span class="mx-1">·</span>{{ timeAgo }}</span>
                 <span class="mx-1">·</span>
                 <app-activity-sentiment
                   :sentiment="activity.sentiment.sentiment"
@@ -97,13 +95,10 @@
                 :href="activity.url"
                 class="text-2xs text-gray-600 font-medium flex items-center"
                 target="_blank"
-                ><i
-                  class="ri-lg ri-external-link-line mr-1"
-                ></i>
-                <span class="block"
-                  >Open on {{ platform.name }}</span
-                ></a
-              >
+              ><i
+                 class="ri-lg ri-external-link-line mr-1"
+               />
+                <span class="block">Open on {{ platform.name }}</span></a>
             </div>
           </app-activity-content>
         </div>
@@ -113,15 +108,15 @@
 </template>
 
 <script>
-import AppAvatar from '@/shared/avatar/avatar'
-import { formatDateToTimeAgo } from '@/utils/date'
-import AppActivityDropdown from '@/modules/activity/components/activity-dropdown'
-import AppLoading from '@/shared/loading/loading-placeholder'
-import AppActivityContent from '@/modules/activity/components/activity-content'
-import AppActivityMessage from '@/modules/activity/components/activity-message'
-import AppMemberDisplayName from '@/modules/member/components/member-display-name'
-import AppActivitySentiment from '@/modules/activity/components/activity-sentiment'
-import { CrowdIntegrations } from '@/integrations/integrations-config'
+import AppAvatar from '@/shared/avatar/avatar';
+import { formatDateToTimeAgo } from '@/utils/date';
+import AppActivityDropdown from '@/modules/activity/components/activity-dropdown';
+import AppLoading from '@/shared/loading/loading-placeholder';
+import AppActivityContent from '@/modules/activity/components/activity-content';
+import AppActivityMessage from '@/modules/activity/components/activity-message';
+import AppMemberDisplayName from '@/modules/member/components/member-display-name';
+import AppActivitySentiment from '@/modules/activity/components/activity-sentiment';
+import { CrowdIntegrations } from '@/integrations/integrations-config';
 
 export default {
   name: 'AppDashboardActivityItem',
@@ -132,29 +127,29 @@ export default {
     AppActivityContent,
     AppLoading,
     AppActivityDropdown,
-    AppAvatar
+    AppAvatar,
   },
   props: {
     activity: {
       type: Object,
       required: false,
-      default: () => ({})
+      default: () => ({}),
     },
     loading: {
       type: Boolean,
       required: false,
-      default: false
-    }
+      default: false,
+    },
   },
   computed: {
     platform() {
       return CrowdIntegrations.getConfig(
-        this.activity.platform
-      )
+        this.activity.platform,
+      );
     },
     timeAgo() {
-      return formatDateToTimeAgo(this.activity.timestamp)
-    }
-  }
-}
+      return formatDateToTimeAgo(this.activity.timestamp);
+    },
+  },
+};
 </script>

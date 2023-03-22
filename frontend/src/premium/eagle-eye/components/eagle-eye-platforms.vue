@@ -24,27 +24,27 @@
 </template>
 
 <script setup>
-import platformOptions from '@/premium/eagle-eye/constants/eagle-eye-platforms.json'
-import { computed, defineProps, defineEmits } from 'vue'
+import { computed, defineProps, defineEmits } from 'vue';
+import platformOptions from '@/premium/eagle-eye/constants/eagle-eye-platforms.json';
 
-const emit = defineEmits(['update:platforms'])
+const emit = defineEmits(['update:platforms']);
 const props = defineProps({
   platforms: {
     type: Object,
-    required: true
+    required: true,
   },
   rules: {
     type: Object,
-    default: null
-  }
-})
+    default: null,
+  },
+});
 
 const platforms = computed({
   get() {
-    return props.platforms
+    return props.platforms;
   },
   set(v) {
-    emit('update:platforms', v)
-  }
-})
+    emit('update:platforms', v);
+  },
+});
 </script>

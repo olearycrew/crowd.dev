@@ -7,29 +7,29 @@
         elements: {
           point: {
             radius: 0,
-            hoverRadius: 5
-          }
-        }
+            hoverRadius: 5,
+          },
+        },
       },
       legend: false,
-      min: null
+      min: null,
     }"
-  ></app-widget-cube-renderer>
+  />
 </template>
 
 <script>
-import WidgetCubeRenderer from '../cube/widget-cube-renderer'
+import WidgetCubeRenderer from '../cube/widget-cube-renderer';
 
 export default {
   name: 'AppWidgetGraphActivities',
   components: {
-    'app-widget-cube-renderer': WidgetCubeRenderer
+    'app-widget-cube-renderer': WidgetCubeRenderer,
   },
   props: {
     date: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
   computed: {
     widget() {
@@ -43,17 +43,17 @@ export default {
               {
                 dimension: 'Activities.date',
                 granularity: 'day',
-                dateRange: this.date
-              }
+                dateRange: this.date,
+              },
             ],
             limit: 10000,
             order: {
-              'Activities.date': 'asc'
-            }
-          }
-        }
-      }
-    }
-  }
-}
+              'Activities.date': 'asc',
+            },
+          },
+        },
+      };
+    },
+  },
+};
 </script>

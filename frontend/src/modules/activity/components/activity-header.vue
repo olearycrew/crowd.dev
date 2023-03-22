@@ -4,7 +4,7 @@
       v-if="showUser"
       :to="{
         name: 'memberView',
-        params: { id: activity.member.id }
+        params: { id: activity.member.id },
       }"
       target="_blank"
     >
@@ -19,7 +19,7 @@
         v-if="showUser"
         :to="{
           name: 'memberView',
-          params: { id: activity.member.id }
+          params: { id: activity.member.id },
         }"
         target="_blank"
         class="leading-none text-black"
@@ -32,7 +32,7 @@
           <template
             v-if="
               ['discord', 'slack'].includes(
-                activity.platform
+                activity.platform,
               )
             "
           >
@@ -45,7 +45,7 @@
                 :code="computedMessage"
                 :args="computedArgs"
                 :fallback="'entities.activity.fallback'"
-              ></app-i18n>
+              />
             </a>
             <span
               v-if="
@@ -54,22 +54,20 @@
                   'file_share',
                   'channel_joined',
                   'channel_left',
-                  'reaction_added'
+                  'reaction_added',
                 ].includes(activity.type)
               "
               class="block ml-1"
             >
-              <span
-                >{{
-                  [
-                    'channel_joined',
-                    'channel_left'
-                  ].includes(activity.type)
-                    ? ''
-                    : 'in channel'
-                }}
-                #{{ activity.channel }}</span
-              >
+              <span>{{
+                [
+                  'channel_joined',
+                  'channel_left',
+                ].includes(activity.type)
+                  ? ''
+                  : 'in channel'
+              }}
+                #{{ activity.channel }}</span>
             </span>
             <span class="mx-1">·</span>
           </template>
@@ -85,14 +83,14 @@
                 code="entities.activity.devto.commented"
                 :args="computedArgs"
                 :fallback="'entities.activity.fallback'"
-              ></app-i18n>
+              />
             </a>
             <span>&nbsp;on a&nbsp;</span>
             <app-i18n
               code="entities.activity.devto.post"
               :args="computedArgs"
               :fallback="'entities.activity.fallback'"
-            ></app-i18n>
+            />
             &nbsp;
 
             <a
@@ -116,18 +114,17 @@
                 :code="computedMessage"
                 :args="computedArgs"
                 :fallback="'entities.activity.fallback'"
-              ></app-i18n>
+              />
             </a>
             <div class="flex items-center">
               <span
                 v-if="
                   !['fork', 'star', 'unstar'].includes(
-                    activity.type
+                    activity.type,
                   )
                 "
                 class="ml-1"
-                >in</span
-              >
+              >in</span>
               <a
                 :href="activity.repo"
                 target="_blank"
@@ -148,7 +145,7 @@
                 :code="computedMessage"
                 :args="computedArgs"
                 :fallback="'entities.activity.fallback'"
-              ></app-i18n>
+              />
             </a>
             <span class="mx-1">·</span>
           </template>
@@ -183,85 +180,85 @@
 </template>
 
 <script>
-import AppI18n from '../../../shared/i18n/i18n'
-import { formatDateToTimeAgo } from '@/utils/date'
+import AppI18n from '../../../shared/i18n/i18n';
+import { formatDateToTimeAgo } from '@/utils/date';
 import {
   computedArgs,
-  computedMessage
-} from '@/modules/activity/activity.helpers'
-import { CrowdIntegrations } from '@/integrations/integrations-config'
+  computedMessage,
+} from '@/modules/activity/activity.helpers';
+import { CrowdIntegrations } from '@/integrations/integrations-config';
 
 export default {
   name: 'AppActivityHeader',
   components: {
-    AppI18n
+    AppI18n,
   },
   props: {
     activity: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
     showMessage: {
       type: Boolean,
-      default: true
+      default: true,
     },
     showUser: {
       type: Boolean,
-      default: true
+      default: true,
     },
     showPlatformIcon: {
       type: Boolean,
-      default: true
+      default: true,
     },
     size: {
       type: String,
-      default: 'md'
-    }
+      default: 'md',
+    },
   },
   computed: {
     computedUsername() {
-      return this.activity.member.displayName
+      return this.activity.member.displayName;
     },
     computedUsernameClass() {
       return this.size === 'md'
         ? 'font-semibold text-base'
-        : ''
+        : '';
     },
     computedMessage() {
-      return computedMessage(this.activity)
+      return computedMessage(this.activity);
     },
     computedArgs() {
-      return computedArgs(this.activity)
+      return computedArgs(this.activity);
     },
     computedPlatformIcon() {
       return CrowdIntegrations.getConfig(
-        this.activity.platform
-      ).image
+        this.activity.platform,
+      ).image;
     },
     computedPlatformName() {
       return CrowdIntegrations.getConfig(
-        this.activity.platform
-      ).name
+        this.activity.platform,
+      ).name;
     },
     computedActivityClass() {
       return this.activity.url
         ? ''
-        : 'text-gray-500 hover:opacity-100 hover:cursor-default'
+        : 'text-gray-500 hover:opacity-100 hover:cursor-default';
     },
     timeAgo() {
-      return formatDateToTimeAgo(this.activity.timestamp)
-    }
+      return formatDateToTimeAgo(this.activity.timestamp);
+    },
   },
   methods: {
     capitalize(str) {
-      const lower = str.toLowerCase()
-      return str.charAt(0).toUpperCase() + lower.slice(1)
+      const lower = str.toLowerCase();
+      return str.charAt(0).toUpperCase() + lower.slice(1);
     },
     getRepositoryName(repo) {
-      return repo
-    }
-  }
-}
+      return repo;
+    },
+  },
+};
 </script>
 
 <style lang="scss">

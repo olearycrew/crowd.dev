@@ -58,9 +58,6 @@
 </template>
 
 <script>
-export default {
-  name: 'AppFilterTypeSelectAsync'
-}
 </script>
 
 <script setup>
@@ -71,101 +68,101 @@ import {
   reactive,
   ref,
   watch,
-  onMounted
-} from 'vue'
+  onMounted,
+} from 'vue';
 
-import queryFilterFunction from '@/shared/filter/helpers/query-filter'
+import queryFilterFunction from '@/shared/filter/helpers/query-filter';
+
+export default {
+  name: 'AppFilterTypeSelectAsync',
+};
 
 const props = defineProps({
   value: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
   isExpanded: {
     type: Boolean,
-    default: false
+    default: false,
   },
   fetchFn: {
     type: Function,
-    default: () => {}
-  }
-})
+    default: () => {},
+  },
+});
 
-const emit = defineEmits(['update:value'])
+const emit = defineEmits(['update:value']);
 const model = computed({
   get() {
-    return props.value
+    return props.value;
   },
   set(v) {
-    emit('update:value', v)
-  }
-})
-const expanded = computed(() => props.isExpanded)
-const loading = ref(false)
-const query = ref('')
-const queryInputRef = ref(null)
-const limit = ref(10)
-const noMore = ref(false)
-const options = reactive([])
-const computedOptions = computed(() => {
-  return options.filter((o) => {
-    return (
-      queryFilterFunction(o, query.value) &&
-      model.value.findIndex((i) => i.id === o.id) === -1
-    )
-  })
-})
+    emit('update:value', v);
+  },
+});
+const expanded = computed(() => props.isExpanded);
+const loading = ref(false);
+const query = ref('');
+const queryInputRef = ref(null);
+const limit = ref(10);
+const noMore = ref(false);
+const options = reactive([]);
+const computedOptions = computed(() => options.filter((o) => (
+  queryFilterFunction(o, query.value)
+      && model.value.findIndex((i) => i.id === o.id) === -1
+)));
 
 watch(expanded, async (newValue) => {
   if (newValue) {
-    await init()
+    await init();
   }
-})
+});
 
 watch(query, async (newValue, oldValue) => {
   if (newValue !== oldValue) {
-    await fetchOptions()
+    await fetchOptions();
   }
-})
+});
 
 onMounted(async () => {
-  await init()
-})
+  await init();
+});
 
 const init = async () => {
-  await fetchOptions()
-  queryInputRef.value.focus()
-}
+  await fetchOptions();
+  queryInputRef.value.focus();
+};
 const handleOptionClick = (option) => {
-  model.value.push(option)
-}
+  model.value.push(option);
+};
 
 const fetchOptions = async () => {
   if (noMore.value) {
-    return
+    return;
   }
-  loading.value = true
-  const data = await props.fetchFn(query.value, limit.value)
-  loading.value = false
-  options.length = 0
+  loading.value = true;
+  const data = await props.fetchFn(query.value, limit.value);
+  loading.value = false;
+  options.length = 0;
   data.forEach((r) => {
     if (options.findIndex((o) => o.id === r.id) === -1) {
       options.push({
         id: r.id,
-        label: r.label
-      })
+        label: r.label,
+      });
     }
-  })
-}
+  });
+};
 const remove = (index) => {
-  model.value.splice(index, 1)
-}
+  model.value.splice(index, 1);
+};
 const removeLastKeyword = () => {
   if (query.value && query.value !== '') {
-    return
+    return;
   }
-  model.value.pop()
-}
+  model.value.pop();
+};
 </script>
 
 <style lang="scss">

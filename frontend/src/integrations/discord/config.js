@@ -1,6 +1,6 @@
-import DiscordConnect from './components/discord-connect'
-import DiscordActivityMessage from './components/activity/discord-activity-message'
-import DiscordActivityContent from './components/activity/discord-activity-content'
+import DiscordConnect from './components/discord-connect';
+import DiscordActivityMessage from './components/activity/discord-activity-message';
+import DiscordActivityContent from './components/activity/discord-activity-content';
 
 export default {
   enabled: true,
@@ -13,5 +13,5 @@ export default {
     'https://cdn-icons-png.flaticon.com/512/5968/5968756.png',
   connectComponent: DiscordConnect,
   activityMessage: DiscordActivityMessage,
-  activityContent: DiscordActivityContent
-}
+  activityContent: DiscordActivityContent,
+};

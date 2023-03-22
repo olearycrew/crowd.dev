@@ -3,7 +3,7 @@
     <h3 class="text-2xl leading-12 font-semibold mb-1">
       <app-i18n
         code="auth.emptyPermissions.message"
-      ></app-i18n>
+      />
     </h3>
     <div class="pt-10">
       <el-button
@@ -17,8 +17,8 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import AppI18n from '@/shared/i18n/i18n'
+import { mapActions } from 'vuex';
+import AppI18n from '@/shared/i18n/i18n';
 
 export default {
   name: 'AppEmptyPermissionsPage',
@@ -26,7 +26,7 @@ export default {
   computed: {},
 
   methods: {
-    ...mapActions('auth', ['doSignout'])
-  }
-}
+    ...mapActions('auth', ['doSignout']),
+  },
+};
 </script>

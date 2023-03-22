@@ -1,5 +1,5 @@
-import { ElMessageBox } from 'element-plus'
-import { h } from 'vue'
+import { ElMessageBox } from 'element-plus';
+import { h } from 'vue';
 
 export default ({
   vertical = false,
@@ -15,68 +15,68 @@ export default ({
   cancelButtonClass = 'btn btn--md btn--bordered',
   confirmButtonText = 'Discard',
   confirmButtonClass = 'btn btn--md btn--primary',
-  icon = 'ri-error-warning-line'
+  icon = 'ri-error-warning-line',
 }) => {
-  let iconColorClass = 'text-yellow-600'
-  let iconBgColorClass = 'bg-yellow-100'
+  let iconColorClass = 'text-yellow-600';
+  let iconBgColorClass = 'bg-yellow-100';
 
   if (type === 'danger') {
-    iconColorClass = 'text-red-600'
-    iconBgColorClass = 'bg-red-100'
+    iconColorClass = 'text-red-600';
+    iconBgColorClass = 'bg-red-100';
   } else if (type === 'info') {
-    iconColorClass = 'text-gray-500'
-    iconBgColorClass = 'bg-gray-100'
+    iconColorClass = 'text-gray-500';
+    iconBgColorClass = 'bg-gray-100';
   } else if (type === 'success') {
-    iconColorClass = 'text-green-500'
-    iconBgColorClass = 'bg-green-100'
+    iconColorClass = 'text-green-500';
+    iconBgColorClass = 'bg-green-100';
   } else if (type === 'notification') {
-    iconColorClass = 'text-blue-600'
-    iconBgColorClass = 'bg-blue-50'
+    iconColorClass = 'text-blue-600';
+    iconBgColorClass = 'bg-blue-50';
   }
 
   let content = h(
     'div', // type
     {
-      class: 'flex'
+      class: 'flex',
     }, // props
     [
       h(
         'span', // type
         {
-          class: `rounded-full ${iconBgColorClass} w-10 h-10 flex items-center justify-center absolute custom-icon`
+          class: `rounded-full ${iconBgColorClass} w-10 h-10 flex items-center justify-center absolute custom-icon`,
         }, // props
         [
           h(
             'i', // type
             {
-              class: `${icon} text-lg ${iconColorClass} leading-none`
+              class: `${icon} text-lg ${iconColorClass} leading-none`,
             }, // props
-            []
-          )
-        ]
+            [],
+          ),
+        ],
       ),
       h('div', [
         h('p', {
           innerHTML: message,
-          class: 'text-gray-500 text-sm'
+          class: 'text-gray-500 text-sm',
         }),
         highlightedInfo
           ? h(
-              'div',
-              {
-                class:
-                  'text-2xs text-yellow-600 flex items-center mt-4'
-              },
-              [
-                h('div', {
-                  innerHTML: highlightedInfo
-                })
-              ]
-            )
-          : undefined
-      ])
-    ]
-  )
+            'div',
+            {
+              class:
+                  'text-2xs text-yellow-600 flex items-center mt-4',
+            },
+            [
+              h('div', {
+                innerHTML: highlightedInfo,
+              }),
+            ],
+          )
+          : undefined,
+      ]),
+    ],
+  );
 
   if (vertical) {
     content = h(
@@ -86,23 +86,23 @@ export default ({
         h(
           'div',
           {
-            class: 'flex justify-between items-center mb-4'
+            class: 'flex justify-between items-center mb-4',
           },
           [
             h(
               'span', // type
               {
-                class: `rounded-full ${iconBgColorClass} w-10 h-10 flex items-center justify-center custom-icon`
+                class: `rounded-full ${iconBgColorClass} w-10 h-10 flex items-center justify-center custom-icon`,
               }, // props
               [
                 h(
                   'i', // type
                   {
-                    class: `${icon} text-lg ${iconColorClass} leading-none`
+                    class: `${icon} text-lg ${iconColorClass} leading-none`,
                   }, // props
-                  []
-                )
-              ]
+                  [],
+                ),
+              ],
             ),
             h(
               'button',
@@ -113,66 +113,65 @@ export default ({
                 onClick: () => {
                   document
                     .querySelector(
-                      '.el-message-box__headerbtn'
+                      '.el-message-box__headerbtn',
                     )
-                    .dispatchEvent(new Event('click'))
-                }
+                    .dispatchEvent(new Event('click'));
+                },
               },
               [
                 h(
                   'i', // type
                   {
-                    class: `text-lg ri-close-line leading-none text-gray-400`
+                    class: 'text-lg ri-close-line leading-none text-gray-400',
                   }, // props
-                  []
-                )
-              ]
-            )
-          ]
+                  [],
+                ),
+              ],
+            ),
+          ],
         ),
         h('h6', {
           innerHTML: title,
-          class: 'text-black mb-3'
+          class: 'text-black mb-3',
         }),
         badgeContent
           ? h('div', {
-              class:
+            class:
                 'rounded-lg border border-gray-300 px-2 mb-3 inline-flex text-xs text-gray-900 h-6 items-center',
-              innerHTML: badgeContent
-            })
+            innerHTML: badgeContent,
+          })
           : undefined,
         h('p', {
           innerHTML: message,
-          class: 'text-gray-500 text-sm'
+          class: 'text-gray-500 text-sm',
         }),
         highlightedInfo
           ? h(
-              'div',
-              {
-                class:
-                  'text-2xs text-yellow-600 flex items-center mt-4'
-              },
-              [
-                h(
-                  'i', // type
-                  {
-                    class: `text-base ri-alert-line leading-none mr-2`
-                  }, // props
-                  []
-                ),
-                h('div', {
-                  innerHTML: highlightedInfo
-                })
-              ]
-            )
-          : undefined
-      ]
-    )
+            'div',
+            {
+              class:
+                  'text-2xs text-yellow-600 flex items-center mt-4',
+            },
+            [
+              h(
+                'i', // type
+                {
+                  class: 'text-base ri-alert-line leading-none mr-2',
+                }, // props
+                [],
+              ),
+              h('div', {
+                innerHTML: highlightedInfo,
+              }),
+            ],
+          )
+          : undefined,
+      ],
+    );
 
-    customClass = 'confirm-dialog confirm-dialog--vertical'
-    confirmButtonClass = 'btn btn--md btn--primary w-full'
-    cancelButtonClass =
-      'btn btn--md btn--transparent w-full'
+    customClass = 'confirm-dialog confirm-dialog--vertical';
+    confirmButtonClass = 'btn btn--md btn--primary w-full';
+    cancelButtonClass = 'btn btn--md btn--transparent w-full';
 
     return ElMessageBox({
       title: '',
@@ -183,8 +182,8 @@ export default ({
       confirmButtonText,
       confirmButtonClass,
       cancelButtonText,
-      cancelButtonClass
-    })
+      cancelButtonClass,
+    });
   }
 
   return ElMessageBox({
@@ -196,6 +195,6 @@ export default ({
     cancelButtonText,
     cancelButtonClass,
     confirmButtonText,
-    confirmButtonClass
-  })
-}
+    confirmButtonClass,
+  });
+};

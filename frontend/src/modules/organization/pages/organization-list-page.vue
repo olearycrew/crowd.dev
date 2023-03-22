@@ -10,11 +10,11 @@
             <router-link
               v-if="hasPermissionToCreate"
               :to="{
-                name: 'organizationCreate'
+                name: 'organizationCreate',
               }"
               :class="{
                 'pointer-events-none cursor-not-allowed':
-                  isCreateLockedForSampleData
+                  isCreateLockedForSampleData,
               }"
             >
               <el-button
@@ -32,61 +32,58 @@
         </div>
       </div>
 
-      <app-organization-list-tabs></app-organization-list-tabs>
-      <app-organization-list-filter></app-organization-list-filter>
+      <app-organization-list-tabs />
+      <app-organization-list-filter />
       <app-organization-list-table
         :has-organizations="hasOrganizations"
         :is-page-loading="isPageLoading"
-      ></app-organization-list-table>
+      />
     </div>
   </app-page-wrapper>
 </template>
 
 <script setup>
-import AppPageWrapper from '@/shared/layout/page-wrapper.vue'
-import AppOrganizationListTabs from '@/modules/organization/components/list/organization-list-tabs.vue'
-import AppOrganizationListFilter from '@/modules/organization/components/list/organization-list-filter.vue'
-import AppOrganizationListTable from '@/modules/organization/components/list/organization-list-table.vue'
-import { OrganizationPermissions } from '../organization-permissions'
-import { computed, ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed, ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import moment from 'moment/moment';
+import AppPageWrapper from '@/shared/layout/page-wrapper.vue';
+import AppOrganizationListTabs from '@/modules/organization/components/list/organization-list-tabs.vue';
+import AppOrganizationListFilter from '@/modules/organization/components/list/organization-list-filter.vue';
+import AppOrganizationListTable from '@/modules/organization/components/list/organization-list-table.vue';
+import { OrganizationPermissions } from '../organization-permissions';
 import {
   mapGetters,
-  mapActions
-} from '@/shared/vuex/vuex.helpers'
-import { OrganizationService } from '../organization-service'
-import moment from 'moment/moment'
+  mapActions,
+} from '@/shared/vuex/vuex.helpers';
+import { OrganizationService } from '../organization-service';
 
-const route = useRoute()
+const route = useRoute();
 
-const { currentUser, currentTenant } = mapGetters('auth')
-const { doFetch, updateFilterAttribute } =
-  mapActions('organization')
+const { currentUser, currentTenant } = mapGetters('auth');
+const { doFetch, updateFilterAttribute } = mapActions('organization');
 
 const hasPermissionToCreate = computed(
-  () =>
-    new OrganizationPermissions(
-      currentTenant.value,
-      currentUser.value
-    ).create
-)
+  () => new OrganizationPermissions(
+    currentTenant.value,
+    currentUser.value,
+  ).create,
+);
 const isCreateLockedForSampleData = computed(
-  () =>
-    new OrganizationPermissions(
-      currentTenant.value,
-      currentUser.value
-    ).createLockedForSampleData
-)
-const hasOrganizations = ref(false)
-const isPageLoading = ref(false)
+  () => new OrganizationPermissions(
+    currentTenant.value,
+    currentUser.value,
+  ).createLockedForSampleData,
+);
+const hasOrganizations = ref(false);
+const isPageLoading = ref(false);
 
 onMounted(async () => {
-  isPageLoading.value = true
-  const { joinedFrom, activeFrom } = route.query
+  isPageLoading.value = true;
+  const { joinedFrom, activeFrom } = route.query;
 
   if (
-    joinedFrom &&
-    moment(joinedFrom, 'YYYY-MM-DD', true).isValid()
+    joinedFrom
+    && moment(joinedFrom, 'YYYY-MM-DD', true).isValid()
   ) {
     await updateFilterAttribute({
       custom: false,
@@ -97,12 +94,12 @@ onMounted(async () => {
       name: 'joinedAt',
       operator: 'gt',
       type: 'date',
-      value: joinedFrom
-    })
+      value: joinedFrom,
+    });
   }
   if (
-    activeFrom &&
-    moment(activeFrom, 'YYYY-MM-DD', true).isValid()
+    activeFrom
+    && moment(activeFrom, 'YYYY-MM-DD', true).isValid()
   ) {
     await updateFilterAttribute({
       custom: false,
@@ -113,19 +110,19 @@ onMounted(async () => {
       name: 'lastActive',
       operator: 'gt',
       type: 'date',
-      value: activeFrom
-    })
+      value: activeFrom,
+    });
   }
 
   await doFetch({
-    keepPagination: true
-  })
+    keepPagination: true,
+  });
 
-  const organizationsList = await doGetOrganizationsCount()
+  const organizationsList = await doGetOrganizationsCount();
 
-  hasOrganizations.value = !!organizationsList?.length
-  isPageLoading.value = false
-})
+  hasOrganizations.value = !!organizationsList?.length;
+  isPageLoading.value = false;
+});
 
 const doGetOrganizationsCount = async () => {
   try {
@@ -133,12 +130,12 @@ const doGetOrganizationsCount = async () => {
       {},
       '',
       1,
-      0
-    )
+      0,
+    );
 
-    return response.rows
+    return response.rows;
   } catch (e) {
-    return null
+    return null;
   }
-}
+};
 </script>

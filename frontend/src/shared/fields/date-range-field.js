@@ -1,54 +1,52 @@
-import * as yup from 'yup'
-import GenericField from '@/shared/fields/generic-field'
-import { formatDate } from '@/utils/date'
+import * as yup from 'yup';
+import GenericField from '@/shared/fields/generic-field';
+import { formatDate } from '@/utils/date';
 
 export default class DateRangeField extends GenericField {
   forFilterInitialValue(value) {
-    return value || []
+    return value || [];
   }
 
   forFilterCast() {
     return yup.mixed().transform((value, originalValue) => {
       if (!originalValue) {
-        return originalValue
+        return originalValue;
       }
 
       if (!originalValue.length) {
-        return originalValue
+        return originalValue;
       }
 
-      return originalValue.map((value) => {
-        return value
-          ? formatDate({ timestamp: value })
-          : null
-      })
-    })
+      return originalValue.map((value) => (value
+        ? formatDate({ timestamp: value })
+        : null));
+    });
   }
 
   forFilterPreview(value) {
     if (!value || !value.length) {
-      return null
+      return null;
     }
 
-    const start = value[0]
-    const end = value.length === 2 && value[1]
+    const start = value[0];
+    const end = value.length === 2 && value[1];
 
     if (!start && !end) {
-      return null
+      return null;
     }
 
     if (start && !end) {
-      return `> ${formatDate(start)}`
+      return `> ${formatDate(start)}`;
     }
 
     if (!start && end) {
-      return `< ${formatDate(end)}`
+      return `< ${formatDate(end)}`;
     }
 
-    return `${formatDate(start)} - ${formatDate(end)}`
+    return `${formatDate(start)} - ${formatDate(end)}`;
 
     function formatDate(value) {
-      return value ? formatDate({ timestamp: value }) : null
+      return value ? formatDate({ timestamp: value }) : null;
     }
   }
 }

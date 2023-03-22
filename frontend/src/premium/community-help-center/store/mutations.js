@@ -1,4 +1,4 @@
-import sharedMutations from '@/shared/store/mutations'
+import sharedMutations from '@/shared/store/mutations';
 
 export default {
   ...sharedMutations(),
@@ -6,7 +6,7 @@ export default {
 
   PUBLISH_ALL_SUCCESS(state, conversationIds) {
     for (const conversationId of conversationIds) {
-      state.records[conversationId].published = true
+      state.records[conversationId].published = true;
     }
   },
 
@@ -16,17 +16,17 @@ export default {
 
   UNPUBLISH_ALL_SUCCESS(state, conversationIds) {
     for (const conversationId of conversationIds) {
-      state.records[conversationId].published = false
+      state.records[conversationId].published = false;
     }
   },
 
   UNPUBLISH_ALL_ERROR() {},
 
   OPEN_SETTINGS_DRAWER(state) {
-    state.settingsVisible = true
+    state.settingsVisible = true;
   },
 
   CLOSE_SETTINGS_DRAWER(state) {
-    state.settingsVisible = false
-  }
-}
+    state.settingsVisible = false;
+  },
+};

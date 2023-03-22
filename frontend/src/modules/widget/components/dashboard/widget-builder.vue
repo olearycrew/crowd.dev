@@ -17,36 +17,36 @@
 </template>
 
 <script>
-import Widget from '../widget'
-import { mapGetters } from 'vuex'
+import { mapGetters } from 'vuex';
+import Widget from '../widget';
 
 export default {
   name: 'WidgetBuilder',
   components: {
-    'app-widget': Widget
+    'app-widget': Widget,
   },
   data() {
     return {
-      loading: false
-    }
+      loading: false,
+    };
   },
   computed: {
     ...mapGetters({
-      widgetFindByType: 'widget/findByType'
+      widgetFindByType: 'widget/findByType',
     }),
     widget() {
-      return this.widgetFindByType('builder')
+      return this.widgetFindByType('builder');
     },
     config() {
       return {
         id: this.widget.id,
         type: this.widget.type,
         title: 'Builder',
-        loading: this.loading
-      }
-    }
-  }
-}
+        loading: this.loading,
+      };
+    },
+  },
+};
 </script>
 
 <style>

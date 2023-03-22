@@ -21,11 +21,11 @@
           <app-task-item
             :loading="true"
             :hide-check="true"
-          ></app-task-item>
+          />
           <app-task-item
             :loading="true"
             :hide-check="true"
-          ></app-task-item>
+          />
         </div>
         <div v-else>
           <app-task-item
@@ -44,7 +44,7 @@
             >
               <div
                 class="ri-arrow-down-line text-base text-brand-500 flex items-center h-4"
-              ></div>
+              />
               <div
                 class="pl-2 text-xs leading-5 text-brand-500 font-medium"
               >
@@ -58,7 +58,7 @@
           >
             <div
               class="ri-archive-line text-3xl text-gray-300 flex items-center h-10"
-            ></div>
+            />
             <p class="pl-6 text-sm text-gray-400 italic">
               No archived tasks
             </p>
@@ -70,9 +70,6 @@
 </template>
 
 <script>
-export default {
-  name: 'AppTaskArchived'
-}
 </script>
 
 <script setup>
@@ -82,72 +79,76 @@ import {
   defineEmits,
   ref,
   onMounted,
-  onBeforeUnmount
-} from 'vue'
-import AppTaskItem from '@/modules/task/components/task-item'
-import { TaskService } from '@/modules/task/task-service'
-import Message from '@/shared/message/message'
-import { useStore } from 'vuex'
+  onBeforeUnmount,
+} from 'vue';
+import { useStore } from 'vuex';
+import AppTaskItem from '@/modules/task/components/task-item';
+import { TaskService } from '@/modules/task/task-service';
+import Message from '@/shared/message/message';
 import {
   mapGetters,
-  mapMutations
-} from '@/shared/vuex/vuex.helpers'
-import ConfirmDialog from '@/shared/dialog/confirm-dialog'
-import { TaskPermissions } from '@/modules/task/task-permissions'
-import AppDrawer from '@/shared/drawer/drawer'
+  mapMutations,
+} from '@/shared/vuex/vuex.helpers';
+import ConfirmDialog from '@/shared/dialog/confirm-dialog';
+import { TaskPermissions } from '@/modules/task/task-permissions';
+import AppDrawer from '@/shared/drawer/drawer';
+
+export default {
+  name: 'AppTaskArchived',
+};
+
 const props = defineProps({
   modelValue: {
     type: Boolean,
     required: false,
-    default: false
-  }
-})
+    default: false,
+  },
+});
 
-const emit = defineEmits(['update:modelValue', 'close'])
+const emit = defineEmits(['update:modelValue', 'close']);
 
-const store = useStore()
+const store = useStore();
 
-const { SET_ARCHIVED_TASK_COUNT } = mapMutations('task')
+const { SET_ARCHIVED_TASK_COUNT } = mapMutations('task');
 
-const { currentTenant, currentUser } = mapGetters('auth')
+const { currentTenant, currentUser } = mapGetters('auth');
 
 const isExpanded = computed({
   get() {
-    return props.modelValue
+    return props.modelValue;
   },
   set(expanded) {
-    emit('update:modelValue', expanded)
+    emit('update:modelValue', expanded);
     if (!expanded) {
-      emit('close')
+      emit('close');
     }
-  }
-})
-const tasks = ref([])
-const tasksCount = ref(0)
-const loading = ref(false)
-const initialLoad = ref(false)
+  },
+});
+const tasks = ref([]);
+const tasksCount = ref(0);
+const loading = ref(false);
+const initialLoad = ref(false);
 
 const taskDestroyPermission = computed(
-  () =>
-    new TaskPermissions(
-      currentTenant.value,
-      currentUser.value
-    ).destroy
-)
+  () => new TaskPermissions(
+    currentTenant.value,
+    currentUser.value,
+  ).destroy,
+);
 
 const storeUnsubscribe = store.subscribeAction((action) => {
   if (action.type === 'task/reloadArchivedTasks') {
-    fetchTasks()
+    fetchTasks();
   }
-})
+});
 
 onMounted(() => {
-  fetchTasks()
-})
+  fetchTasks();
+});
 
 onBeforeUnmount(() => {
-  storeUnsubscribe()
-})
+  storeUnsubscribe();
+});
 
 const deleteAllPermanently = () => {
   ConfirmDialog({
@@ -157,57 +158,55 @@ const deleteAllPermanently = () => {
       'Are you sure you want to delete all archived tasks? You can’t undo this action.',
     confirmButtonText: 'Confirm',
     cancelButtonText: 'Cancel',
-    icon: 'ri-delete-bin-line'
+    icon: 'ri-delete-bin-line',
   })
+    .then(() => TaskService.batch('findAndDeleteAll', {
+      filter: {
+        status: 'archived',
+      },
+    }))
     .then(() => {
-      return TaskService.batch('findAndDeleteAll', {
-        filter: {
-          status: 'archived'
-        }
-      })
-    })
-    .then(() => {
-      fetchTasks()
-      isExpanded.value = false
-    })
-}
+      fetchTasks();
+      isExpanded.value = false;
+    });
+};
 
 const fetchTasks = (loadMore = false) => {
   if (!initialLoad.value) {
-    loading.value = true
+    loading.value = true;
   }
 
   TaskService.list(
     {
       type: 'regular',
-      status: 'archived'
+      status: 'archived',
     },
     'updatedAt_DESC',
     20,
-    loadMore ? tasks.value.length : 0
+    loadMore ? tasks.value.length : 0,
   )
     .then(({ rows, count }) => {
       tasks.value = loadMore
         ? [...tasks.value, ...rows]
-        : rows
-      tasksCount.value = count
-      SET_ARCHIVED_TASK_COUNT(count)
+        : rows;
+      tasksCount.value = count;
+      SET_ARCHIVED_TASK_COUNT(count);
 
       if (tasksCount.value === 0) {
-        isExpanded.value = false
+        isExpanded.value = false;
       }
     })
     .catch(() => {
       if (!loadMore) {
-        tasks.value = []
-        tasksCount.value = 0
-        isExpanded.value = false
+        tasks.value = [];
+        tasksCount.value = 0;
+        isExpanded.value = false;
       }
-      Message.error('There was an error loading tasks')
+      Message.error('There was an error loading tasks');
     })
     .finally(() => {
-      loading.value = false
-      initialLoad.value = true
-    })
-}
+      loading.value = false;
+      initialLoad.value = true;
+    });
+};
 </script>

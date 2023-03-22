@@ -1,6 +1,6 @@
-import RedditConnect from './components/reddit-connect'
-import RedditActivityMessage from '@/integrations/reddit/components/activity/reddit-activity-message'
-import RedditActivityContent from '@/integrations/reddit/components/activity/reddit-activity-content'
+import RedditConnect from './components/reddit-connect';
+import RedditActivityMessage from '@/integrations/reddit/components/activity/reddit-activity-message';
+import RedditActivityContent from '@/integrations/reddit/components/activity/reddit-activity-content';
 
 export default {
   enabled: true,
@@ -12,5 +12,5 @@ export default {
   image: '/images/integrations/reddit.svg',
   connectComponent: RedditConnect,
   activityMessage: RedditActivityMessage,
-  activityContent: RedditActivityContent
-}
+  activityContent: RedditActivityContent,
+};

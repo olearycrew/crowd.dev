@@ -1,48 +1,48 @@
-import * as yup from 'yup'
-import GenericField from '@/shared/fields/generic-field'
-import { i18n } from '@/i18n'
+import * as yup from 'yup';
+import GenericField from '@/shared/fields/generic-field';
+import { i18n } from '@/i18n';
 
 export default class DecimalRangeField extends GenericField {
   forFilterInitialValue(value) {
-    return value || [undefined, undefined]
+    return value || [undefined, undefined];
   }
 
   forFilterRules() {
-    const output = []
+    const output = [];
 
     const decimalRangeValidator = yup
       .array()
       .ensure()
       .compact()
       .of(yup.number().nullable(true).label(this.label))
-      .label(this.label)
+      .label(this.label);
 
     const decimalRangeFn = (rule, value, callback) => {
       if (!value) {
-        callback()
-        return
+        callback();
+        return;
       }
 
       try {
-        decimalRangeValidator.validateSync(value)
-        callback()
+        decimalRangeValidator.validateSync(value);
+        callback();
       } catch (error) {
         callback(
           new Error(
             i18n('validation.number.invalid').replace(
               '${path}',
-              this.label
-            )
-          )
-        )
+              this.label,
+            ),
+          ),
+        );
       }
-    }
+    };
 
     output.push({
-      validator: decimalRangeFn
-    })
+      validator: decimalRangeFn,
+    });
 
-    return output
+    return output;
   }
 
   forFilterCast() {
@@ -51,37 +51,37 @@ export default class DecimalRangeField extends GenericField {
       .ensure()
       .compact()
       .of(yup.number().nullable(true).label(this.label))
-      .label(this.label)
+      .label(this.label);
   }
 
   forFilterPreview(value) {
     if (!value || !value.length) {
-      return null
+      return null;
     }
 
-    const start = value[0]
-    const end = value.length === 2 && value[1]
+    const start = value[0];
+    const end = value.length === 2 && value[1];
 
     if (start == null && end == null) {
-      return null
+      return null;
     }
 
     if (start != null && end == null) {
-      return `> ${formatDecimal(start)}`
+      return `> ${formatDecimal(start)}`;
     }
 
     if (start == null && end != null) {
-      return `< ${formatDecimal(end)}`
+      return `< ${formatDecimal(end)}`;
     }
 
-    return `${formatDecimal(start)} - ${formatDecimal(end)}`
+    return `${formatDecimal(start)} - ${formatDecimal(end)}`;
 
     function formatDecimal(value) {
       return value
         ? this.scale
           ? Number(value).toFixed(this.scale)
           : Number(value)
-        : null
+        : null;
     }
   }
 }

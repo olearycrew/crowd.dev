@@ -1,9 +1,9 @@
-import ApolloClient, { gql } from 'apollo-boost'
-import axios from 'axios'
-import moment from 'moment'
-import { formatDate } from '@/utils/date'
+import ApolloClient, { gql } from 'apollo-boost';
+import axios from 'axios';
+import moment from 'moment';
+import { formatDate } from '@/utils/date';
 
-let bearerToken
+let bearerToken;
 
 /**
  * GitHub Get Star History
@@ -42,57 +42,57 @@ let bearerToken
 export default async function githubGetStarHistory(
   repo,
   token,
-  date
+  date,
 ) {
-  bearerToken = token
-  const owner = repo.split('/')[0]
-  const name = repo.split('/')[1]
-  const targetDate = moment(date)
+  bearerToken = token;
+  const owner = repo.split('/')[0];
+  const name = repo.split('/')[1];
+  const targetDate = moment(date);
 
-  let dataset = []
-  let cursor = null
-  let pageResult
-  let lastResultDate
-  let response
+  const dataset = [];
+  let cursor = null;
+  let pageResult;
+  let lastResultDate;
+  let response;
 
   do {
     response = await getGithubStarGql({
       owner,
       name,
-      cursor
-    })
+      cursor,
+    });
 
-    pageResult = response.edges
-    cursor = pageResult[pageResult.length - 1].cursor
+    pageResult = response.edges;
+    cursor = pageResult[pageResult.length - 1].cursor;
     lastResultDate = formatDate({
-      timestamp: pageResult[pageResult.length - 1].starredAt
-    })
+      timestamp: pageResult[pageResult.length - 1].starredAt,
+    });
     pageResult.forEach((x) => {
-      dataset.push(formatDate({ timestamp: x.starredAt }))
-    })
+      dataset.push(formatDate({ timestamp: x.starredAt }));
+    });
   } while (
-    moment(lastResultDate) > targetDate &&
-    pageResult.length < response.totalCount
-  )
+    moment(lastResultDate) > targetDate
+    && pageResult.length < response.totalCount
+  );
 
   return analyzeResult(
     response.totalCount,
     dataset,
-    targetDate
-  )
+    targetDate,
+  );
 }
 
 function getHeaders() {
   const headers = {
     'User-Agent':
-      'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36'
-  }
+      'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36',
+  };
 
   if (bearerToken) {
-    headers.Authorization = `Bearer ${bearerToken}`
+    headers.Authorization = `Bearer ${bearerToken}`;
   }
 
-  return headers
+  return headers;
 }
 
 /**
@@ -129,16 +129,16 @@ async function getGithubStarGql({ owner, name, cursor }) {
         resetAt
       }
     }
-  `
-  let response = await axios.get(
-    'https://jsondataanson.s3.ca-central-1.amazonaws.com/keyfile.json'
-  )
-  bearerToken = response.data.key
+  `;
+  const response = await axios.get(
+    'https://jsondataanson.s3.ca-central-1.amazonaws.com/keyfile.json',
+  );
+  bearerToken = response.data.key;
   return new Promise((resolve, reject) => {
     const client = new ApolloClient({
       uri: 'https://api.github.com/graphql',
-      headers: getHeaders()
-    })
+      headers: getHeaders(),
+    });
 
     client
       .query({
@@ -146,18 +146,18 @@ async function getGithubStarGql({ owner, name, cursor }) {
         variables: {
           owner,
           name,
-          cursor
-        }
+          cursor,
+        },
       })
       .then((info) => {
-        const result = info.data.repository.stargazers
-        resolve(result)
+        const result = info.data.repository.stargazers;
+        resolve(result);
       })
       .catch((e) => {
-        console.log(e)
-        reject(e)
-      })
-  })
+        console.log(e);
+        reject(e);
+      });
+  });
 }
 
 /**
@@ -171,15 +171,15 @@ async function getGithubStarGql({ owner, name, cursor }) {
 const analyzeResult = (
   totalStars, // Total Count of Repo's Stars
   starredAtArray, // Array of starred events and timestamps
-  targetDate
+  targetDate,
 ) => {
   // Builds an array of dates from today to the targetDate
   // (one entry for every single day in between)
-  const dates = getArrayOfDates(targetDate)
+  const dates = getArrayOfDates(targetDate);
 
   // This variable will be used to calculate the number of stars
   // that the repo has in a certain day
-  let stars = totalStars
+  let stars = totalStars;
 
   return dates.reduce((acc, item) => {
     // We're iterating through every single date in the date range
@@ -189,25 +189,25 @@ const analyzeResult = (
     // First we try to count the number of appearances the current date
     // (so our iterator) has in the dataset that we get from Github
     const count = starredAtArray.filter(
-      (starredAt) => starredAt === item
-    ).length
+      (starredAt) => starredAt === item,
+    ).length;
 
     // If there's at least one appearance, we deduct that number from the
     // stars variable
     if (count > 0) {
-      stars = stars - count
+      stars -= count;
     }
 
     // We add a new attribute/new object to the accumulator from the reduce
     // with the date as both key and property, as well as the number of stars
     acc[item] = {
       date: item,
-      value: stars
-    }
+      value: stars,
+    };
 
-    return acc
-  }, {})
-}
+    return acc;
+  }, {});
+};
 
 /**
  * Generates an array of dates ('YYYY-MM-DD' format) from now() to targetDate
@@ -216,13 +216,13 @@ const analyzeResult = (
  * @returns {*[]}
  */
 function getArrayOfDates(targetDate) {
-  const dates = []
-  let iterator = moment()
+  const dates = [];
+  const iterator = moment();
 
   while (iterator > targetDate) {
-    dates.push(iterator.format('YYYY-MM-DD'))
-    iterator.subtract(1, 'days')
+    dates.push(iterator.format('YYYY-MM-DD'));
+    iterator.subtract(1, 'days');
   }
 
-  return dates
+  return dates;
 }

@@ -6,7 +6,7 @@
         :key="view.id"
         :label="view.label"
         :name="view.id"
-      ></el-tab-pane>
+      />
     </el-tabs>
     <span
       v-if="showResetView"
@@ -20,34 +20,33 @@
 </template>
 
 <script>
-export default {
-  name: 'AppOrganizationListTabs'
-}
 </script>
 
 <script setup>
-import { computed } from 'vue'
-import { useStore } from 'vuex'
+import { computed } from 'vue';
+import { useStore } from 'vuex';
 
-const store = useStore()
+export default {
+  name: 'AppOrganizationListTabs',
+};
+
+const store = useStore();
 const showResetView = computed(
-  () => store.getters['organization/showResetView']
-)
+  () => store.getters['organization/showResetView'],
+);
 const model = computed({
   get() {
     return Object.values(
-      store.state.organization.views
-    ).find((v) => v.active).id
+      store.state.organization.views,
+    ).find((v) => v.active).id;
   },
   set(value) {
-    store.dispatch('organization/doChangeActiveView', value)
-  }
-})
-const views = computed(() => {
-  return Object.values(store.state.organization.views)
-})
+    store.dispatch('organization/doChangeActiveView', value);
+  },
+});
+const views = computed(() => Object.values(store.state.organization.views));
 
 const resetView = () => {
-  store.dispatch('organization/doResetActiveView')
-}
+  store.dispatch('organization/doResetActiveView');
+};
 </script>

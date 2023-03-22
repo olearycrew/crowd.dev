@@ -25,31 +25,31 @@
 </template>
 
 <script>
-import Widget from '../widget'
-import { ActivityService } from '@/modules/activity/activity-service'
-import ActivityDropdown from '@/modules/activity/components/activity-dropdown'
-import ActivityHeader from '@/modules/activity/components/activity-header'
-import { mapGetters } from 'vuex'
+import { mapGetters } from 'vuex';
+import Widget from '../widget';
+import { ActivityService } from '@/modules/activity/activity-service';
+import ActivityDropdown from '@/modules/activity/components/activity-dropdown';
+import ActivityHeader from '@/modules/activity/components/activity-header';
 
 export default {
   name: 'AppWidgetLatestActivities',
   components: {
     'app-widget': Widget,
     'app-activity-header': ActivityHeader,
-    'app-activity-dropdown': ActivityDropdown
+    'app-activity-dropdown': ActivityDropdown,
   },
   data() {
     return {
       rows: [],
-      loading: false
-    }
+      loading: false,
+    };
   },
   computed: {
     ...mapGetters({
-      widgetFindByType: 'widget/findByType'
+      widgetFindByType: 'widget/findByType',
     }),
     widget() {
-      return this.widgetFindByType('latest-activities')
+      return this.widgetFindByType('latest-activities');
     },
     config() {
       return {
@@ -59,31 +59,31 @@ export default {
         rows: this.rows,
         loading: this.loading,
         link: { name: 'activity' },
-        linkLabel: 'View all'
-      }
-    }
+        linkLabel: 'View all',
+      };
+    },
   },
   async created() {
-    this.loading = true
+    this.loading = true;
     const response = await ActivityService.list(
       null,
       'timestamp_DESC',
       15,
-      null
-    )
-    this.rows = response.rows
-    this.loading = false
+      null,
+    );
+    this.rows = response.rows;
+    this.loading = false;
   },
   methods: {
     handleActivityDestroyed(activityId) {
       const index = this.rows.findIndex(
-        (a) => a.id === activityId
-      )
+        (a) => a.id === activityId,
+      );
 
-      this.rows.splice(index, 1)
-    }
-  }
-}
+      this.rows.splice(index, 1);
+    },
+  },
+};
 </script>
 
 <style lang="scss">

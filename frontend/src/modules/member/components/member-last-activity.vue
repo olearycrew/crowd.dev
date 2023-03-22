@@ -18,7 +18,7 @@
       />
     </div>
     <div class="flex items-center">
-      <div class="w-4 mr-2"></div>
+      <div class="w-4 mr-2" />
       <div class="text-gray-500 text-xs">
         {{ timeAgo }}
       </div>
@@ -27,36 +27,36 @@
 </template>
 
 <script>
-import AppActivityMessage from '@/modules/activity/components/activity-message'
-import { formatDateToTimeAgo } from '@/utils/date'
-import AppSvg from '@/shared/svg/svg'
-import { CrowdIntegrations } from '@/integrations/integrations-config'
+import AppActivityMessage from '@/modules/activity/components/activity-message';
+import { formatDateToTimeAgo } from '@/utils/date';
+import AppSvg from '@/shared/svg/svg';
+import { CrowdIntegrations } from '@/integrations/integrations-config';
 
 export default {
   name: 'AppMemberLastActivity',
   components: {
     AppActivityMessage,
-    AppSvg
+    AppSvg,
   },
   props: {
     member: {
       type: Object,
-      default: () => {}
-    }
+      default: () => {},
+    },
   },
   computed: {
     platform() {
       return CrowdIntegrations.getConfig(
-        this.member.lastActivity.platform
-      )
+        this.member.lastActivity.platform,
+      );
     },
     timeAgo() {
       return formatDateToTimeAgo(
-        this.member.lastActivity.timestamp
-      )
-    }
-  }
-}
+        this.member.lastActivity.timestamp,
+      );
+    },
+  },
+};
 </script>
 
 <style lang="scss">

@@ -8,43 +8,44 @@
   />
 </template>
 <script>
-import AppAutocompleteManyInput from '@/shared/form/autocomplete-many-input'
+import AppAutocompleteManyInput from '@/shared/form/autocomplete-many-input';
+
 export default {
   name: 'AppUserInviteAutocomplete',
   components: {
-    AppAutocompleteManyInput
+    AppAutocompleteManyInput,
   },
   props: {
     value: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
   emits: ['update:modelValue'],
   data() {
     return {
-      model: []
-    }
+      model: [],
+    };
   },
   watch: {
     model: {
       deep: true,
       handler(newValue) {
-        this.$emit('update:modelValue', newValue)
-      }
+        this.$emit('update:modelValue', newValue);
+      },
     },
     value: {
       deep: true,
       immediate: true,
       handler(newValue) {
-        this.model = newValue
-      }
-    }
+        this.model = newValue;
+      },
+    },
   },
   methods: {
     handleCreate(value) {
-      return value
-    }
-  }
-}
+      return value;
+    },
+  },
+};
 </script>

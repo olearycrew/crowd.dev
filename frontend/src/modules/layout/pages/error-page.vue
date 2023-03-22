@@ -54,7 +54,7 @@
       >
         <i
           class="ri-mail-line text-brand-500 w-4 h-4 mr-2 flex items-center justify-center"
-        ></i>
+        />
         <span class="leading-4">Contact us</span>
       </a>
     </div>
@@ -62,28 +62,28 @@
 </template>
 
 <script>
-import { TenantService } from '@/modules/tenant/tenant-service'
+import { TenantService } from '@/modules/tenant/tenant-service';
 
 export default {
   name: 'AppError404Page',
   props: {
     code: {
       type: Number,
-      default: null
+      default: null,
     },
     title: {
       type: String,
-      default: null
+      default: null,
     },
     subtitle: {
       type: String,
-      default: null
-    }
+      default: null,
+    },
   },
   methods: {
     async onBackHomeClick() {
-      await TenantService.fetchAndApply()
-    }
-  }
-}
+      await TenantService.fetchAndApply();
+    },
+  },
+};
 </script>

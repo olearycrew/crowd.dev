@@ -12,29 +12,29 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import moment from 'moment'
-import { activitiesChart } from '@/modules/dashboard/dashboard.cube'
+import { mapGetters } from 'vuex';
+import moment from 'moment';
+import { activitiesChart } from '@/modules/dashboard/dashboard.cube';
+
 export default {
   name: 'AppDashboardHeader',
   computed: {
     ...mapGetters('auth', {
-      currentTenant: 'currentTenant'
+      currentTenant: 'currentTenant',
     }),
     query() {
-      return activitiesChart(1, 'all').settings.query
-    }
+      return activitiesChart(1, 'all').settings.query;
+    },
   },
   methods: {
     lastUpdated(resultSet) {
-      const format = 'YYYY-M-D HH:mm'
+      const format = 'YYYY-M-D HH:mm';
       if (resultSet.loadResponses.length > 0) {
-        const refreshTime =
-          resultSet.loadResponses[0].lastRefreshTime
-        return moment(refreshTime).format(format)
+        const refreshTime = resultSet.loadResponses[0].lastRefreshTime;
+        return moment(refreshTime).format(format);
       }
-      return moment().format(format)
-    }
-  }
-}
+      return moment().format(format);
+    },
+  },
+};
 </script>
