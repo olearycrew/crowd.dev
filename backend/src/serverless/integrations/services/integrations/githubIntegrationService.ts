@@ -20,6 +20,7 @@ import { IntegrationServiceBase } from '../integrationServiceBase'
 import { timeout } from '../../../../utils/timing'
 import PullRequestsQuery from '../../usecases/github/graphql/pullRequests'
 import PullRequestCommentsQuery from '../../usecases/github/graphql/pullRequestComments'
+import PullRequestCommitsQuery from '../../usecases/github/graphql/pullRequestCommits'
 import IssuesQuery from '../../usecases/github/graphql/issues'
 import IssueCommentsQuery from '../../usecases/github/graphql/issueComments'
 import ForksQuery from '../../usecases/github/graphql/forks'
@@ -36,6 +37,13 @@ import getMember from '../../usecases/github/graphql/members'
 import { createRedisClient } from '../../../../utils/redis'
 import { RedisCache } from '../../../../utils/redis/redisCache'
 import { gridEntry } from '../../grid/grid'
+import type { PullRequestCommit } from '../../usecases/github/graphql/pullRequestCommits'
+import IntegrationRunRepository from '../../../../database/repositories/integrationRunRepository'
+import { IntegrationRunState } from '../../../../types/integrationRunTypes'
+import IntegrationStreamRepository from '../../../../database/repositories/integrationStreamRepository'
+import { DbIntegrationStreamCreateData } from '../../../../types/integrationStreamTypes'
+import { sendNodeWorkerMessage } from '../../../utils/nodeWorkerSQS'
+import {NodeWorkerIntegrationProcessMessage} from '../../../../types/mq/nodeWorkerIntegrationProcessMessage'
 
 /* eslint class-methods-use-this: 0 */
 
@@ -48,6 +56,7 @@ enum GithubStreamType {
   FORKS = 'forks',
   PULLS = 'pulls',
   PULL_COMMENTS = 'pull-comments',
+  PULL_COMMITS = 'pull-commits',
   ISSUES = 'issues',
   ISSUE_COMMENTS = 'issue-comments',
   DISCUSSIONS = 'discussions',
@@ -196,6 +205,19 @@ export class GithubIntegrationService extends IntegrationServiceBase {
             prNumber: pr.number,
           },
         }))
+
+        // add stream per PR to fetch commits data
+        newStreams = newStreams.concat(
+          result.data.map((pr) => ({
+            value: GithubStreamType.PULL_COMMITS,
+            metadata: {
+              page: '',
+              repo: stream.metadata.repo,
+              prNumber: pr.number,
+            },
+          })),
+        )
+
         break
       case GithubStreamType.PULL_COMMENTS:
         const pullRequestNumber = stream.metadata.prNumber
@@ -207,6 +229,16 @@ export class GithubIntegrationService extends IntegrationServiceBase {
 
         result = await pullRequestCommentsQuery.getSinglePage(stream.metadata.page)
         result.data = result.data.filter((i) => (i as any).author?.login)
+        break
+      case GithubStreamType.PULL_COMMITS:
+        const pullRequestNumber2 = stream.metadata.prNumber
+        const pullRequestCommitsQuery = new PullRequestCommitsQuery(
+          repo,
+          pullRequestNumber2,
+          context.integration.token,
+        )
+
+        result = await pullRequestCommitsQuery.getSinglePage(stream.metadata.page)
         break
       case GithubStreamType.ISSUES:
         const issuesQuery = new IssuesQuery(repo, context.integration.token)
@@ -413,6 +445,13 @@ export class GithubIntegrationService extends IntegrationServiceBase {
       case GithubStreamType.PULL_COMMENTS:
         activities = await GithubIntegrationService.parsePullRequestComments(records, repo, context)
         break
+      case GithubStreamType.PULL_COMMITS:
+        activities = await GithubIntegrationService.parsePullRequestCommits(
+          records as PullRequestCommit[],
+          repo,
+          context,
+        )
+        break
       case GithubStreamType.ISSUES:
         activities = await GithubIntegrationService.parseIssues(records, repo, context)
         break
@@ -584,6 +623,49 @@ export class GithubIntegrationService extends IntegrationServiceBase {
         break
       }
 
+      case 'synchronize': {
+        const prNumber = payload.number
+        const integrationId = context.integration.id
+        const tenantId = context.integration.tenantId
+        const repoContext = context.repoContext
+        const runRepo = new IntegrationRunRepository(repoContext)
+
+        const run = await runRepo.create({
+          integrationId,
+          tenantId,
+          onboarding: false,
+          state: IntegrationRunState.PENDING,
+        })
+
+        const githubRepo: Repo = {
+          name: payload.repository.name,
+          owner: payload.repository.owner.login,
+          url: payload.repository.url,
+          createdAt: payload.repository.created_at,
+        }
+
+        const streamRepo = new IntegrationStreamRepository(repoContext)
+        const stream: DbIntegrationStreamCreateData = {
+          runId: run.id,
+          tenantId,
+          integrationId,
+          name: GithubStreamType.PULL_COMMITS,
+          metadata: {
+            page: '',
+            repo: githubRepo,
+            prNumber,
+          },
+        }
+
+        await streamRepo.create(stream)
+
+        await sendNodeWorkerMessage(
+          tenantId,
+          new NodeWorkerIntegrationProcessMessage(run.id),
+        )
+        return undefined
+      }
+
       default: {
         return undefined
       }
@@ -733,6 +815,70 @@ export class GithubIntegrationService extends IntegrationServiceBase {
         score: GitHubGrid.comment.score,
         isContribution: GitHubGrid.comment.isContribution,
       })
+    }
+    return out
+  }
+
+  private static async parsePullRequestCommits(
+    records: PullRequestCommit[],
+    repo: Repo,
+    context: IStepContext,
+  ): Promise<AddActivitiesSingle[]> {
+    const out: AddActivitiesSingle[] = []
+    const prId = records[0].repository.pullRequest.id
+    const commits = records[0].repository.pullRequest.commits.nodes
+    for (const record of commits) {
+      for (let i = 0; i < record.commit.authors.nodes.length; i++) {
+        if (i === 0) {
+          // author is always first
+          out.push({
+            tenant: context.integration.tenantId,
+            platform: PlatformType.GITHUB,
+            type: GithubActivityType.COMMIT_AUTHORED,
+            sourceId: record.commit.oid,
+            sourceParentId: prId,
+            timestamp: moment(record.commit.committedDate).utc().toDate(),
+            url: record.commit.url,
+            body: record.commit.messageHeadline,
+            channel: repo.url,
+            member: await GithubIntegrationService.parseMember(
+              record.commit.authors.nodes[i].user,
+              context,
+            ),
+            score: GitHubGrid.commitAuthored.score,
+            isContribution: GitHubGrid.commitCoAuthored.isContribution,
+            attributes: {
+              additions: record.commit.additions,
+              deletions: record.commit.deletions,
+              changedFiles: record.commit.changedFiles,
+            }
+          })
+        } else {
+          // remaining are co-authors
+          out.push({
+            tenant: context.integration.tenantId,
+            platform: PlatformType.GITHUB,
+            type: GithubActivityType.COMMIT_COAUTHORED,
+            sourceId: `${record.commit.oid}-${record.commit.authors.nodes[i].user.login}`,
+            sourceParentId: record.commit.oid,
+            timestamp: moment(record.commit.committedDate).utc().toDate(),
+            url: record.commit.url,
+            body: record.commit.messageHeadline,
+            channel: repo.url,
+            member: await GithubIntegrationService.parseMember(
+              record.commit.authors.nodes[i].user,
+              context,
+            ),
+            score: GitHubGrid.commitCoAuthored.score,
+            isContribution: GitHubGrid.commitCoAuthored.isContribution,
+            attributes: {
+              additions: record.commit.additions,
+              deletions: record.commit.deletions,
+              changedFiles: record.commit.changedFiles,
+            },
+          })
+        }
+      }
     }
     return out
   }

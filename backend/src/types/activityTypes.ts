@@ -55,6 +55,8 @@ export enum GithubActivityType {
   DISCUSSION_STARTED = 'discussion-started',
   PULL_REQUEST_OPENED = 'pull_request-opened',
   PULL_REQUEST_CLOSED = 'pull_request-closed',
+  COMMIT_AUTHORED = 'commit-authored',
+  COMMIT_COAUTHORED = 'commit-coauthored',
   ISSUE_OPENED = 'issues-opened',
   ISSUE_CLOSED = 'issues-closed',
   FORK = 'fork',

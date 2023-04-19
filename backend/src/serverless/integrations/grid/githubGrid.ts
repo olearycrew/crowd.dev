@@ -50,4 +50,14 @@ export class GitHubGrid {
     score: 4,
     isContribution: false,
   }
+
+  static commitAuthored: gridEntry = {
+    score: 8,
+    isContribution: true,
+  }
+
+  static commitCoAuthored: gridEntry = {
+    score: 6,
+    isContribution: true,
+  }
 }

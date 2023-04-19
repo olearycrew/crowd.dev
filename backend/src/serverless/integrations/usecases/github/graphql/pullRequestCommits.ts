@@ -1,0 +1,101 @@
+import { Repo } from '../../../types/regularTypes'
+import BaseQuery from './baseQuery'
+
+export interface PullRequestCommit {
+  repository: {
+    pullRequest: {
+      id: string
+      commits: {
+        pageInfo: {
+          hasPreviousPage: boolean
+          startCursor: string
+        }
+        nodes: {
+          commit: {
+            oid: string
+            messageHeadline: string
+            url: string
+            committedDate: string
+            authors: {
+              nodes: {
+                user: {
+                  login: string
+                  name: string
+                  avatarUrl: string
+                  id: string
+                  isHireable: boolean
+                  twitterUsername: string | null
+                  url: string
+                  websiteUrl: string | null
+                  email: string
+                  bio: string
+                  company: string
+                  location: string | null
+                  followers: {
+                    totalCount: number
+                  }
+                }
+              }[]
+            }
+            additions: number
+            changedFiles: number
+            deletions: number
+          }
+        }[]
+      }
+    }
+  }
+}
+
+
+/* eslint class-methods-use-this: 0 */
+class PullRequestCommitsQuery extends BaseQuery {
+  repo: Repo
+
+  constructor(repo: Repo, pullRequestNumber: string, githubToken: string, perPage: number = 100, maxAuthors: number = 10) {
+    const pullRequestCommitsQuery = `{
+      repository(name: "${repo.name}", owner: "${repo.owner}") {
+        pullRequest(number: ${pullRequestNumber}) {
+          id
+          commits(first: ${perPage}, \${beforeCursor}) {
+            pageInfo ${BaseQuery.PAGE_SELECT}
+            nodes {
+              commit {
+                oid
+                messageHeadline
+                url
+                committedDate
+                authors(first: ${maxAuthors}) {
+                  nodes {
+                    user {
+                      ${BaseQuery.USER_SELECT}
+                  }
+                }
+                additions
+                changedFiles
+                deletions
+              }
+            }
+          }
+        }
+      }
+    }`
+
+    super(githubToken, pullRequestCommitsQuery, 'pullRequestCommits', perPage)
+
+    this.repo = repo
+  }
+
+  // Override the getEventData method to process commit details
+  getEventData(result) {
+    const commitData = result as PullRequestCommit
+
+    return {
+      hasPreviousPage: result.repository?.pullRequest?.commits?.pageInfo?.hasPreviousPage,
+      startCursor: result.repository?.pullRequest?.commits?.pageInfo?.startCursor,
+      data: [commitData], // returning an array to match the parseActivities function
+    }
+  }
+}
+
+export default PullRequestCommitsQuery
