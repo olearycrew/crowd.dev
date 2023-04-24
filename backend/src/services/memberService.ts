@@ -657,7 +657,7 @@ export default class MemberService extends LoggingBase {
     const transaction = await SequelizeRepository.createTransaction(this.options)
 
     try {
-      const numberOfHours = 24
+      const numberOfHours = 24 * 30
 
       const mergeSuggestionsbyUsername = await MemberRepository.mergeSuggestionsByUsername(
         numberOfHours,

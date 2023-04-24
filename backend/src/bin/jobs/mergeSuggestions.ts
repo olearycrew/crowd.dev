@@ -8,7 +8,9 @@ import { timeout } from '../../utils/timing'
 const job: CrowdJob = {
   name: 'Merge suggestions',
   // every hour
-  cronTime: '0 * * * *',
+  // cronTime: '0 * * * *',
+  // every 10 minutes
+  cronTime: '*/10 * * * *',
   onTrigger: async () => {
     const tenants = await TenantService._findAndCountAllForEveryUser({})
     for (const tenant of tenants.rows) {
