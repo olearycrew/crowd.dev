@@ -103,6 +103,7 @@
 </template>
 
 <script setup>
+import { withHttp } from '@/utils/string';
 import { defineProps, computed } from 'vue';
 
 const props = defineProps({
@@ -116,7 +117,8 @@ const hasSocialIdentities = computed(
   () => !!props.organization.github
     || !!props.organization.linkedin
     || !!props.organization.twitter
-    || !!props.organization.crunchbase,
+    || !!props.organization.crunchbase
+    || !!props.organization.facebook,
 );
 const showDivider = computed(
   () => !!props.organization.phoneNumbers?.length
@@ -125,12 +127,12 @@ const showDivider = computed(
 
 const getIdentityLink = (platform) => {
   if (props.organization[platform]?.url) {
-    return props.organization[platform]?.url;
+    return withHttp(props.organization[platform]?.url);
   } if (props.organization[platform]?.handle) {
     let url;
 
     if (platform === 'linkedin') {
-      url = 'https://www.linkedin.com/';
+      url = 'https://www.linkedin.com/company/';
     } else if (platform === 'github') {
       url = 'https://github.com/';
     } else if (platform === 'twitter') {
@@ -143,6 +145,7 @@ const getIdentityLink = (platform) => {
 
     return `${url}${props.organization[platform].handle}`;
   }
+
   return null;
 };
 </script>
