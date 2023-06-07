@@ -62,7 +62,6 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import { ActivityPermissions } from '@/modules/activity/activity-permissions';
-// import AppActivityListFilter from '@/modules/activity/components/list/activity-list-filter.vue';
 import AppActivityTypeListDrawer from '@/modules/activity/components/type/activity-type-list-drawer.vue';
 import AppActivityFormDrawer from '@/modules/activity/components/activity-form-drawer.vue';
 import AppActivityTypeFormModal from '@/modules/activity/components/type/activity-type-form-modal.vue';
