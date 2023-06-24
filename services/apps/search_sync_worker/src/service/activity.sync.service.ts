@@ -86,19 +86,22 @@ export class ActivitySyncService extends LoggerBase {
 
   public async syncTenantActivities(
     tenantId: string,
-    reset = true,
-    batchSize = 500,
+    batchSize = 200,
+    syncCutoffTime?: string,
   ): Promise<void> {
+    const cutoffDate = syncCutoffTime ? syncCutoffTime : new Date().toISOString()
+
     this.log.warn({ tenantId }, 'Syncing all tenant activities!')
     let count = 0
 
     await logExecutionTime(
       async () => {
-        if (reset) {
-          await this.activityRepo.setTenanActivitiesForSync(tenantId)
-        }
-
-        let activityIds = await this.activityRepo.getTenantActivitiesForSync(tenantId, 1, batchSize)
+        let activityIds = await this.activityRepo.getTenantActivitiesForSync(
+          tenantId,
+          1,
+          batchSize,
+          cutoffDate,
+        )
 
         while (activityIds.length > 0) {
           const activities = await this.activityRepo.getActivityData(activityIds)
@@ -119,7 +122,12 @@ export class ActivitySyncService extends LoggerBase {
           await this.activityRepo.markSynced(activities.map((m) => m.id))
 
           this.log.info({ tenantId }, `Synced ${count} activities!`)
-          activityIds = await this.activityRepo.getTenantActivitiesForSync(tenantId, 1, batchSize)
+          activityIds = await this.activityRepo.getTenantActivitiesForSync(
+            tenantId,
+            1,
+            batchSize,
+            cutoffDate,
+          )
         }
       },
       this.log,
