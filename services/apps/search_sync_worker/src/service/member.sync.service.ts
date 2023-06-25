@@ -424,7 +424,7 @@ export class MemberSyncService extends LoggerBase {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private static prefixData(data: IDbMemberSyncData, attributes: IMemberAttribute[]): any {
+  public static prefixData(data: IDbMemberSyncData, attributes: IMemberAttribute[]): any {
     const p: Record<string, unknown> = {}
 
     p.uuid_memberId = data.id

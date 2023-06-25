@@ -162,7 +162,7 @@ export class ActivitySyncService extends LoggerBase {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private static prefixData(data: IDbActivitySyncData): any {
+  public static prefixData(data: IDbActivitySyncData): any {
     const p: Record<string, unknown> = {}
 
     p.uuid_id = data.id
