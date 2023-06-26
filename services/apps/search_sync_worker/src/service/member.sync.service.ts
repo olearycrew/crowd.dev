@@ -7,7 +7,7 @@ import { DbStore } from '@crowd/database'
 import { Logger, LoggerBase, logExecutionTime } from '@crowd/logging'
 import { RedisClient } from '@crowd/redis'
 import { Edition, IMemberAttribute, MemberAttributeType } from '@crowd/types'
-import { IIndexRequest, ISearchHit } from './opensearch.data'
+import { IIndexRequest, IPagedSearchResponse, ISearchHit } from './opensearch.data'
 import { OpenSearchService } from './opensearch.service'
 
 export class MemberSyncService extends LoggerBase {
@@ -22,6 +22,55 @@ export class MemberSyncService extends LoggerBase {
     super(parentLog)
 
     this.memberRepo = new MemberRepository(redisClient, store, this.log)
+  }
+
+  public async getAllIndexedTenantIds(
+    pageSize = 500,
+    afterKey?: string,
+  ): Promise<IPagedSearchResponse<string, string>> {
+    const include = ['uuid_tenantId']
+
+    const results = await this.openSearchService.search(
+      OpenSearchIndex.MEMBERS,
+      undefined,
+      {
+        uuid_tenantId_buckets: {
+          composite: {
+            size: pageSize,
+            sources: [
+              {
+                uuid_tenantId: {
+                  terms: {
+                    field: 'uuid_tenantId',
+                  },
+                },
+              },
+            ],
+            after: afterKey
+              ? {
+                  uuid_tenantId: afterKey,
+                }
+              : undefined,
+          },
+        },
+      },
+      undefined,
+      undefined,
+      undefined,
+      include,
+    )
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const data = (results as any).uuid_tenantId_buckets
+
+    const newAfterKey = data.after_key?.uuid_tenantId
+
+    const ids = data.buckets.map((b) => b.key.uuid_tenantId)
+
+    return {
+      data: ids,
+      afterKey: newAfterKey,
+    }
   }
 
   public async cleanupMemberIndex(tenantId: string): Promise<void> {
@@ -42,15 +91,15 @@ export class MemberSyncService extends LoggerBase {
     const pageSize = 500
     let lastJoinedAt: string
 
-    let results: ISearchHit<{ date_joinedAt: string; uuid_memberId: string }>[] =
-      await this.openSearchService.search(
-        OpenSearchIndex.MEMBERS,
-        query,
-        pageSize,
-        sort,
-        undefined,
-        include,
-      )
+    let results = (await this.openSearchService.search(
+      OpenSearchIndex.MEMBERS,
+      query,
+      undefined,
+      pageSize,
+      sort,
+      undefined,
+      include,
+    )) as ISearchHit<{ date_joinedAt: string; uuid_memberId: string }>[]
 
     let processed = 0
 
@@ -77,20 +126,18 @@ export class MemberSyncService extends LoggerBase {
 
       // use last joinedAt to get the next page
       lastJoinedAt = results[results.length - 1]._source.date_joinedAt
-      results = await this.openSearchService.search(
+      results = (await this.openSearchService.search(
         OpenSearchIndex.MEMBERS,
         query,
+        undefined,
         pageSize,
         sort,
         lastJoinedAt,
         include,
-      )
+      )) as ISearchHit<{ date_joinedAt: string; uuid_memberId: string }>[]
     }
 
-    this.log.warn(
-      { tenantId },
-      `'Processed total of ${processed} members while cleaning up tenant!'`,
-    )
+    this.log.warn({ tenantId }, `Processed total of ${processed} members while cleaning up tenant!`)
   }
 
   public async removeMember(memberId: string): Promise<void> {
@@ -111,14 +158,15 @@ export class MemberSyncService extends LoggerBase {
     const pageSize = 10
     let lastJoinedAt: string
 
-    let results: ISearchHit<{ date_joinedAt: string }>[] = await this.openSearchService.search(
+    let results = (await this.openSearchService.search(
       OpenSearchIndex.MEMBERS,
       query,
+      undefined,
       pageSize,
       sort,
       undefined,
       include,
-    )
+    )) as ISearchHit<{ date_joinedAt: string }>[]
 
     while (results.length > 0) {
       const ids = results.map((r) => r._id)
@@ -128,14 +176,15 @@ export class MemberSyncService extends LoggerBase {
 
       // use last joinedAt to get the next page
       lastJoinedAt = results[results.length - 1]._source.date_joinedAt
-      results = await this.openSearchService.search(
+      results = (await this.openSearchService.search(
         OpenSearchIndex.MEMBERS,
         query,
+        undefined,
         pageSize,
         sort,
         lastJoinedAt,
         include,
-      )
+      )) as ISearchHit<{ date_joinedAt: string }>[]
     }
   }
 

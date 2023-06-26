@@ -1,11 +1,11 @@
-import { DbStore, getDbConnection } from '@crowd/database'
+import { getDbConnection } from '@crowd/database'
 import { getServiceLogger } from '@crowd/logging'
+import { getRedisClient } from '@crowd/redis'
 import { getSqsClient } from '@crowd/sqs'
 import { DB_CONFIG, REDIS_CONFIG, SQS_CONFIG } from './conf'
-import { OpenSearchService } from './service/opensearch.service'
 import { WorkerQueueReceiver } from './queue'
-import { getRedisClient } from '@crowd/redis'
 import { InitService } from './service/init.service'
+import { OpenSearchService } from './service/opensearch.service'
 
 const log = getServiceLogger()
 

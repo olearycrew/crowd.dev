@@ -5,7 +5,7 @@ import { ActivityRepository } from '@/repo/activity.repo'
 import { OpenSearchIndex } from '@/types'
 import { timeout } from '@crowd/common'
 import { IDbActivitySyncData } from '@/repo/activity.data'
-import { ISearchHit } from './opensearch.data'
+import { IPagedSearchResponse, ISearchHit } from './opensearch.data'
 
 export class ActivitySyncService extends LoggerBase {
   private readonly activityRepo: ActivityRepository
@@ -18,6 +18,55 @@ export class ActivitySyncService extends LoggerBase {
     super(parentLog)
 
     this.activityRepo = new ActivityRepository(store, this.log)
+  }
+
+  public async getAllIndexedTenantIds(
+    pageSize = 500,
+    afterKey?: string,
+  ): Promise<IPagedSearchResponse<string, string>> {
+    const include = ['uuid_tenantId']
+
+    const results = await this.openSearchService.search(
+      OpenSearchIndex.ACTIVITIES,
+      undefined,
+      {
+        uuid_tenantId_buckets: {
+          composite: {
+            size: pageSize,
+            sources: [
+              {
+                uuid_tenantId: {
+                  terms: {
+                    field: 'uuid_tenantId',
+                  },
+                },
+              },
+            ],
+            after: afterKey
+              ? {
+                  uuid_tenantId: afterKey,
+                }
+              : undefined,
+          },
+        },
+      },
+      undefined,
+      undefined,
+      undefined,
+      include,
+    )
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const data = (results as any).uuid_tenantId_buckets
+
+    const newAfterKey = data.after_key?.uuid_tenantId
+
+    const ids = data.buckets.map((b) => b.key.uuid_tenantId)
+
+    return {
+      data: ids,
+      afterKey: newAfterKey,
+    }
   }
 
   public async cleanupActivityIndex(tenantId: string): Promise<void> {
@@ -38,14 +87,15 @@ export class ActivitySyncService extends LoggerBase {
     const pageSize = 500
     let lastTimestamp: string
 
-    let results: ISearchHit<{ date_timestamp: string }>[] = await this.openSearchService.search(
+    let results = (await this.openSearchService.search(
       OpenSearchIndex.ACTIVITIES,
       query,
+      undefined,
       pageSize,
       sort,
       undefined,
       include,
-    )
+    )) as ISearchHit<{ date_timestamp: string }>[]
 
     let processed = 0
 
@@ -68,20 +118,18 @@ export class ActivitySyncService extends LoggerBase {
 
       // use last joinedAt to get the next page
       lastTimestamp = results[results.length - 1]._source.date_timestamp
-      results = await this.openSearchService.search(
+      results = (await this.openSearchService.search(
         OpenSearchIndex.ACTIVITIES,
         query,
+        undefined,
         pageSize,
         sort,
         lastTimestamp,
         include,
-      )
+      )) as ISearchHit<{ date_timestamp: string }>[]
     }
 
-    this.log.warn(
-      { tenantId },
-      `'Processed total of ${processed} members while cleaning up tenant!'`,
-    )
+    this.log.warn({ tenantId }, `Processed total of ${processed} members while cleaning up tenant!`)
   }
 
   public async syncTenantActivities(

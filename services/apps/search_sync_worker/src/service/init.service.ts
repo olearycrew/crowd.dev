@@ -1,18 +1,17 @@
-import { DbStore } from '@crowd/database'
-import { Logger, LoggerBase } from '@crowd/logging'
-import { OpenSearchService } from './opensearch.service'
-import { IDbMemberSyncData } from '@/repo/member.data'
-import { MemberSyncService } from './member.sync.service'
-import { OpenSearchIndex } from '@/types'
 import { IDbActivitySyncData } from '@/repo/activity.data'
+import { IDbMemberSyncData } from '@/repo/member.data'
+import { OpenSearchIndex } from '@/types'
+import { Logger, LoggerBase } from '@crowd/logging'
 import { ActivitySyncService } from './activity.sync.service'
+import { MemberSyncService } from './member.sync.service'
+import { OpenSearchService } from './opensearch.service'
 
 export class InitService extends LoggerBase {
-  private readonly fakeTenantId = 'b0e82a13-566f-40e0-b0d0-11fcb6596b0f'
-  private readonly fakeSegmentId = 'ce36b0b0-1fc4-4637-955d-afb8a6b58e48'
-  private readonly fakeMemberId = '9c19e17c-6a07-4f4c-bc9b-ce1fdce9c126'
-  private readonly fakeActivityId = 'fa761640-f77c-4340-b56e-bdd0936d852b'
-  private readonly fakeConversationId = 'cba1758c-7b1f-4a3c-b6ff-e6f3bdf54c86'
+  public static FAKE_TENANT_ID = 'b0e82a13-566f-40e0-b0d0-11fcb6596b0f'
+  public static FAKE_SEGMENT_ID = 'ce36b0b0-1fc4-4637-955d-afb8a6b58e48'
+  public static FAKE_MEMBER_ID = '9c19e17c-6a07-4f4c-bc9b-ce1fdce9c126'
+  public static FAKE_ACTIVITY_ID = 'fa761640-f77c-4340-b56e-bdd0936d852b'
+  public static FAKE_CONVERSATION_ID = 'cba1758c-7b1f-4a3c-b6ff-e6f3bdf54c86'
 
   constructor(private readonly openSearchService: OpenSearchService, parentLog: Logger) {
     super(parentLog)
@@ -30,9 +29,9 @@ export class InitService extends LoggerBase {
     // if we don't have anything in the index any search by any field will return an error
 
     const fakeMember: IDbMemberSyncData = {
-      id: this.fakeMemberId,
-      tenantId: this.fakeTenantId,
-      segmentId: this.fakeSegmentId,
+      id: InitService.FAKE_MEMBER_ID,
+      tenantId: InitService.FAKE_TENANT_ID,
+      segmentId: InitService.FAKE_SEGMENT_ID,
       displayName: 'Test Member',
       emails: ['fake@email.com'],
       score: 10,
@@ -76,7 +75,7 @@ export class InitService extends LoggerBase {
 
     const prepared = MemberSyncService.prefixData(fakeMember, [])
     await this.openSearchService.index(
-      `${this.fakeMemberId}-${this.fakeSegmentId}`,
+      `${InitService.FAKE_MEMBER_ID}-${InitService.FAKE_SEGMENT_ID}`,
       OpenSearchIndex.MEMBERS,
       prepared,
     )
@@ -88,10 +87,10 @@ export class InitService extends LoggerBase {
     // if we don't have anything in the index any search by any field will return an error
 
     const fakeActivity: IDbActivitySyncData = {
-      id: this.fakeActivityId,
-      tenantId: this.fakeTenantId,
-      segmentId: this.fakeSegmentId,
-      memberId: this.fakeMemberId,
+      id: InitService.FAKE_ACTIVITY_ID,
+      tenantId: InitService.FAKE_TENANT_ID,
+      segmentId: InitService.FAKE_SEGMENT_ID,
+      memberId: InitService.FAKE_MEMBER_ID,
       type: 'comment',
       timestamp: new Date().toISOString(),
       platform: 'devto',
@@ -106,7 +105,7 @@ export class InitService extends LoggerBase {
       url: 'https://placehold.co/400',
       sentiment: 10,
       importHash: 'importHash',
-      conversationId: this.fakeConversationId,
+      conversationId: InitService.FAKE_CONVERSATION_ID,
       parentId: '6952eace-e083-4c53-a65c-f99848c47c1c',
       username: 'Test Member',
       objectMemberId: '4ea4c0f7-fdf8-448c-99ff-e03d0df95358',
@@ -114,6 +113,10 @@ export class InitService extends LoggerBase {
     }
 
     const prepared = ActivitySyncService.prefixData(fakeActivity)
-    await this.openSearchService.index(this.fakeActivityId, OpenSearchIndex.ACTIVITIES, prepared)
+    await this.openSearchService.index(
+      InitService.FAKE_ACTIVITY_ID,
+      OpenSearchIndex.ACTIVITIES,
+      prepared,
+    )
   }
 }
