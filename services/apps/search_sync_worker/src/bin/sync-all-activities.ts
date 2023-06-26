@@ -16,12 +16,12 @@ setImmediate(async () => {
 
   const repo = new ActivityRepository(store, log)
 
-  const tenantIds = await repo.getUnsyncedTenantIds()
+  const tenantIds = await repo.getTenantIds()
 
   const service = new ActivitySyncService(store, openSearchService, log)
 
   for (const tenantId of tenantIds) {
-    await service.syncTenantActivities(tenantId, false, 500)
+    await service.syncTenantActivities(tenantId, 500)
   }
   process.exit(0)
 })

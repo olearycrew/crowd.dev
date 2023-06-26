@@ -139,8 +139,14 @@ export class MemberSyncService extends LoggerBase {
     }
   }
 
-  public async syncTenantMembers(tenantId: string, reset = true, batchSize = 200): Promise<void> {
-    this.log.warn({ tenantId }, 'Syncing all tenant members!')
+  public async syncTenantMembers(
+    tenantId: string,
+    batchSize = 200,
+    syncCutoffTime?: string,
+  ): Promise<void> {
+    const cutoffDate = syncCutoffTime ? syncCutoffTime : new Date().toISOString()
+
+    this.log.warn({ tenantId, cutoffDate }, 'Syncing all tenant members!')
     let docCount = 0
     let memberCount = 0
 
@@ -148,13 +154,14 @@ export class MemberSyncService extends LoggerBase {
 
     await logExecutionTime(
       async () => {
-        if (reset) {
-          await this.memberRepo.setTenanMembersForSync(tenantId)
-        }
-
         const attributes = await this.memberRepo.getTenantMemberAttributes(tenantId)
 
-        let memberIds = await this.memberRepo.getTenantMembersForSync(tenantId, 1, batchSize)
+        let memberIds = await this.memberRepo.getTenantMembersForSync(
+          tenantId,
+          1,
+          batchSize,
+          cutoffDate,
+        )
 
         while (memberIds.length > 0) {
           const members = await this.memberRepo.getMemberData(memberIds)
@@ -241,7 +248,12 @@ export class MemberSyncService extends LoggerBase {
           await this.memberRepo.markSynced(memberIds)
 
           this.log.info({ tenantId }, `Synced ${memberCount} members with ${docCount} documents!`)
-          memberIds = await this.memberRepo.getTenantMembersForSync(tenantId, 1, batchSize)
+          memberIds = await this.memberRepo.getTenantMembersForSync(
+            tenantId,
+            1,
+            batchSize,
+            cutoffDate,
+          )
         }
       },
       this.log,
