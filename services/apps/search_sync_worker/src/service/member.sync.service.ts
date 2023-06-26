@@ -492,6 +492,7 @@ export class MemberSyncService extends LoggerBase {
     p.uuid_tenantId = data.tenantId
     p.uuid_segmentId = data.segmentId
     p.string_displayName = data.displayName
+    p.keyword_displayName = data.displayName
     const p_attributes = {}
 
     for (const attribute of attributes) {
