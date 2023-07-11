@@ -11,23 +11,19 @@
 import { onMounted } from 'vue';
 import { Auth0Service } from '@/shared/services/auth0.service';
 import { mapActions } from '@/shared/vuex/vuex.helpers';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 const { doSigninWithAuth0 } = mapActions('auth');
 
 const router = useRouter();
+const route = useRoute();
 
 onMounted(() => {
-  console.log('handling')
+  const { code, state } = route.query;
   Auth0Service.handleAuth()
     .then(() => {
       const { idToken, profile } = Auth0Service.authData();
-      if (!profile.email_verified) {
-        router.push({ name: 'emailUnverified' });
-        return Promise.resolve();
-      }
-      return doSigninWithAuth0(idToken);
-    })
+    });
 });
 </script>
 

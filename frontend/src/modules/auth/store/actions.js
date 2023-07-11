@@ -126,10 +126,10 @@ export default {
 
   doSigninWithAuth0(
     { commit },
-    token,
+    code,
   ) {
     commit('AUTH_START');
-    return AuthService.ssoGetToken(token)
+    return AuthService.ssoGetToken(code)
       .then((token) => {
         AuthToken.set(token, true);
         return AuthService.fetchMe();

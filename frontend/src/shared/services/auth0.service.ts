@@ -14,7 +14,8 @@ class Auth0ServiceClass {
       domain: config.auth0.domain,
       clientID: config.auth0.clientId,
       redirectUri: authCallback,
-      responseType: 'token id_token',
+      responseType: 'code',
+      scope: 'openid profile email',
     });
   }
 
