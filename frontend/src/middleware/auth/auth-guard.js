@@ -64,4 +64,10 @@ export default async function ({ to, store, router }) {
       path: '/auth/empty-permissions',
     });
   }
+
+  if (to.meta.notEmptyPermissions && !permissionChecker.isEmptyPermissions) {
+    router.push({
+      path: '/',
+    });
+  }
 }
