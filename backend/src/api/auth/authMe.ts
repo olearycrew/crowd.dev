@@ -41,7 +41,7 @@ export default async (req, res) => {
 
       // TODO: return actual activityTypes using segment information
       tenantUser.tenant.dataValues.settings[0].dataValues = {
-        ...tenantUser.tenant.dataValues.settings[0].dataValues,
+        ...tenantUser.tenant.dataValues?.settings[0].dataValues,
         activityTypes,
         activityChannels,
         slackWebHook: !!tenantUser.tenant.settings[0].dataValues.slackWebHook,
