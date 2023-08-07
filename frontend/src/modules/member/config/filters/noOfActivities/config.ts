@@ -1,23 +1,34 @@
-import {
-  NumberFilterConfig,
-  NumberFilterOptions,
-  NumberFilterValue,
-} from '@/shared/modules/filters/types/filterTypes/NumberFilterConfig';
 import { FilterConfigType } from '@/shared/modules/filters/types/FilterConfig';
-import { itemLabelRendererByType } from '@/shared/modules/filters/config/itemLabelRendererByType';
-import { apiFilterRendererByType } from '@/shared/modules/filters/config/apiFilterRendererByType';
+import { CustomFilterConfig } from '@/shared/modules/filters/types/filterTypes/CustomFilterConfig';
+import NoOfActivitiesFilter from '@/modules/member/config/filters/noOfActivities/NoOfActivitiesFilter.vue';
+import { FilterNumberOperator } from '@/shared/modules/filters/config/constants/number.constants';
+import { NoOfActivitiesForm } from "@/modules/member/config/filters/noOfActivities/types";
 
-const noOfActivities: NumberFilterConfig = {
+const noOfActivities: CustomFilterConfig = {
   id: 'noOfActivities',
   label: '# of activities',
   iconClass: 'ri-radar-line',
-  type: FilterConfigType.NUMBER,
+  type: FilterConfigType.CUSTOM,
+  component: NoOfActivitiesFilter,
   options: {},
-  itemLabelRenderer(value: NumberFilterValue, options: NumberFilterOptions): string {
-    return itemLabelRendererByType[FilterConfigType.NUMBER]('# of activities', value, options);
+  queryUrlParser: (query: any): NoOfActivitiesForm => {
+    const obj: any = {
+      operator: query.operator as any,
+      value: +query.value,
+      valueTo: +query.valueTo || '',
+    };
+    if (![FilterNumberOperator.BETWEEN, FilterNumberOperator.NOT_BETWEEN].includes(obj.operator)) {
+      delete obj.valueTo;
+    }
+    return obj;
   },
-  apiFilterRenderer(value: NumberFilterValue): any[] {
-    return apiFilterRendererByType[FilterConfigType.NUMBER]('activityCount', value);
+  itemLabelRenderer(value: any, options: any): string {
+    console.log(value, options);
+    return 'no of activities';
+  },
+  apiFilterRenderer(value: any): any[] {
+    console.log(value);
+    return [];
   },
 };
 
