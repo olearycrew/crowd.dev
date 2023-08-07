@@ -4,19 +4,21 @@
     v-loading="loading"
     class="app-page-spinner"
   />
-  <div v-else-if="!error" class="absolute left-0 right-0">
+  <div v-else-if="!error" class="absolute left-0 right-0 top-0">
     <div
       ref="header"
-      class="w-full bg-gray-50 border-gray-200 pt-4 sticky top-[-20px] z-10"
+      class="w-full bg-white border-gray-200 pt-4 sticky top-[-20px] z-10 rounded-tl-2xl border-b"
       :class="{
-        'border-b': !isHeaderOnTop,
-        shadow: isHeaderOnTop,
+        shadow: !isHeaderOnTop,
       }"
     >
       <div class="max-w-5xl mx-auto px-8 pb-6">
         <router-link
           class="btn-link--sm btn-link--secondary inline-flex items-center mb-3.5"
-          :to="{ path: '/reports' }"
+          :to="{
+            path: '/reports',
+            query: { projectGroup: selectedProjectGroup?.id },
+          }"
         >
           <i
             class="ri-arrow-left-s-line mr-2"
@@ -86,6 +88,8 @@ import templates from '@/modules/report/templates/config';
 import AppReportTemplateFilters from '@/modules/report/components/templates/report-template-filters.vue';
 import ActivityPlatformField from '@/modules/activity/activity-platform-field';
 import { mapActions } from '@/shared/vuex/vuex.helpers';
+import { storeToRefs } from 'pinia';
+import { useLfSegmentsStore } from '@/modules/lf/segments/store';
 
 const props = defineProps({
   id: {
@@ -93,6 +97,9 @@ const props = defineProps({
     default: null,
   },
 });
+
+const lsSegmentsStore = useLfSegmentsStore();
+const { selectedProjectGroup } = storeToRefs(lsSegmentsStore);
 
 const { doFind } = mapActions('report');
 
@@ -104,7 +111,7 @@ const wrapper = ref();
 const loading = ref();
 const error = ref();
 const storeUnsubscribe = ref(() => {});
-const isHeaderOnTop = ref(false);
+const isHeaderOnTop = ref(true);
 
 const platformField = new ActivityPlatformField(
   'activeOn',
@@ -131,8 +138,7 @@ const currentTemplate = computed(() => templates.find((t) => t.config.nameAsId =
 const { getCubeToken } = mapActions('widget');
 
 const onPageScroll = () => {
-  isHeaderOnTop.value = header.value.getBoundingClientRect().top === 0
-    && wrapper.value.scrollTop !== 0;
+  isHeaderOnTop.value = wrapper.value.scrollTop === 0;
 };
 
 const onPlatformFilterOpen = () => {

@@ -1,5 +1,5 @@
 <template>
-  <div class="widget-total-members">
+  <div class="widget-total-members panel-card">
     <div class="flex justify-between items-center pb-5 mb-4 border-b border-gray-100">
       <app-widget-title
         text-size="text-base"
@@ -130,7 +130,7 @@ const granularity = computed(() => getTimeGranularityFromPeriod(period.value));
 const datasets = computed(() => [
   {
     name: 'Total members',
-    borderColor: '#E94F2E',
+    borderColor: '#003778',
     measure: 'Members.cumulativeCount',
     granularity: granularity.value,
     ...(!props.isPublicView && {
@@ -193,8 +193,8 @@ const chartResultSet = (resultSet) => {
 
 // Fetch function to pass to detail drawer
 const getTotalMembers = async ({ pagination }) => {
-  const res = await MemberService.list({
-    customFilters: TOTAL_MEMBERS_FILTER({
+  const res = await MemberService.listMembers({
+    filter: TOTAL_MEMBERS_FILTER({
       date: drawerDate.value,
       granularity: granularity.value,
       selectedPlatforms: props.filters.platform.value,
@@ -204,7 +204,6 @@ const getTotalMembers = async ({ pagination }) => {
     limit: pagination.pageSize,
     offset: (pagination.currentPage - 1) * pagination.pageSize,
     segments: props.filters.segments.segments,
-    buildFilter: false,
   });
   return res;
 };
@@ -253,7 +252,7 @@ const onExport = async ({ count }) => {
 
 <style lang="scss" scoped>
 .widget-total-members {
-  @apply bg-white shadow rounded-lg p-5;
+  @apply p-5;
   :deep(.chart) {
     div {
       line-height: 100px !important;

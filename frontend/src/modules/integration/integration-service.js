@@ -282,11 +282,25 @@ export class IntegrationService {
     return response.data;
   }
 
+  static async hubspotConnect() {
+    // Getting the tenant_id
+    const tenantId = AuthCurrentTenant.get();
+    // Calling the authenticate function in the backend.
+    const response = await authAxios.post(
+      `/tenant/${tenantId}/hubspot-connect`,
+      {
+      },
+    );
+
+    return response.data;
+  }
+
   static async gitConnect(remotes) {
     const tenantId = AuthCurrentTenant.get();
 
     const response = await authAxios.put(`/tenant/${tenantId}/git-connect`, {
       remotes,
+      ...getSegments(),
     });
 
     return response.data;

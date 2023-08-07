@@ -8,6 +8,7 @@
           'border-b': ci < trendingConversations.length - 1,
         }"
         :loading="true"
+        @conversation-destroyed="refreshConversations"
       />
     </div>
     <div v-else>
@@ -19,6 +20,7 @@
         }"
         :conversation="conversation"
         @details="conversationId = conversation.id"
+        @conversation-destroyed="refreshConversations"
       />
 
       <app-dashboard-empty-state
@@ -35,8 +37,9 @@
         :to="{
           name: 'activity',
           hash: '#conversation',
+          query: { projectGroup: selectedProjectGroup?.id },
         }"
-        class="text-red font-medium text-center text-xs leading-5"
+        class="text-red font-medium text-center text-xs leading-5 hover:underline"
       >
         All conversations
       </router-link>
@@ -55,6 +58,8 @@ import { mapGetters } from 'vuex';
 import AppDashboardEmptyState from '@/modules/dashboard/components/dashboard-empty-state.vue';
 import AppDashboardConversationItem from '@/modules/dashboard/components/conversations/dashboard-conversation-item.vue';
 import AppConversationDrawer from '@/modules/conversation/components/conversation-drawer.vue';
+import { storeToRefs } from 'pinia';
+import { useLfSegmentsStore } from '@/modules/lf/segments/store';
 
 export default {
   name: 'AppDashboardConversationList',
@@ -66,7 +71,6 @@ export default {
   data() {
     return {
       conversationId: null,
-      storeUnsubscribe: () => {},
     };
   },
   computed: {
@@ -74,23 +78,18 @@ export default {
       'trendingConversations',
       'conversations',
     ]),
+    selectedProjectGroup() {
+      const lsSegmentsStore = useLfSegmentsStore();
+
+      return storeToRefs(lsSegmentsStore).selectedProjectGroup.value;
+    },
   },
-  created() {
-    this.storeUnsubscribe = this.$store.subscribe(
-      (mutation) => {
-        if (
-          mutation.type
-          === 'communityHelpCenter/DESTROY_SUCCESS'
-        ) {
-          this.$store.dispatch(
-            'dashboard/getTrendingConversations',
-          );
-        }
-      },
-    );
-  },
-  beforeUnmount() {
-    this.storeUnsubscribe();
+  methods: {
+    refreshConversations() {
+      this.$store.dispatch(
+        'dashboard/getTrendingConversations',
+      );
+    },
   },
 };
 </script>

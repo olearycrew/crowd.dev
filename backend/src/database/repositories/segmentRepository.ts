@@ -493,7 +493,7 @@ class SegmentRepository extends RepositoryBase<
     }
 
     if (criteria.filter?.parentSlug) {
-      searchQuery += ` AND s."parentSlug" ilike :parent_slug `
+      searchQuery += ` AND s."parentSlug" = :parent_slug `
     }
 
     const projects = await this.options.database.sequelize.query(
@@ -520,7 +520,7 @@ class SegmentRepository extends RepositoryBase<
           tenantId: this.currentTenant.id,
           name: `%${criteria.filter?.name}%`,
           status: criteria.filter?.status,
-          parent_slug: `%${criteria.filter?.parentSlug}%`,
+          parent_slug: `${criteria.filter?.parentSlug}`,
         },
         type: QueryTypes.SELECT,
       },
@@ -560,11 +560,11 @@ class SegmentRepository extends RepositoryBase<
     }
 
     if (criteria.filter?.parentSlug) {
-      searchQuery += ` AND s."parentSlug" ilike :parent_slug `
+      searchQuery += ` AND s."parentSlug" = :parent_slug `
     }
 
     if (criteria.filter?.grandparentSlug) {
-      searchQuery += ` AND s."grandparentSlug" ilike :grandparent_slug `
+      searchQuery += ` AND s."grandparentSlug" = :grandparent_slug `
     }
 
     const subprojects = await this.options.database.sequelize.query(
@@ -585,8 +585,8 @@ class SegmentRepository extends RepositoryBase<
           tenantId: this.currentTenant.id,
           name: `%${criteria.filter?.name}%`,
           status: criteria.filter?.status,
-          parent_slug: `%${criteria.filter?.parentSlug}%`,
-          grandparent_slug: `%${criteria.filter?.grandparentSlug}%`,
+          parent_slug: `${criteria.filter?.parentSlug}`,
+          grandparent_slug: `${criteria.filter?.grandparentSlug}`,
         },
         type: QueryTypes.SELECT,
       },

@@ -81,9 +81,10 @@
                       value: periodStartDate,
                       operator: 'gt',
                     },
+                    projectGroup: selectedProjectGroup?.id,
                   }),
                 }"
-                class="text-sm leading-5 font-medium text-red"
+                class="text-sm leading-5 font-medium hover:underline"
               >
                 View more
               </router-link>
@@ -161,9 +162,10 @@
                       value: periodStartDate,
                       operator: 'gt',
                     },
+                    projectGroup: selectedProjectGroup?.id,
                   }),
                 }"
-                class="text-sm leading-5 font-medium text-red"
+                class="text-sm leading-5 font-medium hover:underline"
               >
                 View more
               </router-link>
@@ -193,6 +195,8 @@ import AppDashboardWidgetChart from '@/modules/dashboard/components/dashboard-wi
 import newAndActive from '@/modules/organization/config/saved-views/views/new-and-active';
 import allOrganizations from '@/modules/organization/config/saved-views/views/all-organizations';
 import { filterQueryService } from '@/shared/modules/filters/services/filter-query.service';
+import { storeToRefs } from 'pinia';
+import { useLfSegmentsStore } from '@/modules/lf/segments/store';
 
 export default {
   name: 'AppDashboardOrganizations',
@@ -226,13 +230,18 @@ export default {
         .subtract(this.period.value, 'day')
         .format('YYYY-MM-DD');
     },
+    selectedProjectGroup() {
+      const lsSegmentsStore = useLfSegmentsStore();
+
+      return storeToRefs(lsSegmentsStore).selectedProjectGroup.value;
+    },
   },
   methods: {
     datasets(name) {
       return [
         {
           name,
-          borderColor: '#E94F2E',
+          borderColor: '#003778',
           measure: 'Organizations.count',
           granularity: DAILY_GRANULARITY_FILTER.value,
         },

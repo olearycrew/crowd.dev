@@ -33,6 +33,7 @@
         :to="{
           name: 'memberView',
           params: { id: member.id },
+          query: { projectGroup: selectedProjectGroup?.id },
         }"
       >
         <app-avatar :entity="member" size="xs" />
@@ -85,7 +86,7 @@
           {{ conversation.title }}
         </div>
         <button
-          class="btn btn--transparent w-8 !h-8 flex-shrink-0"
+          class="btn btn-link btn-link--primary w-8 !h-8 flex-shrink-0"
           type="button"
           :disabled="isEditLockedForSampleData"
           @click.stop="$emit('edit-title')"
@@ -167,6 +168,8 @@ import AppConversationDetailsFooter from '@/modules/conversation/components/conv
 import { ActivityService } from '@/modules/activity/activity-service';
 import Message from '@/shared/message/message';
 import config from '@/config';
+import { storeToRefs } from 'pinia';
+import { useLfSegmentsStore } from '@/modules/lf/segments/store';
 import { ConversationPermissions } from '../conversation-permissions';
 
 export default {
@@ -274,14 +277,19 @@ export default {
 
       return options;
     },
+    selectedProjectGroup() {
+      const lsSegmentsStore = useLfSegmentsStore();
+
+      return storeToRefs(lsSegmentsStore).selectedProjectGroup.value;
+    },
   },
   methods: {
     doChangeSort(value) {
       if (value !== 'all') {
         this.loadingActivities = true;
 
-        ActivityService.list({
-          customFilters: {
+        ActivityService.query({
+          filter: {
             and: [
               {
                 type: value,
@@ -294,8 +302,6 @@ export default {
           orderBy: ['timestamp_ASC', 'createdAt_ASC'],
           limit: null,
           offset: 0,
-          buildFilter: false,
-          buildWithDefaultRootFilters: false,
         }).then((response) => {
           this.filteredActivities = response.rows;
         }).catch((error) => {

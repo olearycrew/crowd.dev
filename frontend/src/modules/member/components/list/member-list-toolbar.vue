@@ -7,7 +7,7 @@
       {{ pluralize('contributor', selectedMembers.length, true) }}
       selected</span>
     <el-dropdown trigger="click" @command="handleCommand">
-      <button type="button" class="btn btn--bordered btn--sm">
+      <button type="button" class="btn btn--secondary btn--sm">
         <span class="mr-2">Actions</span>
         <i class="ri-xl ri-arrow-down-s-line" />
       </button>
@@ -95,10 +95,9 @@
       </template>
     </el-dropdown>
 
-    <app-member-list-bulk-update-tags
-      v-model="bulkTagsUpdateVisible"
-      :selected-rows="selectedMembers"
-    />
+    <app-tag-popover v-model="bulkTagsUpdateVisible"
+      @reload="fetchMembers({ reload: true })" />
+
   </div>
 </template>
 
@@ -120,7 +119,7 @@ import {
   getEnrichmentMax,
   showEnrichmentLoadingMessage,
 } from '@/modules/member/member-enrichment';
-import AppMemberListBulkUpdateTags from '@/modules/member/components/list/member-list-bulk-update-tags.vue';
+import AppTagPopover from '@/modules/tag/components/tag-popover.vue';
 import AppSvg from '@/shared/svg/svg.vue';
 
 const { currentUser, currentTenant } = mapGetters('auth');
@@ -207,7 +206,7 @@ const markAsTeamMemberOptions = computed(() => {
 });
 
 const handleMergeMembers = () => {
-  const [firstMember, secondMember] = this.selectedRows;
+  const [firstMember, secondMember] = selectedMembers.value;
   return MemberService.merge(firstMember, secondMember)
     .then(() => {
       Message.success('Contributors merged successfuly');
@@ -259,7 +258,6 @@ const handleDoExport = async () => {
       orderBy: `${filters.value.order.prop}_${filters.value.order.order === 'descending' ? 'DESC' : 'ASC'}`,
       limit: 0,
       offset: null,
-      buildFilter: false,
     });
 
     await doRefreshCurrentUser(null);

@@ -5,6 +5,7 @@
         v-for="el of new Array(4)"
         :key="el"
         :loading="true"
+        @activity-destroyed="refreshActivities"
       />
     </div>
     <div v-else>
@@ -15,6 +16,7 @@
           'border-b': ai < recentActivities.length - 1,
         }"
         :activity="activity"
+        @activity-destroyed="refreshActivities"
       />
 
       <app-dashboard-empty-state
@@ -30,6 +32,7 @@
         :to="{
           name: 'activity',
           hash: '#activity',
+          query: { projectGroup: selectedProjectGroup?.id },
         }"
         class="text-red font-medium text-center text-xs leading-5"
       >
@@ -43,6 +46,8 @@
 import { mapGetters } from 'vuex';
 import AppDashboardEmptyState from '@/modules/dashboard/components/dashboard-empty-state.vue';
 import AppDashboardActivityItem from '@/modules/dashboard/components/activity/dashboard-activity-item.vue';
+import { storeToRefs } from 'pinia';
+import { useLfSegmentsStore } from '@/modules/lf/segments/store';
 
 export default {
   name: 'AppDashboardActivityList',
@@ -50,31 +55,23 @@ export default {
     AppDashboardEmptyState,
     AppDashboardActivityItem,
   },
-  emits: { count: null },
-  data() {
-    return {
-      storeUnsubscribe: () => {},
-    };
-  },
   computed: {
     ...mapGetters('dashboard', [
       'recentActivities',
       'activities',
     ]),
+    selectedProjectGroup() {
+      const lsSegmentsStore = useLfSegmentsStore();
+
+      return storeToRefs(lsSegmentsStore).selectedProjectGroup.value;
+    },
   },
-  created() {
-    this.storeUnsubscribe = this.$store.subscribe(
-      (mutation) => {
-        if (mutation.type === 'activity/DESTROY_SUCCESS') {
-          this.$store.dispatch(
-            'dashboard/getRecentActivities',
-          );
-        }
-      },
-    );
-  },
-  beforeUnmount() {
-    this.storeUnsubscribe();
+  methods: {
+    refreshActivities() {
+      this.$store.dispatch(
+        'dashboard/getRecentActivities',
+      );
+    },
   },
 };
 </script>

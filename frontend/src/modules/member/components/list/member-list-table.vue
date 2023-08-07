@@ -107,6 +107,7 @@
                     :to="{
                       name: 'memberView',
                       params: { id: scope.row.id },
+                      query: { projectGroup: selectedProjectGroup?.id },
                     }"
                     class="block"
                   >
@@ -130,6 +131,7 @@
                     :to="{
                       name: 'memberView',
                       params: { id: scope.row.id },
+                      query: { projectGroup: selectedProjectGroup?.id },
                     }"
                     class="block"
                   >
@@ -151,6 +153,7 @@
                     :to="{
                       name: 'memberView',
                       params: { id: scope.row.id },
+                      query: { projectGroup: selectedProjectGroup?.id },
                     }"
                     class="block !text-gray-500"
                   >
@@ -169,6 +172,7 @@
                     :to="{
                       name: 'memberView',
                       params: { id: scope.row.id },
+                      query: { projectGroup: selectedProjectGroup?.id },
                     }"
                     class="block"
                   >
@@ -187,6 +191,7 @@
                     :to="{
                       name: 'memberView',
                       params: { id: scope.row.id },
+                      query: { projectGroup: selectedProjectGroup?.id },
                     }"
                     class="block !text-gray-500"
                   >
@@ -209,6 +214,7 @@
                     :to="{
                       name: 'memberView',
                       params: { id: scope.row.id },
+                      query: { projectGroup: selectedProjectGroup?.id },
                     }"
                     class="block !text-gray-500"
                   >
@@ -234,6 +240,7 @@
                     :to="{
                       name: 'memberView',
                       params: { id: scope.row.id },
+                      query: { projectGroup: selectedProjectGroup?.id },
                     }"
                     class="block"
                   >
@@ -269,6 +276,7 @@
                     :to="{
                       name: 'memberView',
                       params: { id: scope.row.id },
+                      query: { projectGroup: selectedProjectGroup?.id },
                     }"
                     class="block"
                   >
@@ -289,6 +297,7 @@
                     :to="{
                       name: 'memberView',
                       params: { id: scope.row.id },
+                      query: { projectGroup: selectedProjectGroup?.id },
                     }"
                     class="block"
                   >
@@ -303,6 +312,7 @@
                     :to="{
                       name: 'memberView',
                       params: { id: scope.row.id },
+                      query: { projectGroup: selectedProjectGroup?.id },
                     }"
                     class="block"
                   >
@@ -349,13 +359,11 @@
                     :to="{
                       name: 'memberView',
                       params: { id: scope.row.id },
+                      query: { projectGroup: selectedProjectGroup?.id },
                     }"
                     class="block"
                   >
-                    <app-tag-list
-                      :member="scope.row"
-                      @tags-updated="fetchMembers({ reload: true })"
-                    />
+                    <app-tag-list :member="scope.row" @edit="handleEditTagsDialog(scope.row)" />
                   </router-link>
                 </template>
               </el-table-column>
@@ -366,11 +374,12 @@
                     :to="{
                       name: 'memberView',
                       params: { id: scope.row.id },
+                      query: { projectGroup: selectedProjectGroup?.id },
                     }"
                     class="block w-full"
                   >
                     <div class="h-full flex items-center justify-center w-full">
-                      <app-member-dropdown :member="scope.row" />
+                      <app-member-dropdown :member="scope.row" @merge="isMergeDialogOpen = scope.row" />
                     </div>
                   </router-link>
                 </template>
@@ -391,6 +400,8 @@
         </div>
       </div>
     </div>
+    <app-member-merge-dialog v-model="isMergeDialogOpen" />
+    <app-tag-popover v-model="isEditTagsDialogOpen" :member="editTagMember" @reload="fetchMembers({ reload: true })" />
   </div>
 </template>
 
@@ -410,6 +421,8 @@ import { storeToRefs } from 'pinia';
 import { MemberService } from '@/modules/member/member-service';
 import { useLfSegmentsStore } from '@/modules/lf/segments/store';
 import { getSegmentsFromProjectGroup } from '@/utils/segments';
+import AppMemberMergeDialog from '@/modules/member/components/member-merge-dialog.vue';
+import AppTagPopover from '@/modules/tag/components/tag-popover.vue';
 import AppMemberBadge from '../member-badge.vue';
 import AppMemberDropdown from '../member-dropdown.vue';
 import AppMemberIdentities from '../member-identities.vue';
@@ -428,6 +441,11 @@ const isTableHovered = ref(false);
 const isCursorDown = ref(false);
 
 const emit = defineEmits(['onAddMember']);
+
+const isMergeDialogOpen = ref(null);
+const isEditTagsDialogOpen = ref(false);
+const editTagMember = ref(null);
+
 const props = defineProps({
   hasIntegrations: {
     type: Boolean,
@@ -514,6 +532,11 @@ document.onmouseup = () => {
   isScrollbarVisible.value = isTableHovered.value;
   isCursorDown.value = false;
 };
+
+function handleEditTagsDialog(member) {
+  isEditTagsDialogOpen.value = true;
+  editTagMember.value = member;
+}
 
 function doChangeSort(sorter) {
   filters.value.order = {
@@ -611,7 +634,6 @@ const doExport = () => MemberService.export({
   orderBy: savedFilterBody.value.orderBy,
   limit: 0,
   offset: null,
-  buildFilter: false,
 });
 
 onMounted(async () => {

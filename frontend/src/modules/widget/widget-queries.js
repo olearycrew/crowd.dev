@@ -163,14 +163,15 @@ export const TOTAL_ACTIVE_RETURNING_MEMBERS_QUERY = ({
   ],
   filters: [
     {
-      member: 'Members.joinedAt',
-      operator: 'beforeDate',
+      member: 'Members.joinedAtUnixTs',
+      operator: 'lt',
       values: [
         moment()
           .utc()
           .startOf('day')
           .subtract(period.value, period.granularity)
-          .format('YYYY-MM-DD'),
+          .unix()
+          .toString(),
       ],
     },
     ...getCubeFilters({
@@ -243,6 +244,11 @@ export const TOTAL_MEMBERS_FILTER = ({
   const filters = [
     {
       and: [
+        {
+          isOrganization: {
+            not: true,
+          },
+        },
         {
           joinedAt: {
             lte: endDate,

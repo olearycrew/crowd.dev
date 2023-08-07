@@ -47,7 +47,7 @@
                   for="formTitle"
                   class="block text-xs leading-none font-semibold mb-1"
                 >Name
-                  <span class="text-brand-500 ml-0.5">*</span></label>
+                  <span class="text-red-500 ml-0.5">*</span></label>
                 <el-input
                   id="formTitle"
                   v-model="model.title"
@@ -66,11 +66,7 @@
                 <MeasureSelect
                   :translated-options="translatedOptions"
                   :measures="measures"
-                  :available-measures="
-                    availableMeasures.filter(
-                      (m) => m.name !== 'Identities.count',
-                    )
-                  "
+                  :available-measures="availableMeasures"
                   :set-measures="setMeasures"
                 />
               </div>
@@ -232,7 +228,7 @@
       <div class="relative">
         <div class="flex items-center justify-end">
           <el-button
-            class="btn btn--bordered btn--md mr-3"
+            class="btn btn--secondary btn--md mr-3"
             @click="visible = false"
           >
             <app-i18n code="common.cancel" />
@@ -386,11 +382,11 @@ export default {
         settings,
       };
     },
-    translatedOptions(list) {
+    translatedOptions(list, fallback) {
       return list.map((i) => ({
         ...i,
         value: i.name,
-        label: i18n(`widget.cubejs.${i.name}`),
+        label: i.name ? i18n(`widget.cubejs.${i.name}`) : fallback || '',
       }));
     },
     handleAdditionalSettingsClick() {

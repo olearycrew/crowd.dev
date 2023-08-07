@@ -4,7 +4,7 @@
       for="formMeasure"
       class="block text-xs leading-none font-semibold mb-1"
     >Measure
-      <span class="text-brand-500 ml-0.5">*</span></label>
+      <span class="text-red-500 ml-0.5">*</span></label>
     <el-select
       id="formMeasure"
       clearable
@@ -16,7 +16,7 @@
       @change="onSelectChange"
     >
       <el-option
-        v-for="item in translatedOptions(availableMeasures)"
+        v-for="item in translatedOptions(filteredAvailableMeasures)"
         :key="item.value"
         :label="item.label"
         :value="item.value"
@@ -56,6 +56,16 @@ export default {
     return {
       selectedMeasure: [],
     };
+  },
+  computed: {
+    filteredAvailableMeasures() {
+      return this.availableMeasures.filter(
+        (m) => m.name !== 'Identities.count'
+          && m.name !== 'Segments.count'
+          && m.name !== 'Members.earliestJoinedAt'
+          && m.name !== 'Members.averageTimeToFirstInteraction',
+      );
+    },
   },
   methods: {
     onSelectMouseLeave,

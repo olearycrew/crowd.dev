@@ -2,7 +2,10 @@
   <app-page-wrapper size="narrow">
     <router-link
       class="text-gray-600 btn-link--md btn-link--secondary p-0 inline-flex items-center mt-1 mb-4"
-      :to="{ path: '/contributors' }"
+      :to="{
+        path: '/contributors',
+        query: { projectGroup: selectedProjectGroup?.id },
+      }"
     >
       <i class="ri-arrow-left-s-line mr-2" />Contributors
     </router-link>
@@ -19,7 +22,7 @@
       <header class="flex items-center justify-between pb-4">
         <button
           type="button"
-          class="btn btn--transparent btn--md"
+          class="btn btn-link btn-link--md btn-link--primary"
           :disabled="loading || offset <= 0"
           @click="fetch(offset - 1)"
         >
@@ -49,7 +52,7 @@
         </div>
         <button
           type="button"
-          class="btn btn--transparent btn--md"
+          class="btn btn-link btn-link--md btn-link--primary"
           :disabled="loading || offset >= count - 1"
           @click="fetch(offset + 1)"
         >
@@ -99,7 +102,7 @@
         <div class="w-1/2 px-3">
           <el-button
             :disabled="loading || isEditLockedForSampleData"
-            class="btn btn--bordered btn--lg w-full"
+            class="btn btn--secondary btn--lg w-full"
             :loading="sendingIgnore"
             @click="ignoreSuggestion()"
           >
@@ -139,8 +142,13 @@ import Message from '@/shared/message/message';
 import { mapGetters } from '@/shared/vuex/vuex.helpers';
 import AppLoading from '@/shared/loading/loading-placeholder.vue';
 import AppMemberMergeSuggestionsDetails from '@/modules/member/components/suggestions/member-merge-suggestions-details.vue';
+import { storeToRefs } from 'pinia';
+import { useLfSegmentsStore } from '@/modules/lf/segments/store';
 import { MemberService } from '../member-service';
 import { MemberPermissions } from '../member-permissions';
+
+const lsSegmentsStore = useLfSegmentsStore();
+const { selectedProjectGroup } = storeToRefs(lsSegmentsStore);
 
 const { currentTenant, currentUser } = mapGetters('auth');
 
@@ -190,7 +198,6 @@ const confidence = computed(() => {
 });
 
 const fetch = (page) => {
-  primary.value = 0;
   if (page > -1) {
     offset.value = page;
   }
@@ -201,6 +208,12 @@ const fetch = (page) => {
       offset.value = +res.offset;
       count.value = res.count;
       [membersToMerge.value] = res.rows;
+      
+      // Set member with maximum activities and identities as primary
+      if ((members[0].identities.length < members[1].identities.length) || 
+        (members[0].activityCount < members[1].activityCount)) {
+          primary.value = 1;
+      }
     })
     .catch(() => {
       Message.error(

@@ -10,6 +10,7 @@ import {
   MemberEnrichmentAttributeName,
   MemberEnrichmentAttributes,
   PlatformType,
+  IOrganization,
 } from '@crowd/types'
 import { ENRICHMENT_CONFIG, REDIS_CONFIG } from '../../../conf'
 import { AttributeData } from '../../../database/attributes/attribute'
@@ -32,6 +33,8 @@ import {
 } from './types/memberEnrichmentTypes'
 import OrganizationService from '../../organizationService'
 import MemberRepository from '../../../database/repositories/memberRepository'
+import OrganizationRepository from '../../../database/repositories/organizationRepository'
+import SequelizeRepository from '@/database/repositories/sequelizeRepository'
 
 export default class MemberEnrichmentService extends LoggerBase {
   options: IServiceOptions
@@ -138,7 +141,7 @@ export default class MemberEnrichmentService extends LoggerBase {
     this.attributes = (await memberAttributeSettingsService.findAndCountAll({})).rows
   }
 
-  async bulkEnrich(memberIds: string[]) {
+  async bulkEnrich(memberIds: string[], notifyFrontend: boolean = true) {
     const redis = await getRedisClient(REDIS_CONFIG, true)
 
     const apiPubSubEmitter = new RedisPubSubEmitter(
@@ -170,37 +173,39 @@ export default class MemberEnrichmentService extends LoggerBase {
 
     // Send websocket messages to frontend after all requests have been made
     // Only send error message if all enrichments failed
-    if (!enrichedMembers) {
-      apiPubSubEmitter.emit(
-        'user',
-        new ApiWebsocketMessage(
-          'bulk-enrichment',
-          JSON.stringify({
-            failedEnrichedMembers: memberIds.length - enrichedMembers,
-            enrichedMembers,
-            tenantId: this.options.currentTenant.id,
-            success: false,
-          }),
-          undefined,
-          this.options.currentTenant.id,
-        ),
-      )
-    }
-    // Send success message if there were enrichedMembers
-    else {
-      apiPubSubEmitter.emit(
-        'user',
-        new ApiWebsocketMessage(
-          'bulk-enrichment',
-          JSON.stringify({
-            enrichedMembers,
-            tenantId: this.options.currentTenant.id,
-            success: true,
-          }),
-          undefined,
-          this.options.currentTenant.id,
-        ),
-      )
+    if (notifyFrontend) {
+      if (!enrichedMembers) {
+        apiPubSubEmitter.emit(
+          'user',
+          new ApiWebsocketMessage(
+            'bulk-enrichment',
+            JSON.stringify({
+              failedEnrichedMembers: memberIds.length - enrichedMembers,
+              enrichedMembers,
+              tenantId: this.options.currentTenant.id,
+              success: false,
+            }),
+            undefined,
+            this.options.currentTenant.id,
+          ),
+        )
+      }
+      // Send success message if there were enrichedMembers
+      else {
+        apiPubSubEmitter.emit(
+          'user',
+          new ApiWebsocketMessage(
+            'bulk-enrichment',
+            JSON.stringify({
+              enrichedMembers,
+              tenantId: this.options.currentTenant.id,
+              success: true,
+            }),
+            undefined,
+            this.options.currentTenant.id,
+          ),
+        )
+      }
     }
 
     return { enrichedMemberCount: enrichedMembers }
@@ -216,37 +221,48 @@ export default class MemberEnrichmentService extends LoggerBase {
    * @returns a promise that resolves to the enrichment data for the member
    */
   async enrichOne(memberId) {
-    // If the attributes have not been fetched yet, fetch them
-    if (!this.attributes) {
-      await this.getAttributes()
+    const transaction = await SequelizeRepository.createTransaction(this.options)
+    const options = {
+      ...this.options,
+      transaction,
     }
 
-    // Create an instance of the MemberService and use it to look up the member
-    const memberService = new MemberService(this.options)
-    const member = await memberService.findById(memberId, false, false)
+    try {
+      // If the attributes have not been fetched yet, fetch them
+      if (!this.attributes) {
+        await this.getAttributes()
+      }
 
-    // If the member's GitHub handle or email address is not available, throw an error
-    if (!member.username[PlatformType.GITHUB] && member.emails.length === 0) {
-      throw new Error400(this.options.language, 'enrichment.errors.noGithubHandleOrEmail')
-    }
+      // Create an instance of the MemberService and use it to look up the member
+      const memberService = new MemberService(options)
+      const member = await memberService.findById(memberId, false, false)
 
-    let enrichedFrom = ''
-    let enrichmentData: EnrichmentAPIMember
-    // If the member has a GitHub handle, use it to make a request to the Enrichment API
-    if (member.username[PlatformType.GITHUB]) {
-      enrichedFrom = 'github'
-      enrichmentData = await this.getEnrichmentByGithubHandle(
-        member.username[PlatformType.GITHUB][0],
-      )
-    } else if (member.emails.length > 0) {
-      enrichedFrom = 'email'
-      // If the member has an email address, use it to make a request to the Enrichment API
-      enrichmentData = await this.getEnrichmentByEmail(member.emails[0])
-    }
+      // If the member's GitHub handle or email address is not available, throw an error
+      if (!member.username[PlatformType.GITHUB] && member.emails.length === 0) {
+        throw new Error400(this.options.language, 'enrichment.errors.noGithubHandleOrEmail')
+      }
 
-    if (enrichmentData) {
+      let enrichedFrom = ''
+      let enrichmentData: EnrichmentAPIMember
+      // If the member has a GitHub handle, use it to make a request to the Enrichment API
+      if (member.username[PlatformType.GITHUB]) {
+        enrichedFrom = 'github'
+        enrichmentData = await this.getEnrichmentByGithubHandle(
+          member.username[PlatformType.GITHUB][0],
+        )
+      } else if (member.emails.length > 0) {
+        enrichedFrom = 'email'
+        // If the member has an email address, use it to make a request to the Enrichment API
+        enrichmentData = await this.getEnrichmentByEmail(member.emails[0])
+      }
+
+      if (!enrichmentData) {
+        await SequelizeRepository.commitTransaction(transaction)
+        return null
+      }
+
       // save raw data to cache
-      await MemberEnrichmentCacheRepository.upsert(memberId, enrichmentData, this.options)
+      await MemberEnrichmentCacheRepository.upsert(memberId, enrichmentData, options)
 
       const normalized = await this.normalize(member, enrichmentData)
 
@@ -267,10 +283,10 @@ export default class MemberEnrichmentService extends LoggerBase {
           memberId: member.id,
           enrichedFrom,
         },
-        this.options,
+        options,
       )
 
-      const result = await memberService.upsert({
+      let result = await memberService.upsert({
         ...normalized,
         platform: Object.keys(member.username)[0],
       })
@@ -278,7 +294,7 @@ export default class MemberEnrichmentService extends LoggerBase {
       // for every work experience in `enrichmentData`
       //   - upsert organization
       //   - upsert `memberOrganization` relation
-      const organizationService = new OrganizationService(this.options)
+      const organizationService = new OrganizationService(options)
       if (enrichmentData.work_experiences) {
         for (const workExperience of enrichmentData.work_experiences) {
           const org = await organizationService.findOrCreate({
@@ -289,22 +305,25 @@ export default class MemberEnrichmentService extends LoggerBase {
             ? moment.utc(workExperience.endDate).toISOString()
             : null
 
-          await MemberRepository.createOrUpdateWorkExperience(
-            {
-              memberId: result.id,
-              organizationId: org.id,
-              title: workExperience.title,
-              dateStart: workExperience.startDate,
-              dateEnd,
-            },
-            this.options,
-          )
+          const data = {
+            memberId: result.id,
+            organizationId: org.id,
+            title: workExperience.title,
+            dateStart: workExperience.startDate,
+            dateEnd,
+          }
+          await MemberRepository.createOrUpdateWorkExperience(data, options)
+          await OrganizationRepository.includeOrganizationToSegments(org.id, options)
         }
       }
 
+      result = await memberService.findById(result.id, true, false)
+      await SequelizeRepository.commitTransaction(transaction)
       return result
+    } catch (error) {
+      await SequelizeRepository.rollbackTransaction(transaction)
+      throw error
     }
-    return null
   }
 
   async normalize(member: Member, enrichmentData: EnrichmentAPIMember) {
@@ -322,9 +341,9 @@ export default class MemberEnrichmentService extends LoggerBase {
     }
 
     if (enrichmentData.company) {
-      const organization = {
+      const organization: IOrganization = {
         name: enrichmentData.company,
-      } as any
+      }
 
       // check for more info about the company in work experiences
       if (enrichmentData.work_experiences && enrichmentData.work_experiences.length > 0) {
@@ -333,7 +352,14 @@ export default class MemberEnrichmentService extends LoggerBase {
         )
         if (organizationsByWorkExperience.length > 0) {
           organization.location = organizationsByWorkExperience[0].location
-          organization.linkedin = organizationsByWorkExperience[0].companyLinkedInUrl
+          const linkedinUrl = organizationsByWorkExperience[0].companyLinkedInUrl
+          if (linkedinUrl) {
+            organization.linkedin = {
+              handle: linkedinUrl.split('/').pop(),
+              // remove https/http if exists
+              url: linkedinUrl.replace(/(^\w+:|^)\/\//, ''),
+            }
+          }
           organization.url = organizationsByWorkExperience[0].companyUrl
 
           // fetch jobTitle from most recent work experience

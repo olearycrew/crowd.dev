@@ -38,7 +38,7 @@
       </div>
     </div>
     <el-button
-      class="btn btn--bordered btn--md flex items-center gap-2"
+      class="btn btn--secondary btn--md flex items-center gap-2"
       @click="onManageBillingClick"
     >
       <i class="ri-external-link-line" /><span>Manage billing & payments</span>
@@ -267,6 +267,7 @@ const getCtaContent = (plan) => {
   // Custom plans
   if (
     plan === crowdHostedPlans.enterprise
+    || plan === crowdHostedPlans.scale
     || plan === communityPlans.custom
   ) {
     return 'Book a call';
@@ -302,7 +303,8 @@ const handleOnCtaClick = (plan) => {
 
   // Custom plans
   if (
-    plan === crowdHostedPlans.enterprise
+    plan === crowdHostedPlans.scale
+    || plan === crowdHostedPlans.enterprise
     || plan === communityPlans.custom
   ) {
     window.open(

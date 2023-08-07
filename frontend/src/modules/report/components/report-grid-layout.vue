@@ -53,6 +53,7 @@
               id: modelValue.id,
               segmentId: modelValue.segmentId,
             },
+            query: { projectGroup: selectedProjectGroup?.id },
           }"
           class="btn btn--primary btn--md mt-6 !hover:text-white"
         >
@@ -117,7 +118,7 @@
         <div v-if="editable" class="toolbar">
           <button
             type="button"
-            class="btn btn-brand btn-brand--transparent btn--md"
+            class="btn btn-link btn-link--md btn-link--primary"
             @click="handleAddWidgetClick"
           >
             <span class="flex items-center text-brand-500">
@@ -137,6 +138,8 @@ import { WidgetService } from '@/modules/widget/widget-service';
 import ConfirmDialog from '@/shared/dialog/confirm-dialog';
 import WidgetCubeRenderer from '@/modules/widget/components/cube/widget-cube-renderer.vue';
 import WidgetCubeBuilder from '@/modules/widget/components/cube/widget-cube-builder.vue';
+import { storeToRefs } from 'pinia';
+import { useLfSegmentsStore } from '@/modules/lf/segments/store';
 
 export default {
   name: 'ReportGridLayout',
@@ -187,6 +190,11 @@ export default {
         acc[item.id] = itemCopy;
         return acc;
       }, {});
+    },
+    selectedProjectGroup() {
+      const lsSegmentsStore = useLfSegmentsStore();
+
+      return storeToRefs(lsSegmentsStore).selectedProjectGroup.value;
     },
   },
 

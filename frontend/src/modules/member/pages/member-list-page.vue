@@ -2,7 +2,7 @@
   <app-page-wrapper size="full-width">
     <div class="member-list-page">
       <div class="mb-10">
-        <app-lf-page-header text-class="text-sm text-brand-500 mb-2.5" />
+        <app-lf-page-header text-class="text-sm text-brand-600 mb-2.5" />
         <div class="flex items-center justify-between">
           <h4>Contributors</h4>
           <div class="flex items-center">
@@ -11,12 +11,13 @@
               :class="{ 'pointer-events-none': isEditLockedForSampleData }"
               :to="{
                 name: 'memberMergeSuggestions',
+                query: { projectGroup: selectedProjectGroup?.id },
               }"
             >
               <button
                 :disabled="isEditLockedForSampleData"
                 type="button"
-                class="btn btn--bordered btn--md flex items-center"
+                class="btn btn--secondary btn--md flex items-center"
               >
                 <span class="ri-shuffle-line text-base mr-2 text-gray-900" />
                 <span class="text-gray-900">Merge suggestions</span>
@@ -97,6 +98,7 @@ import { FilterQuery } from '@/shared/modules/filters/types/FilterQuery';
 import CrSavedViews from '@/shared/modules/saved-views/components/SavedViews.vue';
 import AppMemberListTable from '@/modules/member/components/list/member-list-table.vue';
 import { useRouter } from 'vue-router';
+import { useLfSegmentsStore } from '@/modules/lf/segments/store';
 import { memberFilters, memberSearchFilter } from '../config/filters/main';
 import { memberSavedViews, memberViews } from '../config/saved-views/main';
 
@@ -105,6 +107,9 @@ const router = useRouter();
 const memberStore = useMemberStore();
 const { getMemberCustomAttributes, fetchMembers } = memberStore;
 const { filters, customAttributesFilter, savedFilterBody } = storeToRefs(memberStore);
+
+const lsSegmentsStore = useLfSegmentsStore();
+const { selectedProjectGroup } = storeToRefs(lsSegmentsStore);
 
 const membersCount = ref(0);
 const membersToMergeCount = ref(0);

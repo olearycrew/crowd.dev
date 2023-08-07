@@ -125,7 +125,7 @@
               },
             }"
           >
-            <el-button class="btn btn--bordered">
+            <el-button class="btn btn--secondary">
               Manage integrations
             </el-button>
           </router-link>
@@ -192,7 +192,8 @@ export default {
 
 <style lang="scss">
 #projects-table {
-  @apply rounded-lg shadow;
+  @apply rounded-md shadow;
+  border: 1px solid #E5E7EB;
 
   thead .table-columns {
     @apply align-top h-auto px-6;

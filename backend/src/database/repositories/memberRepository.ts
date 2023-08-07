@@ -9,7 +9,7 @@ import lodash, { chunk } from 'lodash'
 import Sequelize, { QueryTypes } from 'sequelize'
 
 import { FieldTranslatorFactory, OpensearchQueryParser } from '@crowd/opensearch'
-import { KUBE_MODE, SERVICE } from '../../conf'
+import { KUBE_MODE, SERVICE } from '@/conf'
 import { ServiceType } from '../../conf/configTypes'
 import Error404 from '../../errors/Error404'
 import isFeatureEnabled from '../../feature-flags/isFeatureEnabled'
@@ -44,6 +44,7 @@ import {
   mapUsernameToIdentities,
 } from './types/memberTypes'
 import Error400 from '../../errors/Error400'
+import OrganizationRepository from './organizationRepository'
 
 const { Op } = Sequelize
 
@@ -546,7 +547,23 @@ class MemberRepository {
                             group by "memberId", platform) mi
                       group by mi."memberId"),
         member_organizations as (
-          select "memberId", array_agg("organizationId") as orgs 
+          select
+            "memberId",
+            JSONB_AGG(
+                DISTINCT JSONB_BUILD_OBJECT(
+                  'id', "organizationId",
+                  'memberOrganizations',
+                  JSONB_BUILD_OBJECT(
+                    'memberId', "memberId",
+                    'organizationId', "organizationId",
+                    'dateStart', "dateStart",
+                    'dateEnd', "dateEnd",
+                    'createdAt', "createdAt",
+                    'updatedAt', "updatedAt",
+                    'title', title
+                  )
+                )
+            ) AS orgs
           from "memberOrganizations"
           where "memberId" = :memberId
           group by "memberId"
@@ -570,7 +587,7 @@ class MemberRepository {
               m."updatedById",
               i.username,
               si."segmentIds" as segments,
-              coalesce(mo.orgs, array []::uuid[]) as "organizations"
+              coalesce(mo.orgs, '[]'::JSONB) as "organizations"
         from members m
                 inner join identities i on i."memberId" = m.id
                 inner join segment_ids si on si."memberId" = m.id
@@ -3227,6 +3244,10 @@ class MemberRepository {
           ...options,
         },
       )
+      await OrganizationRepository.includeOrganizationToSegments(org.id, {
+        transaction,
+        ...options,
+      })
     }
   }
 
@@ -3237,30 +3258,47 @@ class MemberRepository {
     const seq = SequelizeRepository.getSequelize(options)
     const transaction = SequelizeRepository.getTransaction(options)
 
-    const query = `
-      INSERT INTO "memberOrganizations" ("memberId", "organizationId", "createdAt", "updatedAt", "title", "dateStart", "dateEnd")
-      VALUES (:memberId, :organizationId, NOW(), NOW(), :title, :dateStart, :dateEnd)
-      ON CONFLICT ("memberId", "organizationId") DO UPDATE
-      SET "title" = :title, "dateStart" = :dateStart, "dateEnd" = :dateEnd
-    `
-
-    await seq.query(query, {
-      replacements: {
-        memberId,
-        organizationId,
-        title: title || null,
-        dateStart: dateStart || null,
-        dateEnd: dateEnd || null,
+    await seq.query(
+      `
+        DELETE FROM "memberOrganizations"
+        WHERE "memberId" = :memberId
+        AND "organizationId" = :organizationId
+        AND "dateEnd" IS NULL
+      `,
+      {
+        replacements: {
+          memberId,
+          organizationId,
+        },
+        type: QueryTypes.DELETE,
+        transaction,
       },
-      type: QueryTypes.INSERT,
-      transaction,
-    })
+    )
+
+    await seq.query(
+      `
+        INSERT INTO "memberOrganizations" ("memberId", "organizationId", "createdAt", "updatedAt", "title", "dateStart", "dateEnd")
+        VALUES (:memberId, :organizationId, NOW(), NOW(), :title, :dateStart, :dateEnd)
+        ON CONFLICT ("memberId", "organizationId", "dateStart", "dateEnd") DO NOTHING
+      `,
+      {
+        replacements: {
+          memberId,
+          organizationId,
+          title: title || null,
+          dateStart: dateStart || null,
+          dateEnd: dateEnd || null,
+        },
+        type: QueryTypes.INSERT,
+        transaction,
+      },
+    )
   }
 
   static sortOrganizations(organizations) {
     organizations.sort((a, b) => {
-      a = a.dataValues ? a.get({ plain: true }) : {}
-      b = b.dataValues ? b.get({ plain: true }) : {}
+      a = a.dataValues ? a.get({ plain: true }) : a
+      b = b.dataValues ? b.get({ plain: true }) : b
 
       const aDate = a.memberOrganizations?.dateStart
       const bDate = b.memberOrganizations?.dateStart
@@ -3269,7 +3307,7 @@ class MemberRepository {
         return bDate.getTime() - aDate.getTime()
       }
       if (!aDate && !bDate) {
-        return 0
+        return a.name.localeCompare(b.name)
       }
       if (!bDate) {
         return 1
