@@ -1,7 +1,6 @@
 <template>
   <el-container v-if="currentTenant" class="flex-col">
-    <app-lf-header />
-    <el-container style="height: calc(100vh - 60px);">
+    <el-container style="height: calc(100vh - 60px); margin-top: 60px;">
       <!-- App menu -->
       <app-lf-menu />
 
@@ -20,7 +19,6 @@ import { mapActions, mapGetters } from 'vuex';
 import identify from '@/shared/monitoring/identify';
 import AppLfMenu from '@/modules/lf/layout/components/lf-menu.vue';
 import AppLfBanners from '@/modules/lf/layout/components/lf-banners.vue';
-import AppLfHeader from '@/modules/lf/layout/components/lf-header.vue';
 
 export default {
   name: 'AppLayout',
@@ -28,7 +26,6 @@ export default {
   components: {
     AppLfMenu,
     AppLfBanners,
-    AppLfHeader,
   },
 
   computed: {
