@@ -18,8 +18,10 @@ cube(`Activities`, {
       ],
       timeDimension: Activities.date,
       granularity: `day`,
+      partition_granularity: `month`,
       refreshKey: {
-        every: `10 minute`,
+        sql: `SELECT MAX("updatedAt") FROM public.activities WHERE ${FILTER_PARAMS.Activities.date.filter("timestamp")}`,
+        every: `30 minute`,
       },
     },
     ActivitiesCumulative: {
@@ -38,8 +40,10 @@ cube(`Activities`, {
       ],
       timeDimension: Activities.date,
       granularity: `day`,
+      partition_granularity: `month`,
       refreshKey: {
-        every: `10 minute`,
+        sql: `SELECT MAX("updatedAt") FROM public.activities WHERE ${FILTER_PARAMS.Activities.date.filter("timestamp")}`,
+        every: `30 minute`,
       },
     },
   },
