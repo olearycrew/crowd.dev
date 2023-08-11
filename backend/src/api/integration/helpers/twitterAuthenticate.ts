@@ -18,7 +18,7 @@ export default async (req, res, next) => {
 
   const authenticator = passport.authenticate('twitter', {
     scope: ['tweet.read', 'tweet.write', 'users.read', 'follows.read', 'offline.access'],
-    state,
+    state: Buffer.from(JSON.stringify(state)).toString('base64'),
   })
 
   authenticator(req, res, next)
