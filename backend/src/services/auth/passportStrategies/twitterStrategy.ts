@@ -1,12 +1,13 @@
-import TwitterStrategy from '@superfaceai/passport-twitter-oauth2'
+// @ts-nocheck
+import { Strategy } from '@superfaceai/passport-twitter-oauth2'
 import { RedisCache, RedisClient } from '@crowd/redis'
 import { Logger } from '@crowd/logging'
 import { API_CONFIG, TWITTER_CONFIG } from '../../../conf'
 import RedisPKCEStore from './redisPKCEStore'
 
-export function getTwitterStrategy(redis: RedisClient, logger: Logger) {
+export function getTwitterStrategy(redis: RedisClient, logger: Logger): Strategy {
   const redisPKCEStore = new RedisPKCEStore(new RedisCache('twitterPKCE', redis, logger))
-  return new TwitterStrategy.Strategy(
+  return new Strategy(
     {
       clientID: TWITTER_CONFIG.clientId,
       clientSecret: TWITTER_CONFIG.clientSecret,
