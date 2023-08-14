@@ -232,6 +232,16 @@ export default class MemberService extends LoggerBase {
         if (dbMember) {
           this.log.trace({ memberId: dbMember.id }, 'Found existing member.')
 
+          // set a record in membersSyncRemote to save the sourceId
+          // we can't use member.attributes because of segments
+          if (member.attributes?.sourceId?.[platform]) {
+            await txRepo.addToSyncRemote(
+              dbMember.id,
+              dbIntegration.id,
+              member.attributes?.sourceId?.[platform],
+            )
+          }
+
           await this.update(
             dbMember.id,
             tenantId,
@@ -250,7 +260,7 @@ export default class MemberService extends LoggerBase {
             false,
           )
         } else {
-          this.log.info('No member found for enriching. This member enrich process had no affect.')
+          this.log.debug('No member found for enriching. This member enrich process had no affect.')
         }
       })
     } catch (err) {
