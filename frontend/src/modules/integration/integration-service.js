@@ -383,4 +383,33 @@ export class IntegrationService {
 
     return response.data;
   }
+
+  static async groupsioGetToken(email, password, twoFactorCode = null) {
+    const tenantId = AuthCurrentTenant.get();
+
+    const response = await authAxios.post(
+      `/tenant/${tenantId}/groupsio-get-token`,
+      {
+        email,
+        password,
+        twoFactorCode,
+      },
+    );
+
+    return response.data;
+  }
+
+  static async groupsioVerifyGroup(groupName, cookie) {
+    const tenantId = AuthCurrentTenant.get();
+
+    const response = await authAxios.post(
+      `/tenant/${tenantId}/groupsio-verify-group`,
+      {
+        groupName,
+        cookie,
+      },
+    );
+
+    return response.data;
+  }
 }

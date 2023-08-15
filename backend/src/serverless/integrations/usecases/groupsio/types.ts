@@ -1,7 +1,18 @@
 export interface GroupsioInterationData {
     email: string;
-    token: string;
-    groupNames: groupName[];
+    cookie: string;
+    groupNames: GroupName[];
 }
 
-export type groupName = `${string}@groups.io`
+export interface GroupsioGetToken {
+    email: string;
+    password: string;
+    twoFactorCode?: string;
+}
+
+export interface GroupsioVerifyGroup {
+    groupName: GroupName;
+    cookie: string;
+}
+
+export type GroupName = `${string}@groups.io`
