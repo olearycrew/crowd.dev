@@ -132,6 +132,11 @@ export default (app) => {
     safeWrap(require('./helpers/hubspotStopSyncOrganization').default),
   )
 
+  app.post(
+    '/tenant/:tenantId/groupsio-connect',
+    safeWrap(require('./helpers/groupsioConnectOrUpdate').default),
+  )
+
   // if (TWITTER_CONFIG.clientId) {
   //   /**
   //    * Using the passport.authenticate this endpoint forces a

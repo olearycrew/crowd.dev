@@ -367,4 +367,20 @@ export class IntegrationService {
 
     return response.data.isWebhooksReceived;
   }
+
+  static async groupsioConnect(email, token, groupNames) {
+    const tenantId = AuthCurrentTenant.get();
+
+    const response = await authAxios.post(
+      `/tenant/${tenantId}/groupsio-connect`,
+      {
+        email,
+        token,
+        groupNames,
+        ...getSegments(),
+      },
+    );
+
+    return response.data;
+  }
 }
