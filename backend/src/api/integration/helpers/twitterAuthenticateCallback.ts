@@ -6,6 +6,8 @@ export default async (req, res) => {
   // Checking we have permision to edit the integration
   new PermissionChecker(req).validateHas(Permissions.values.integrationEdit)
 
+  console.log('req.query.state', req.query.state)
+
   const urlSearchParams = new URLSearchParams(req.query.state)
   const redirectUrl = urlSearchParams.get('redirectUrl')
   const hashtags = urlSearchParams.get('hashtags')

@@ -7,6 +7,13 @@ import TenantService from '../../services/tenantService'
 import { FeatureFlag } from '@/types/common'
 import { featureFlagMiddleware } from '@/middlewares/featureFlagMiddleware'
 
+passport.serializeUser((user, done) => {
+  done(null, user)
+})
+passport.deserializeUser((obj, done) => {
+  done(null, obj)
+})
+
 export default (app) => {
   app.post(`/tenant/:tenantId/integration/query`, safeWrap(require('./integrationQuery').default))
   app.post(`/tenant/:tenantId/integration`, safeWrap(require('./integrationCreate').default))
@@ -168,19 +175,49 @@ export default (app) => {
      */
     app.get(
       '/twitter/callback',
-      passport.authenticate('twitter', {
+      (req, res, next) => {
+         passport.authenticate('twitter', {
         session: false,
         failureRedirect: `${API_CONFIG.frontendUrl}/integrations?error=true`,
-      }),
+      },
+      (error, user, info) => {
+      // this will execute in any case, even if a passport strategy will find an error
+      // log everything to console
+      console.log(error)
+      console.log(user)
+      console.log(info)
+
+      if (error) {
+        res.status(401).send(error)
+      } else if (!user) {
+        res.status(401).send(info)
+      } else {
+        next()
+      }
+
+      res.status(401).send(info)
+    })(req, res)
+      },
       (req, _res, next) => {
-        const crowdToken = new URLSearchParams(req.query.state).get('crowdToken')
+        console.log('req.query', req.query)
+        req.state = JSON.parse(Buffer.from(req.query.state, 'base64').toString())
+        next()
+      },
+      (req, _res, next) => {
+        const { crowdToken } = req.state
         req.headers.authorization = `Bearer ${crowdToken}`
         next()
       },
       authMiddleware,
       async (req, _res, next) => {
-        const tenantId = new URLSearchParams(req.query.state).get('tenantId')
+        const { tenantId } = req.state
         req.currentTenant = await new TenantService(req).findById(tenantId)
+        next()
+      },
+      async (req, _res, next) => {
+        const { segmentIds } = req.state
+        const segmentRepository = new SegmentRepository(req)
+        req.currentSegments = await segmentRepository.findInIds(segmentIds)
         next()
       },
       safeWrap(require('./helpers/twitterAuthenticateCallback').default),

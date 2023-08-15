@@ -1,5 +1,6 @@
 import { generateUUIDv4 as uuid } from '@crowd/common'
 import { RedisCache } from '@crowd/redis'
+import { customTwitterDecode } from '@/api/integration/helpers/twitterAuthenticate'
 
 /* eslint-disable class-methods-use-this */
 /* eslint-disable consistent-return */
@@ -29,6 +30,7 @@ class RedisPKCEStore {
   }
 
   store(req, verifier, state, meta, callback): void {
+     console.log('stateStore', state)
     if (!req.redis) {
       return callback(new Error('OAuth 2.0 authentication with PKCE requires redis support.'))
     }
@@ -61,13 +63,22 @@ class RedisPKCEStore {
   }
 
   verify(req, providedState, callback) {
+    
+    const decodedState = customTwitterDecode(providedState)
+
+    console.log('decodedState', decodedState)
+
     if (!req.redis) {
       return callback(new Error('OAuth 2.0 authentication with PKCE requires redis support.'))
     }
 
-    const params = new URLSearchParams(providedState)
-    const handle = params.get('handle')
-    const userId = params.get('userId')
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    const handle = decodedState['handle']
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    const userId = decodedState['userId']
+
+    console.log('handle', handle)
+    console.log('userId', userId)
 
     this.cache.get(userId).then((existingValue) => {
       if (!existingValue) {

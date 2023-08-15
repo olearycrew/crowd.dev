@@ -12,7 +12,7 @@ export function getTwitterStrategy(redis: RedisClient, logger: Logger): Strategy
       clientID: TWITTER_CONFIG.clientId,
       clientSecret: TWITTER_CONFIG.clientSecret,
       callbackURL: `${API_CONFIG.url}/twitter/callback`,
-      clientType: 'private',
+      clientType: 'confidential',
       passReqToCallback: true,
       store: redisPKCEStore,
     },
