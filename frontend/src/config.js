@@ -62,7 +62,7 @@ const defaultConfig = {
     database: import.meta.env.VUE_APP_AUTH0_DATABASE,
   },
   isGitEnabled: import.meta.env.VUE_APP_IS_GIT_ENABLED,
-  isGroupsionEnabled: import.meta.env.VUE_APP_IS_GROUPSIO_ENABLED,
+  isGroupsioEnabled: import.meta.env.VUE_APP_IS_GROUPSIO_ENABLED,
 };
 
 const composedConfig = {
@@ -117,7 +117,7 @@ const composedConfig = {
     database: 'CROWD_VUE_APP_AUTH0_DATABASE',
   },
   isGitEnabled: 'CROWD_VUE_APP_IS_GIT_ENABLED',
-  isGroupsionEnabled: 'CROWD_VUE_APP_IS_GROUPSIO_ENABLED',
+  isGroupsioEnabled: 'CROWD_VUE_APP_IS_GROUPSIO_ENABLED',
 };
 
 const config = defaultConfig.backendUrl
@@ -128,6 +128,6 @@ config.isCommunityVersion = config.edition === 'community';
 config.hasPremiumModules = !config.isCommunityVersion
   || config.communityPremium === 'true';
 config.isGitIntegrationEnabled = config.isGitEnabled === 'true';
-config.isGroupsioIntegrationEnabled = config.isGroupsionEnabled === 'true';
+config.isGroupsioIntegrationEnabled = config.isGroupsioEnabled === 'true';
 
 export default config;

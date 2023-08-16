@@ -1,13 +1,15 @@
 import config from '@/config';
+import GroupsioConnect from './components/groupsio-connect.vue';
 
 export default {
   enabled: config.isGroupsioIntegrationEnabled,
   hideAsIntegration: !config.isGroupsioIntegrationEnabled,
-  name: 'groups.io',
+  name: 'Groups.io',
   backgroundColor: '#FFFFFF',
   borderColor: '#FFFFFF',
   description:
-    'Connect your groups.io account to receive notifications about new messages and threads.',
+    'Connect Groups.io to sync groups and topics activity.',
   image:
     '/images/integrations/groupsio.jpeg',
+  connectComponent: GroupsioConnect,
 };
