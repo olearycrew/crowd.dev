@@ -21,7 +21,7 @@
           Connect a Groups.io account. You must be a group owner to authenticate.
         </div>
       </div>
-      <el-form label-position="top" class="form">
+      <el-form v-if="!props.integration?.settings?.email" label-position="top" class="form">
         <app-form-item
           class="mb-6"
           :validation="$v.email"
@@ -328,7 +328,7 @@ const connect = async () => {
   doGroupsioConnect({
     email: form.email,
     token: cookie.value,
-    groups: form.groups,
+    groupNames: form.groups,
     isUpdate: !!props.integration.settings?.email,
   })
     .then(() => {
