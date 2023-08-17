@@ -115,8 +115,6 @@
             v-model="form.groups[ii]"
             placeholder="hello@groups.io"
             :validation-function="validateGroup"
-            :bind-value="true"
-            :bound-value="form.groupsValidationState[ii]"
           >
             <template #after>
               <el-button
@@ -130,7 +128,7 @@
           </app-array-input>
 
           <el-button class="btn btn-link btn-link--primary" :disabled="!isAPIConnectionValid" @click="addGroup()">
-            + Add remote URL
+            + Add group name
           </el-button>
         </div>
       </el-form>
@@ -144,8 +142,7 @@
         <el-button
           type="primary"
           class="btn btn--md btn--primary"
-          :disabled="$v.$invalid
-            || !hasFormChanged || loading || !groupsAreValid || !isAPIConnectionValid"
+          :disabled="cantConnect"
           :loading="loading"
           @click="connect()"
         >
@@ -158,7 +155,7 @@
 
 <script setup>
 import {
-  ref, reactive, onMounted, computed, defineEmits, defineProps,
+  ref, reactive, onMounted, computed,
 } from 'vue';
 import { CrowdIntegrations } from '@/integrations/integrations-config';
 import {
@@ -171,12 +168,9 @@ import {
 } from '@/shared/vuex/vuex.helpers';
 import AppFormItem from '@/shared/form/form-item.vue';
 import formChangeDetector from '@/shared/form/form-change';
-import AppArrayInput from '@/shared/form/array-input-with-custom-validation.vue';
 // import elementChangeDetector from '@/shared/form/element-change';
 import { IntegrationService } from '@/modules/integration/integration-service';
-import AuthCurrentTenant from '@/modules/auth/auth-current-tenant';
-
-const tenantId = AuthCurrentTenant.get();
+import AppArrayInput from './groupsio-array-input.vue';
 
 const { doGroupsioConnect } = mapActions('integration');
 
@@ -204,11 +198,11 @@ const isVerificationEnabled = ref(false);
 const isVerifyingAccount = ref(false);
 const isAPIConnectionValid = ref(false);
 const accountVerificationFailed = ref(false);
-const cookie = ref(props.integration?.settings?.token || '');
+const cookie = ref(false);
 const loading = ref(false);
-const isWebhookVerifying = ref(null);
-const isWebhookValid = ref(false);
-const groupsAreValid = ref(false);
+
+const cantConnect = computed(() => $v.value.$invalid
+    || !hasFormChanged.value || loading.value || !isAPIConnectionValid.value);
 
 const rules = {
   email: {
@@ -228,37 +222,7 @@ const removeGroup = (index) => {
   form.groups.splice(index, 1);
 };
 
-const $externalResults = ref({});
-
-const $v = useVuelidate(rules, form, { $externalResults });
-
-// validate method
-async function validate() {
-  $v.value.$clearExternalResults();
-  // check if everything is valid
-  if ($v.value.$error) return;
-
-  isValidating.value = true;
-
-  try {
-    await IntegrationService.discourseValidateAPI(form.discourseURL, form.apiKey);
-    isAPIConnectionValid.value = true;
-    if (!payloadURL.value) {
-      payloadURL.value = `${window.location.origin}/api/webhooks/discourse/${tenantId}`;
-    }
-    if (!webhookSecret.value) {
-      webhookSecret.value = generateRandomSecret(32);
-    }
-  } catch {
-    const errors = {
-      apiKey: 'Invalid credentials',
-    };
-    $externalResults.value = errors;
-    isAPIConnectionValid.value = false;
-  }
-
-  isValidating.value = false;
-}
+const $v = useVuelidate(rules, form);
 
 const validateAccount = async () => {
   isVerifyingAccount.value = true;
@@ -269,7 +233,6 @@ const validateAccount = async () => {
     cookie.value = groupsioCookie;
     isAPIConnectionValid.value = true;
   } catch (e) {
-    console.log('e', e);
     isAPIConnectionValid.value = false;
     accountVerificationFailed.value = true;
   }
@@ -277,13 +240,10 @@ const validateAccount = async () => {
 };
 
 const validateGroup = async (groupName) => {
-  console.log('groupName', groupName);
   try {
     await IntegrationService.groupsioVerifyGroup(groupName, cookie.value);
-    console.log('valid');
     return true;
   } catch (e) {
-    console.log('invalid');
     return false;
   }
 };
@@ -329,65 +289,47 @@ const isVisible = computed({
 
 const handleCancel = () => {
   emit('update:modelValue', false);
-  if (!props.integration?.settings?.forumHostname) {
-    form.apiKey = '';
-    form.discourseURL = '';
-    isValidating.value = false;
+  if (!props.integration?.settings?.email) {
+    form.email = '';
+    form.password = '';
+    form.twoFactorCode = '';
+    cookie.value = '';
     isAPIConnectionValid.value = false;
-    loading.value = false;
-    isWebhookVerifying.value = null;
-    isWebhookValid.value = false;
-    $externalResults.value = {};
+    isVerifyingAccount.value = false;
+    accountVerificationFailed.value = false;
     $v.value.$reset();
   } else {
-    form.discourseURL = props.integration?.settings?.forumHostname;
-    form.apiKey = props.integration.settings.apiKey;
-    webhookSecret.value = props.integration.settings.webhookSecret;
-    payloadURL.value = `${window.location.origin}/api/webhooks/discourse/${tenantId}`;
+    form.email = props.integration?.settings?.email;
+    form.password = '';
+    form.twoFactorCode = '';
+    cookie.value = props.integration?.settings?.token;
     isAPIConnectionValid.value = true;
-    isWebhookVerifying.value = null;
-    isWebhookValid.value = false;
-    $externalResults.value = {};
+    isVerifyingAccount.value = false;
+    accountVerificationFailed.value = false;
     $v.value.$reset();
   }
   formSnapshot();
 };
 
 onMounted(() => {
-  if (props.integration?.settings?.forumHostname) {
-    form.discourseURL = props.integration.settings.forumHostname;
-    form.apiKey = props.integration.settings.apiKey;
-    webhookSecret.value = props.integration.settings.webhookSecret;
-    payloadURL.value = `${window.location.origin}/api/webhooks/discourse/${tenantId}`;
+  if (props.integration?.settings?.email) {
+    form.email = props?.integration?.settings?.email;
+    form.groups = props?.integration?.settings?.groups;
+    form.groupsValidationState = new Array(form.groups.length).fill(true);
+    cookie.value = props?.integration?.settings?.token;
     isAPIConnectionValid.value = true;
   }
   formSnapshot();
 });
 
-const verifyWebhook = async () => {
-  isWebhookVerifying.value = true;
-  try {
-    const webhookVerified = await IntegrationService.discourseVerifyWebhook(props.integration?.id);
-    if (webhookVerified) {
-      isWebhookValid.value = true;
-    } else {
-      isWebhookValid.value = false;
-    }
-  } catch {
-    isWebhookValid.value = false;
-  } finally {
-    isWebhookVerifying.value = false;
-  }
-};
-
 const connect = async () => {
   loading.value = true;
 
-  doDiscourseConnect({
-    forumHostname: form.discourseURL,
-    apiKey: form.apiKey,
-    webhookSecret: webhookSecret.value,
-    isUpdate: props.integration.settings?.forumHostname,
+  doGroupsioConnect({
+    email: form.email,
+    token: cookie.value,
+    groups: form.groups,
+    isUpdate: !!props.integration.settings?.email,
   })
     .then(() => {
       isVisible.value = false;
@@ -398,6 +340,7 @@ const connect = async () => {
 
   formSnapshot();
 };
+
 </script>
 
 <script>

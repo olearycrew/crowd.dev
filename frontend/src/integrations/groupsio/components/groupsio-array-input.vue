@@ -18,7 +18,7 @@
 
 <script setup>
 import {
-  computed, defineEmits, defineProps, ref,
+  computed,
 } from 'vue';
 import { required, email, helpers } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
@@ -43,10 +43,6 @@ const props = defineProps({
     type: Boolean, // Whether to bind another value to the function output
     default: false,
   },
-  boundValue: {
-    type: Boolean, // The value to bind to based on the function output
-    default: false,
-  },
 });
 
 const rules = {
@@ -67,31 +63,11 @@ const model = computed({
     return props.modelValue;
   },
   set(value) {
-    if (props.bindValue && props.validationFunction) {
-      const isValid = props.validationFunction(value);
-      if (isValid) {
-        emit('update:boundValue', value);
-      }
-    }
     emit('update:modelValue', value);
   },
 });
 
 const $v = useVuelidate(rules, model);
-
-// const handleBlur = () => {
-//   if (props.validationFunction) {
-//     $v.value.$touch();
-//     if (props.bindValue) {
-//       const isValid = $v.value.$isValid;
-//       if (isValid) {
-//         emit('update:boundValue', model.value);
-//       }
-//     }
-//   } else {
-//     $v.value.$touch();
-//   }
-// };
 
 </script>
 

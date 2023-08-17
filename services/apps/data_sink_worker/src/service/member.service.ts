@@ -389,7 +389,7 @@ export default class MemberService extends LoggerBase {
       attributes,
       weakIdentities,
       identities,
-      displayName: member.displayName || dbMember.displayName,
+      displayName: dbMember.displayName || member.displayName,
     }
   }
 }
