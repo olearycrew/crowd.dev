@@ -357,21 +357,28 @@ export default class SegmentService extends LoggerBase {
 
     const activityChannels = SegmentRepository.getActivityChannels(this.options)
 
+    let needsUpdate = false
     if (activityChannels[data.platform]) {
       const channelList = activityChannels[data.platform]
       if (!channelList.includes(data.channel)) {
         const updatedChannelList = [...channelList, data.channel]
         activityChannels[data.platform] = updatedChannelList
+        needsUpdate = true
       }
     } else {
       activityChannels[data.platform] = [data.channel]
+      needsUpdate = true
     }
 
-    const updated = await new SegmentRepository(this.options).update(segment.id, {
-      activityChannels,
-    })
+    if (needsUpdate) {
+      const updated = await new SegmentRepository(this.options).update(segment.id, {
+        activityChannels,
+      })
 
-    return updated.activityChannels
+      return updated.activityChannels
+    }
+
+    return activityChannels
   }
 
   async getTenantSubprojects(tenant: any) {
