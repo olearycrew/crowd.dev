@@ -1,6 +1,10 @@
 // generateStreams.ts content
 import { GenerateStreamsHandler } from '../../types'
-import { GroupsioIntegrationSettings, GroupsioGroupStreamMetadata } from './types'
+import {
+  GroupsioIntegrationSettings,
+  GroupsioGroupStreamMetadata,
+  GroupsioStreamType,
+} from './types'
 
 const handler: GenerateStreamsHandler = async (ctx) => {
   const settings = ctx.integration.settings as GroupsioIntegrationSettings
@@ -22,7 +26,10 @@ const handler: GenerateStreamsHandler = async (ctx) => {
   }
 
   for (const group of groups) {
-    await ctx.publishStream<GroupsioGroupStreamMetadata>(`group-${group}`, { group })
+    await ctx.publishStream<GroupsioGroupStreamMetadata>(`${GroupsioStreamType.GROUP}:${group}`, {
+      group,
+      page: null,
+    })
   }
 }
 
