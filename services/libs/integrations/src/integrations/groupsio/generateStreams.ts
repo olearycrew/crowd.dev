@@ -4,6 +4,7 @@ import {
   GroupsioIntegrationSettings,
   GroupsioGroupStreamMetadata,
   GroupsioStreamType,
+  GroupsioGroupMembersStreamMetadata,
 } from './types'
 
 const handler: GenerateStreamsHandler = async (ctx) => {
@@ -30,6 +31,14 @@ const handler: GenerateStreamsHandler = async (ctx) => {
       group,
       page: null,
     })
+
+    await ctx.publishStream<GroupsioGroupMembersStreamMetadata>(
+      `${GroupsioStreamType.GROUP_MEMBERS}:${group}`,
+      {
+        group,
+        page: null,
+      },
+    )
   }
 }
 
