@@ -1,12 +1,14 @@
 import axios, { AxiosRequestConfig } from 'axios'
 import { IProcessStreamContext } from '@/types'
+import { GroupName } from '../types'
 
 export const getGroupMembers = async (
-  group: string,
+  groupName: GroupName,
   cookie: string,
   ctx: IProcessStreamContext,
   page = null,
 ) => {
+  const group = groupName.split('@')[0]
   const config: AxiosRequestConfig = {
     method: 'get',
     url:

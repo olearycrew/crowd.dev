@@ -2,7 +2,6 @@
 import { GenerateStreamsHandler } from '../../types'
 import {
   GroupsioIntegrationSettings,
-  GroupsioGroupStreamMetadata,
   GroupsioStreamType,
   GroupsioGroupMembersStreamMetadata,
 } from './types'
@@ -27,11 +26,9 @@ const handler: GenerateStreamsHandler = async (ctx) => {
   }
 
   for (const group of groups) {
-    await ctx.publishStream<GroupsioGroupStreamMetadata>(`${GroupsioStreamType.GROUP}:${group}`, {
-      group,
-      page: null,
-    })
-
+    // here we start parsing group members - very important to do this first
+    // because we need to know who the members are before we can start parsing
+    // messages don't have enough information to create members
     await ctx.publishStream<GroupsioGroupMembersStreamMetadata>(
       `${GroupsioStreamType.GROUP_MEMBERS}:${group}`,
       {

@@ -5,7 +5,7 @@ export enum GroupsioActivityType {
   MEMBER_LEAVE = 'member_leave',
 }
 
-export type GroupName = `${string}@groups.io`
+export type GroupName = `${string}@g${string}`
 
 export enum GroupsioStreamType {
   GROUP = 'group',
@@ -22,6 +22,13 @@ export interface GroupsioMessageData {
   group: GroupName
   topic: Topic
   message: Message
+  member: MemberInfo
+  sourceParentId: string | null
+}
+
+export interface GroipsioMemberJoinData {
+  group: GroupName
+  member: MemberInfo
 }
 
 export interface GroupsioGroupStreamMetadata {
@@ -45,9 +52,9 @@ export interface GroupsioTopicStreamMetadata {
   page: string | null
 }
 
-export interface GroupsioPublishData {
+export interface GroupsioPublishData<T> {
   type: GroupsioPublishDataType
-  data: GroupsioMessageData | MemberInfo
+  data: T
 }
 
 export interface GroupsioIntegrationSettings {

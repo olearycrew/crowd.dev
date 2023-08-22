@@ -612,6 +612,8 @@ export default {
         email, token, groupNames, isUpdate,
       },
     ) {
+      console.log('doGroupsioConnect', email, token, groupNames, isUpdate);
+
       try {
         commit('CREATE_STARTED');
 

@@ -1,6 +1,6 @@
-export interface GroupsioInterationData {
+export interface GroupsioIntegrationData {
     email: string;
-    cookie: string;
+    token: string;
     groupNames: GroupName[];
 }
 

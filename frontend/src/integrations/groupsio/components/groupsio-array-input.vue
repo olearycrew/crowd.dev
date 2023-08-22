@@ -48,10 +48,6 @@ const props = defineProps({
 const rules = {
   required,
   email,
-  groupsIoEmail: helpers.withMessage(
-    'Please enter a valid groups.io email address',
-    (value) => value.endsWith('@groups.io'),
-  ),
   customValidation: helpers.withMessage(
     "This is not a valid group or you don't have access to it",
     helpers.withAsync(props.validationFunction),

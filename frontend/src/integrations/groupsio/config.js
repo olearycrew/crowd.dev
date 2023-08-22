@@ -12,4 +12,9 @@ export default {
   image:
     '/images/integrations/groupsio.jpeg',
   connectComponent: GroupsioConnect,
+  chartColor: '#111827',
+  showProfileLink: true,
+  activityDisplay: {
+    showLinkToUrl: true,
+  },
 };

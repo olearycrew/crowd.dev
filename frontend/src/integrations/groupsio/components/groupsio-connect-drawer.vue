@@ -198,7 +198,7 @@ const isVerificationEnabled = ref(false);
 const isVerifyingAccount = ref(false);
 const isAPIConnectionValid = ref(false);
 const accountVerificationFailed = ref(false);
-const cookie = ref(false);
+const cookie = ref('');
 const loading = ref(false);
 
 const cantConnect = computed(() => $v.value.$invalid

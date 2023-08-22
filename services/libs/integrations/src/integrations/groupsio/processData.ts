@@ -1,17 +1,21 @@
 // processData.ts content
 import { ProcessDataHandler } from '../../types'
+import { Groupsio_GRID } from './grid'
 import {
   GroupsioPublishData,
   GroupsioPublishDataType,
   GroupsioMessageData,
   MemberInfo,
+  GroipsioMemberJoinData,
   GroupsioActivityType,
 } from './types'
 import { IActivityData, IMemberData, PlatformType } from '@crowd/types'
+import sanitizeHtml from 'sanitize-html'
 
 const processMemberJoin: ProcessDataHandler = async (ctx) => {
-  const data = ctx.data as GroupsioPublishData
-  const memberData = data.data as MemberInfo
+  const metaData = ctx.data as GroupsioPublishData<GroipsioMemberJoinData>
+  const data = metaData.data
+  const memberData = data.member as MemberInfo
 
   const member: IMemberData = {
     displayName: memberData.full_name,
@@ -28,30 +32,53 @@ const processMemberJoin: ProcessDataHandler = async (ctx) => {
   const activity: IActivityData = {
     type: GroupsioActivityType.MEMBER_JOIN,
     member,
-    // 2020-09-05T13:57:00-07:00
+    channel: data.group,
     timestamp: new Date(memberData.created).toISOString(),
+    sourceId: `${memberData.user_id}-${memberData.group_id}-${memberData.created}`,
+    score: Groupsio_GRID[GroupsioActivityType.MEMBER_JOIN].score,
+    isContribution: Groupsio_GRID[GroupsioActivityType.MEMBER_JOIN].isContribution,
   }
+
+  await ctx.publishActivity(activity)
 }
 
 const processMessage: ProcessDataHandler = async (ctx) => {
-  const data = ctx.data as GroupsioPublishData
-  const messageData = data.data as GroupsioMessageData
+  const data = ctx.data as GroupsioPublishData<GroupsioMessageData>
+  const messageData = data.data
+  const memberData = messageData.member
 
   const member: IMemberData = {
-    displayName: messageData.message.from.name,
-    emails: [messageData.message.from.email],
+    displayName: memberData.full_name,
+    emails: [memberData.email],
     identities: [
       {
-        sourceId: messageData.message.user_id.toString(),
+        sourceId: memberData.user_id.toString(),
         platform: PlatformType.GROUPSIO,
-        username: messageData.message.from.email,
+        username: memberData.email,
       },
     ],
   }
+
+  const activity: IActivityData = {
+    type: GroupsioActivityType.MESSAGE,
+    member,
+    channel: messageData.group,
+    timestamp: new Date(messageData.message.created).toISOString(),
+    sourceId: `${messageData.message.id}`,
+    score: Groupsio_GRID[GroupsioActivityType.MESSAGE].score,
+    body: sanitizeHtml(messageData.message.body),
+    title: sanitizeHtml(messageData.topic.subject),
+    ...(messageData.sourceParentId && {
+      sourceParentId: messageData.sourceParentId,
+    }),
+    isContribution: Groupsio_GRID[GroupsioActivityType.MESSAGE].isContribution,
+  }
+
+  await ctx.publishActivity(activity)
 }
 
 const handler: ProcessDataHandler = async (ctx) => {
-  const data = ctx.data as GroupsioPublishData
+  const data = ctx.data as GroupsioPublishData<unknown>
 
   const type = data.type
 

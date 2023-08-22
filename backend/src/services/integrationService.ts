@@ -44,7 +44,7 @@ import OrganizationService from './organizationService'
 import MemberSyncRemoteRepository from '@/database/repositories/memberSyncRemoteRepository'
 import OrganizationSyncRemoteRepository from '@/database/repositories/organizationSyncRemoteRepository'
 import MemberRepository from '@/database/repositories/memberRepository'
-import { GroupsioInterationData, GroupsioGetToken, GroupsioVerifyGroup } from '@/serverless/integrations/usecases/groupsio/types'
+import { GroupsioIntegrationData, GroupsioGetToken, GroupsioVerifyGroup } from '@/serverless/integrations/usecases/groupsio/types'
 
 const discordToken = DISCORD_CONFIG.token || DISCORD_CONFIG.token2
 
@@ -1405,7 +1405,7 @@ export default class IntegrationService {
     return integration
   }
 
-  async groupsioConnectOrUpdate(integrationData: GroupsioInterationData) {
+  async groupsioConnectOrUpdate(integrationData: GroupsioIntegrationData) {
     const transaction = await SequelizeRepository.createTransaction(this.options)
     let integration
 

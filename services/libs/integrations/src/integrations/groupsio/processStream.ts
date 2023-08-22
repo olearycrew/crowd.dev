@@ -1,24 +1,47 @@
 // processStream.ts content
-import { ProcessStreamHandler } from '../../types'
+import { IProcessStreamContext, ProcessStreamHandler } from '../../types'
 import {
   GroupsioStreamType,
   GroupsioGroupStreamMetadata,
   GroupsioGroupMembersStreamMetadata,
-  GroupsioMemberStreamMetadata,
   GroupsioIntegrationSettings,
   GroupsioTopicStreamMetadata,
-  GroupsioMessageData,
   GroupsioPublishData,
   GroupsioPublishDataType,
   MemberInfo,
   ListMembers,
   ListMessages,
   ListTopics,
+  GroupsioMessageData,
+  GroipsioMemberJoinData,
 } from './types'
 import { getTopicsFromGroup } from './api/getTopicsFromGroup'
 import { getMessagesFromTopic } from './api/getMessagesFromTopic'
 import { getGroupMembers } from './api/getGroupMembers'
-import { getGroupMember } from './api/getGroupMember'
+
+const cacheMember = async (ctx: IProcessStreamContext, member: MemberInfo): Promise<void> => {
+  const cacheKey = `${GroupsioStreamType.GROUP_MEMBERS}:${member.user_id}`
+  const cache = ctx.cache
+
+  // cache for 7 days
+  await cache.set(cacheKey, JSON.stringify(member), 60 * 60 * 24 * 7)
+}
+
+const getMemberFromCache = async (
+  ctx: IProcessStreamContext,
+  userId: string,
+): Promise<MemberInfo | undefined> => {
+  const cacheKey = `${GroupsioStreamType.GROUP_MEMBERS}:${userId}`
+  const cache = ctx.cache
+
+  const cachedMember = await cache.get(cacheKey)
+
+  if (!cachedMember) {
+    return undefined
+  }
+
+  return JSON.parse(cachedMember)
+}
 
 const processGroupStream: ProcessStreamHandler = async (ctx) => {
   const data = ctx.stream.data as GroupsioGroupStreamMetadata
@@ -78,14 +101,28 @@ const processTopicStream: ProcessStreamHandler = async (ctx) => {
     )
   }
 
-  // publishing messags
-  for (const message of response.data) {
-    await ctx.publishData<GroupsioPublishData>({
+  // publishing messages
+  for (let i = 0; i < response.data.length; i++) {
+    const message = response.data[i]
+    const userId = message.user_id.toString()
+    // getting member from cache
+    // it should be there already because we process members first
+    const member = await getMemberFromCache(ctx, userId)
+
+    if (!member) {
+      await ctx.abortRunWithError(
+        `Member ${userId} not found in cache, we can't process the message!`,
+      )
+    }
+
+    await ctx.publishData<GroupsioPublishData<GroupsioMessageData>>({
       type: GroupsioPublishDataType.MESSAGE,
       data: {
         message,
         group: data.group,
         topic: data.topic,
+        member,
+        sourceParentId: i === 0 ? null : response.data[i - 1].id.toString(),
       },
     })
   }
@@ -102,6 +139,20 @@ const processGroupMembersStream: ProcessStreamHandler = async (ctx) => {
     data.page,
   )) as ListMembers
 
+  // publish members
+  for (const member of response.data) {
+    // caching member
+    await cacheMember(ctx, member)
+    // publishing member
+    await ctx.publishData<GroupsioPublishData<GroipsioMemberJoinData>>({
+      type: GroupsioPublishDataType.MEMBER_JOIN,
+      data: {
+        member,
+        group: data.group,
+      },
+    })
+  }
+
   // processing next page stream
   if (response.next_page_token) {
     await ctx.publishStream<GroupsioGroupMembersStreamMetadata>(
@@ -111,14 +162,15 @@ const processGroupMembersStream: ProcessStreamHandler = async (ctx) => {
         page: response.next_page_token.toString(),
       },
     )
-  }
-
-  // publish members
-  for (const member of response.data) {
-    await ctx.publishData<GroupsioPublishData>({
-      type: GroupsioPublishDataType.MEMBER_JOIN,
-      data: member,
-    })
+  } else {
+    // this is the last page, so we can publish the group streams
+    await ctx.publishStream<GroupsioGroupStreamMetadata>(
+      `${GroupsioStreamType.GROUP}:${data.group}`,
+      {
+        group: data.group,
+        page: null,
+      },
+    )
   }
 }
 
