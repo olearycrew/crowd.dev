@@ -15,4 +15,4 @@ export interface GroupsioVerifyGroup {
     cookie: string;
 }
 
-export type GroupName = `${string}@groups.io`
+export type GroupName = string;

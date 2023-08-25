@@ -5,7 +5,7 @@ export enum GroupsioActivityType {
   MEMBER_LEAVE = 'member_leave',
 }
 
-export type GroupName = `${string}@g${string}`
+export type GroupName = string
 
 export enum GroupsioStreamType {
   GROUP = 'group',
@@ -16,6 +16,7 @@ export enum GroupsioStreamType {
 export enum GroupsioPublishDataType {
   MESSAGE = 'message',
   MEMBER_JOIN = 'member_join',
+  MEMBER_LEFT = 'member_left',
 }
 
 export interface GroupsioMessageData {
@@ -26,9 +27,16 @@ export interface GroupsioMessageData {
   sourceParentId: string | null
 }
 
-export interface GroipsioMemberJoinData {
+export interface GroupsioMemberJoinData {
   group: GroupName
   member: MemberInfo
+  joinedAt: string
+}
+
+export interface GroupsioMemberLeftData {
+  group: GroupName
+  member: MemberInfo
+  leftAt: string
 }
 
 export interface GroupsioGroupStreamMetadata {
@@ -315,4 +323,41 @@ export interface ListMembers {
   query: string
   sort_dir: string
   data: MemberInfo[]
+}
+
+export enum GroupsioWebhookEventType {
+  JOINED = 'joined',
+  SENT_MESSAGE_ACCEPTED = 'sent_message_accepted',
+  LEFT = 'left',
+}
+
+export interface GroupsioWebhookPayload<T> {
+  event: GroupsioWebhookEventType
+  data: T
+  signature: string
+}
+
+export interface Group {
+  id: number
+  object: string
+  created: string
+  updated: string
+  type: string
+  title: string
+  name: string
+  nice_group_name: string
+  alias: string
+  desc: string
+  plain_desc: string
+}
+
+export interface GroupsioWebhookJoinPayload {
+  id: number
+  object: string
+  created: string
+  webhook_id: number
+  action: string
+  via: string
+  group: Group
+  member_info: MemberInfo
 }

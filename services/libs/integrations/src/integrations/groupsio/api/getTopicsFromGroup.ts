@@ -8,10 +8,10 @@ export const getTopicsFromGroup = async (
   ctx: IProcessStreamContext,
   page: string = null,
 ) => {
-  const group = groupName.split('@')[0]
   const config: AxiosRequestConfig = {
     method: 'get',
-    url: `https://groups.io/api/v1/gettopics?group=${group}` + (page ? `&page_token=${page}` : ''),
+    url:
+      `https://groups.io/api/v1/gettopics?group=${groupName}` + (page ? `&page_token=${page}` : ''),
     headers: {
       Cookie: cookie,
     },
@@ -21,7 +21,7 @@ export const getTopicsFromGroup = async (
     const response = await axios(config)
     return response.data
   } catch (err) {
-    ctx.log.error(err, { group }, 'Error fetching topics from group!')
+    ctx.log.error(err, { groupName }, 'Error fetching topics from group!')
     throw err
   }
 }

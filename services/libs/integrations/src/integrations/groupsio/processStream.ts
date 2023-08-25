@@ -13,7 +13,7 @@ import {
   ListMessages,
   ListTopics,
   GroupsioMessageData,
-  GroipsioMemberJoinData,
+  GroupsioMemberJoinData,
 } from './types'
 import { getTopicsFromGroup } from './api/getTopicsFromGroup'
 import { getMessagesFromTopic } from './api/getMessagesFromTopic'
@@ -55,7 +55,7 @@ const processGroupStream: ProcessStreamHandler = async (ctx) => {
   )) as ListTopics
 
   // processing next page stream
-  if (response.next_page_token) {
+  if (response?.next_page_token) {
     await ctx.publishStream<GroupsioGroupStreamMetadata>(
       `${GroupsioStreamType.GROUP}-${data.group}-${response.next_page_token}`,
       {
@@ -90,7 +90,7 @@ const processTopicStream: ProcessStreamHandler = async (ctx) => {
   )) as ListMessages
 
   // processing next page stream
-  if (response.next_page_token) {
+  if (response?.next_page_token) {
     await ctx.publishStream<GroupsioTopicStreamMetadata>(
       `${GroupsioStreamType.TOPIC}-${data.topic.id}-${response.next_page_token}`,
       {
@@ -122,7 +122,7 @@ const processTopicStream: ProcessStreamHandler = async (ctx) => {
         group: data.group,
         topic: data.topic,
         member,
-        sourceParentId: i === 0 ? null : response.data[i - 1].id.toString(),
+        sourceParentId: i > 0 ? response.data[i - 1].id.toString() : null,
       },
     })
   }
@@ -144,17 +144,18 @@ const processGroupMembersStream: ProcessStreamHandler = async (ctx) => {
     // caching member
     await cacheMember(ctx, member)
     // publishing member
-    await ctx.publishData<GroupsioPublishData<GroipsioMemberJoinData>>({
+    await ctx.publishData<GroupsioPublishData<GroupsioMemberJoinData>>({
       type: GroupsioPublishDataType.MEMBER_JOIN,
       data: {
         member,
         group: data.group,
+        joinedAt: new Date(member.created).toISOString(),
       },
     })
   }
 
   // processing next page stream
-  if (response.next_page_token) {
+  if (response?.next_page_token) {
     await ctx.publishStream<GroupsioGroupMembersStreamMetadata>(
       `${GroupsioStreamType.GROUP_MEMBERS}-${data.group}-${response.next_page_token}`,
       {

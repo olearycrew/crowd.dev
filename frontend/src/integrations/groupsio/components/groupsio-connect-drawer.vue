@@ -21,9 +21,11 @@
           Connect a Groups.io account. You must be a group owner to authenticate.
         </div>
       </div>
-      <el-form v-if="!props.integration?.settings?.email" label-position="top" class="form">
+      <el-form label-position="top" class="form">
         <app-form-item
-          class="mb-6"
+          v-if="!isAPIConnectionValid"
+          class="
+          mb-6"
           :validation="$v.email"
           label="Email"
           :required="true"
@@ -43,6 +45,7 @@
           />
         </app-form-item>
         <app-form-item
+          v-if="!isAPIConnectionValid"
           class="mb-6"
           :validation="$v.apiKey"
           label="Password"
@@ -62,6 +65,7 @@
           </el-input>
         </app-form-item>
         <app-form-item
+          v-if="!isAPIConnectionValid"
           class="mb-6"
           :validation="$v.twoFactorCode"
           label="2FA Code (optional)"
@@ -78,8 +82,22 @@
         </app-form-item>
 
         <div class="flex flex-row gap-2">
-          <el-button class="btn" :disabled="!isVerificationEnabled" :loading="isVerifyingAccount" @click="validateAccount()">
+          <el-button
+            v-if="!isAPIConnectionValid"
+            class="btn"
+            :disabled="!isVerificationEnabled"
+            :loading="isVerifyingAccount"
+            @click="validateAccount()"
+          >
             Verify Account
+          </el-button>
+
+          <el-button
+            v-if="isAPIConnectionValid"
+            class="btn"
+            @click="reverifyAccount()"
+          >
+            Reverify Account
           </el-button>
 
           <div v-if="accountVerificationFailed" class="mt-1">
@@ -113,7 +131,7 @@
             v-for="(_, ii) of form.groups"
             :key="ii"
             v-model="form.groups[ii]"
-            placeholder="hello@groups.io"
+            placeholder="crowd-test"
             :validation-function="validateGroup"
           >
             <template #after>
@@ -155,7 +173,7 @@
 
 <script setup>
 import {
-  ref, reactive, onMounted, computed,
+  ref, reactive, onMounted, computed, watch,
 } from 'vue';
 import { CrowdIntegrations } from '@/integrations/integrations-config';
 import {
@@ -239,6 +257,10 @@ const validateAccount = async () => {
   isVerifyingAccount.value = false;
 };
 
+const reverifyAccount = () => {
+  isAPIConnectionValid.value = false;
+};
+
 const validateGroup = async (groupName) => {
   try {
     await IntegrationService.groupsioVerifyGroup(groupName, cookie.value);
@@ -293,15 +315,22 @@ const handleCancel = () => {
     form.email = '';
     form.password = '';
     form.twoFactorCode = '';
+    form.groups = [''];
+    form.groupsValidationState = new Array(form.groups.length).fill(true);
     cookie.value = '';
     isAPIConnectionValid.value = false;
     isVerifyingAccount.value = false;
     accountVerificationFailed.value = false;
     $v.value.$reset();
   } else {
+    console.log('props.integration?.settings?.email', props.integration?.settings?.email);
     form.email = props.integration?.settings?.email;
     form.password = '';
     form.twoFactorCode = '';
+    console.log('props.integration?.settings?.groups', props.integration?.settings?.groups);
+    form.groups = props?.integration?.settings?.groups;
+    console.log('form.groups', form.groups);
+    form.groupsValidationState = new Array(form.groups.length).fill(true);
     cookie.value = props.integration?.settings?.token;
     isAPIConnectionValid.value = true;
     isVerifyingAccount.value = false;

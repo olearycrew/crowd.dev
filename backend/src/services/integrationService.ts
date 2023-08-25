@@ -1489,9 +1489,7 @@ export default class IntegrationService {
   }
 
   async groupsioVerifyGroup(data: GroupsioVerifyGroup) {
-    // we need to get group name before email
-
-    const groupName = data.groupName.split('@')[0]
+    const groupName = data.groupName
 
     const config: AxiosRequestConfig = {
       method: 'post',
@@ -1508,7 +1506,7 @@ export default class IntegrationService {
       response = await axios(config)
 
       return {
-        group: response.data.data.group_id,
+        group: response?.data?.data?.group_id,
       }
 
     } catch (err) {

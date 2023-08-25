@@ -5,7 +5,7 @@
         :validation="$v"
         :error-messages="{
           required: 'This field is required',
-          email: 'Please enter a valid email address',
+          notEmail: 'This field shouldn\'t be an email. It should be a group name.',
         }"
         class="mb-0 mr-2 no-margin flex-grow is-error-relative"
       >
@@ -20,7 +20,7 @@
 import {
   computed,
 } from 'vue';
-import { required, email, helpers } from '@vuelidate/validators';
+import { required, helpers } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import AppFormItem from '@/shared/form/form-item.vue';
 
@@ -45,9 +45,11 @@ const props = defineProps({
   },
 });
 
+const notEmail = (value) => !value.includes('@');
+
 const rules = {
   required,
-  email,
+  notEmail,
   customValidation: helpers.withMessage(
     "This is not a valid group or you don't have access to it",
     helpers.withAsync(props.validationFunction),

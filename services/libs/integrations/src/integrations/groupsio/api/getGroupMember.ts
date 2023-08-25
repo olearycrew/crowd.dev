@@ -8,10 +8,9 @@ export const getGroupMember = async (
   cookie: string,
   ctx: IProcessStreamContext,
 ) => {
-  const group = groupName.split('@')[0]
   const config: AxiosRequestConfig = {
     method: 'get',
-    url: `https://groups.io/api/v1/getmember?member_info_id=${memberInfoId}&group_name=${group}`,
+    url: `https://groups.io/api/v1/getmember?member_info_id=${memberInfoId}&group_name=${groupName}`,
     headers: {
       Cookie: cookie,
     },

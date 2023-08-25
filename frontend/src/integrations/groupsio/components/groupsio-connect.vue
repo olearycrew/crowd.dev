@@ -4,7 +4,7 @@
 </template>
 
 <script setup>
-import { computed, defineProps, ref } from 'vue';
+import { computed, ref } from 'vue';
 import AppGroupsioConnectDrawer from '@/integrations/groupsio/components/groupsio-connect-drawer.vue';
 
 const props = defineProps({
