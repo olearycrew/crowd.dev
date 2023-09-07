@@ -34,6 +34,7 @@ export default class MemberService extends LoggerBase {
     integrationId: string,
     data: IMemberCreateData,
     fireSync = true,
+    releaseMemberLock?: () => Promise<void>,
   ): Promise<string> {
     try {
       this.log.debug('Creating a new member!')
@@ -71,6 +72,11 @@ export default class MemberService extends LoggerBase {
         await txRepo.addToSegment(id, tenantId, segmentId)
 
         await txRepo.insertIdentities(id, tenantId, integrationId, data.identities)
+
+        // we can release lock here
+        if (releaseMemberLock) {
+          await releaseMemberLock()
+        }
 
         const organizations = []
         const orgService = new OrganizationService(txStore, this.log)
@@ -133,6 +139,7 @@ export default class MemberService extends LoggerBase {
     data: IMemberUpdateData,
     original: IDbMember,
     fireSync = true,
+    releaseMemberLock?: () => Promise<void>,
   ): Promise<void> {
     try {
       const { updated, organizations } = await this.store.transactionally(async (txStore) => {
@@ -187,6 +194,11 @@ export default class MemberService extends LoggerBase {
         if (toUpdate.identities) {
           await txRepo.insertIdentities(id, tenantId, integrationId, toUpdate.identities)
           updated = true
+        }
+
+        // we can release lock here
+        if (releaseMemberLock) {
+          await releaseMemberLock()
         }
 
         const organizations = []

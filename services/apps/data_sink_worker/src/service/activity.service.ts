@@ -493,6 +493,12 @@ export default class ActivityService extends LoggerBase {
               },
               dbMember,
               false,
+              async () =>
+                await releaseLock(
+                  this.redisClient,
+                  `member:processing:${tenantId}:${segmentId}:${platform}:${username}`,
+                  'check-member-inside-activity-exists',
+                ),
             )
 
             // release lock for member inside activity exists right after we update the member
@@ -550,6 +556,12 @@ export default class ActivityService extends LoggerBase {
               },
               dbMember,
               false,
+              async () =>
+                await releaseLock(
+                  this.redisClient,
+                  `member:processing:${tenantId}:${segmentId}:${platform}:${username}`,
+                  'check-member-inside-activity-exists',
+                ),
             )
 
             // release lock for member inside activity exists right after we update the member
@@ -660,6 +672,12 @@ export default class ActivityService extends LoggerBase {
                   },
                   dbObjectMember,
                   false,
+                  async () =>
+                    await releaseLock(
+                      this.redisClient,
+                      `member:processing:${tenantId}:${segmentId}:${platform}:${objectMemberUsername}`,
+                      'check-object-member-inside-activity-exists',
+                    ),
                 )
 
                 if (!createActivity) {
@@ -697,6 +715,12 @@ export default class ActivityService extends LoggerBase {
                   },
                   dbObjectMember,
                   false,
+                  async () =>
+                    await releaseLock(
+                      this.redisClient,
+                      `member:processing:${tenantId}:${segmentId}:${platform}:${objectMemberUsername}`,
+                      'check-object-member-inside-activity-exists',
+                    ),
                 )
 
                 objectMemberId = dbActivity.objectMemberId
@@ -828,6 +852,12 @@ export default class ActivityService extends LoggerBase {
               },
               dbMember,
               false,
+              async () =>
+                await releaseLock(
+                  this.redisClient,
+                  `member:processing:${tenantId}:${segmentId}:${platform}:${username}`,
+                  'check-member-inside-activity-does-not-exist',
+                ),
             )
             memberId = dbMember.id
 
@@ -870,6 +900,12 @@ export default class ActivityService extends LoggerBase {
                 organizations: member.organizations,
               },
               false,
+              async () =>
+                await releaseLock(
+                  this.redisClient,
+                  `member:processing:${tenantId}:${segmentId}:${platform}:${username}`,
+                  'check-member-inside-activity-does-not-exist',
+                ),
             )
 
             // release lock for member inside activity does not exist right after we create the member
@@ -944,6 +980,12 @@ export default class ActivityService extends LoggerBase {
                 },
                 dbObjectMember,
                 false,
+                async () =>
+                  await releaseLock(
+                    this.redisClient,
+                    `member:processing:${tenantId}:${segmentId}:${platform}:${objectMemberUsername}`,
+                    'check-object-member-inside-activity-does-not-exist',
+                  ),
               )
               objectMemberId = dbObjectMember.id
             } else {
@@ -966,6 +1008,12 @@ export default class ActivityService extends LoggerBase {
                   organizations: objectMember.organizations,
                 },
                 false,
+                async () =>
+                  await releaseLock(
+                    this.redisClient,
+                    `member:processing:${tenantId}:${segmentId}:${platform}:${objectMemberUsername}`,
+                    'check-object-member-inside-activity-does-not-exist',
+                  ),
               )
             }
 
