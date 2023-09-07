@@ -396,29 +396,6 @@ export default class ActivityService extends LoggerBase {
         const dbIntegration = await txIntegrationRepo.findById(integrationId)
         const segmentId = dbIntegration.segmentId
 
-        // acquiring lock for activity - we gonna hold it until transaction is done
-
-        await logExecutionTimeV2(
-          async () =>
-            await acquireLock(
-              this.redisClient,
-              `activity:processing:${tenantId}:${segmentId}:${activity.sourceId}`,
-              'check-activity',
-              DEFAULT_EXPIRE_AFTER,
-              DEFAULT_TIMEOUT_AFTER,
-            ),
-          this.log,
-          `acquire activity lock,`,
-        )
-
-        this.log.trace(
-          {
-            key: `activity:processing:${tenantId}:${segmentId}:${activity.sourceId}`,
-            value: 'check-activity',
-          },
-          'Acquired activity lock.',
-        )
-
         // find existing activity
         const dbActivity = await txRepo.findExisting(tenantId, segmentId, activity.sourceId)
 
@@ -597,28 +574,6 @@ export default class ActivityService extends LoggerBase {
           }
 
           if (objectMember) {
-            // checking objectMember
-            await logExecutionTimeV2(
-              async () =>
-                await acquireLock(
-                  this.redisClient,
-                  `member:processing:${tenantId}:${segmentId}:${platform}:${objectMemberUsername}`,
-                  'check-object-member-inside-activity-exists',
-                  MEMBER_LOCK_EXPIRE_AFTER,
-                  MEMBER_LOCK_TIMEOUT_AFTER,
-                ),
-              this.log,
-              `acquire object member lock inside activity exists,`,
-            )
-
-            this.log.trace(
-              {
-                key: `member:processing:${tenantId}:${segmentId}:${platform}:${objectMemberUsername}`,
-                value: 'check-object-member-inside-activity-exists',
-              },
-              'Acquired object member lock.',
-            )
-
             if (dbActivity.objectMemberId) {
               let dbObjectMember = await txMemberRepo.findMember(
                 tenantId,
@@ -672,12 +627,6 @@ export default class ActivityService extends LoggerBase {
                   },
                   dbObjectMember,
                   false,
-                  async () =>
-                    await releaseLock(
-                      this.redisClient,
-                      `member:processing:${tenantId}:${segmentId}:${platform}:${objectMemberUsername}`,
-                      'check-object-member-inside-activity-exists',
-                    ),
                 )
 
                 if (!createActivity) {
@@ -715,38 +664,11 @@ export default class ActivityService extends LoggerBase {
                   },
                   dbObjectMember,
                   false,
-                  async () =>
-                    await releaseLock(
-                      this.redisClient,
-                      `member:processing:${tenantId}:${segmentId}:${platform}:${objectMemberUsername}`,
-                      'check-object-member-inside-activity-exists',
-                    ),
                 )
 
                 objectMemberId = dbActivity.objectMemberId
               }
             }
-
-            // remove lock for objectMember
-
-            await logExecutionTimeV2(
-              async () =>
-                await releaseLock(
-                  this.redisClient,
-                  `member:processing:${tenantId}:${segmentId}:${platform}:${objectMemberUsername}`,
-                  'check-object-member-inside-activity-exists',
-                ),
-              this.log,
-              `release object member lock inside activity exists,`,
-            )
-
-            this.log.trace(
-              {
-                key: `member:processing:${tenantId}:${segmentId}:${platform}:${objectMemberUsername}`,
-                value: 'check-object-member-inside-activity-exists',
-              },
-              'Released object member lock.',
-            )
           }
 
           if (!createActivity) {
@@ -808,28 +730,6 @@ export default class ActivityService extends LoggerBase {
           this.log.trace('We did not find an existing activity. Creating a new one.')
           createActivity = true
 
-          // acquiring lock for member inside activity does not exist
-          await logExecutionTimeV2(
-            async () =>
-              await acquireLock(
-                this.redisClient,
-                `member:processing:${tenantId}:${segmentId}:${platform}:${username}`,
-                'check-member-inside-activity-does-not-exist',
-                MEMBER_LOCK_EXPIRE_AFTER,
-                MEMBER_LOCK_TIMEOUT_AFTER,
-              ),
-            this.log,
-            `acquire member lock inside activity does not exist,`,
-          )
-
-          this.log.trace(
-            {
-              key: `member:processing:${tenantId}:${segmentId}:${platform}:${username}`,
-              value: 'check-member-inside-activity-does-not-exist',
-            },
-            'Acquired member lock.',
-          )
-
           // we don't have the activity yet in the database
           // check if we have a member for the identity from the activity
           const dbMember = await txMemberRepo.findMember(tenantId, segmentId, platform, username)
@@ -860,26 +760,6 @@ export default class ActivityService extends LoggerBase {
                 ),
             )
             memberId = dbMember.id
-
-            // release lock for member inside activity does not exist right after we update the member
-            await logExecutionTimeV2(
-              async () =>
-                await releaseLock(
-                  this.redisClient,
-                  `member:processing:${tenantId}:${segmentId}:${platform}:${username}`,
-                  'check-member-inside-activity-does-not-exist',
-                ),
-              this.log,
-              `release member lock inside activity does not exist,`,
-            )
-
-            this.log.trace(
-              {
-                key: `member:processing:${tenantId}:${segmentId}:${platform}:${username}`,
-                value: 'check-member-inside-activity-does-not-exist',
-              },
-              'Released member lock.',
-            )
           } else {
             this.log.trace(
               'We did not find a member for the identity provided! Creating a new one.',
@@ -900,60 +780,12 @@ export default class ActivityService extends LoggerBase {
                 organizations: member.organizations,
               },
               false,
-              async () =>
-                await releaseLock(
-                  this.redisClient,
-                  `member:processing:${tenantId}:${segmentId}:${platform}:${username}`,
-                  'check-member-inside-activity-does-not-exist',
-                ),
-            )
-
-            // release lock for member inside activity does not exist right after we create the member
-            await logExecutionTimeV2(
-              async () =>
-                await releaseLock(
-                  this.redisClient,
-                  `member:processing:${tenantId}:${segmentId}:${platform}:${username}`,
-                  'check-member-inside-activity-does-not-exist',
-                ),
-              this.log,
-              `release member lock inside activity does not exist,`,
-            )
-
-            this.log.trace(
-              {
-                key: `member:processing:${tenantId}:${segmentId}:${platform}:${username}`,
-                value: 'check-member-inside-activity-does-not-exist',
-              },
-              'Released member lock.',
             )
           }
 
           if (objectMember) {
             // we don't have the activity yet in the database
             // check if we have an object member for the identity from the activity
-
-            // acquiring lock for objectMember inside activity does not exist
-            await logExecutionTimeV2(
-              async () =>
-                await acquireLock(
-                  this.redisClient,
-                  `member:processing:${tenantId}:${segmentId}:${platform}:${objectMemberUsername}`,
-                  'check-object-member-inside-activity-does-not-exist',
-                  MEMBER_LOCK_EXPIRE_AFTER,
-                  MEMBER_LOCK_TIMEOUT_AFTER,
-                ),
-              this.log,
-              `acquire object member lock inside activity does not exist,`,
-            )
-
-            this.log.trace(
-              {
-                key: `member:processing:${tenantId}:${segmentId}:${platform}:${objectMemberUsername}`,
-                value: 'check-object-member-inside-activity-does-not-exist',
-              },
-              'Acquired object member lock.',
-            )
 
             const dbObjectMember = await txMemberRepo.findMember(
               tenantId,
@@ -980,12 +812,6 @@ export default class ActivityService extends LoggerBase {
                 },
                 dbObjectMember,
                 false,
-                async () =>
-                  await releaseLock(
-                    this.redisClient,
-                    `member:processing:${tenantId}:${segmentId}:${platform}:${objectMemberUsername}`,
-                    'check-object-member-inside-activity-does-not-exist',
-                  ),
               )
               objectMemberId = dbObjectMember.id
             } else {
@@ -1008,34 +834,8 @@ export default class ActivityService extends LoggerBase {
                   organizations: objectMember.organizations,
                 },
                 false,
-                async () =>
-                  await releaseLock(
-                    this.redisClient,
-                    `member:processing:${tenantId}:${segmentId}:${platform}:${objectMemberUsername}`,
-                    'check-object-member-inside-activity-does-not-exist',
-                  ),
               )
             }
-
-            // release lock for objectMember inside activity does not exist
-            await logExecutionTimeV2(
-              async () =>
-                await releaseLock(
-                  this.redisClient,
-                  `member:processing:${tenantId}:${segmentId}:${platform}:${objectMemberUsername}`,
-                  'check-object-member-inside-activity-does-not-exist',
-                ),
-              this.log,
-              `release object member lock inside activity does not exist,`,
-            )
-
-            this.log.trace(
-              {
-                key: `member:processing:${tenantId}:${segmentId}:${platform}:${objectMemberUsername}`,
-                value: 'check-object-member-inside-activity-does-not-exist',
-              },
-              'Released object member lock.',
-            )
           }
 
           // release lock for member inside activity does not exist
@@ -1091,18 +891,6 @@ export default class ActivityService extends LoggerBase {
             false,
           )
         }
-
-        // release activity lock
-        await logExecutionTimeV2(
-          async () =>
-            await releaseLock(
-              this.redisClient,
-              `activity:processing:${tenantId}:${segmentId}:${activity.sourceId}`,
-              'check-activity',
-            ),
-          this.log,
-          `release activity lock,`,
-        )
 
         this.log.trace(
           {
