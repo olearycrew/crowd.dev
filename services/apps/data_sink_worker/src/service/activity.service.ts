@@ -407,7 +407,7 @@ export default class ActivityService extends LoggerBase {
             // acquiring lock for member inside activity exists
             await acquireLock(
               this.redisClient,
-              `member:processing:${tenantId}:${segmentId}:${platform}:${username}`,
+              `member:processing:${tenantId}:${platform}:${username}`,
               'check-member-inside-activity-exists',
               MEMBER_LOCK_EXPIRE_AFTER,
               MEMBER_LOCK_TIMEOUT_AFTER,
@@ -459,7 +459,7 @@ export default class ActivityService extends LoggerBase {
                 async () =>
                   await releaseLock(
                     this.redisClient,
-                    `member:processing:${tenantId}:${segmentId}:${platform}:${username}`,
+                    `member:processing:${tenantId}:${platform}:${username}`,
                     'check-member-inside-activity-exists',
                   ),
               )
@@ -502,7 +502,7 @@ export default class ActivityService extends LoggerBase {
                 async () =>
                   await releaseLock(
                     this.redisClient,
-                    `member:processing:${tenantId}:${segmentId}:${platform}:${username}`,
+                    `member:processing:${tenantId}:${platform}:${username}`,
                     'check-member-inside-activity-exists',
                   ),
               )
@@ -803,7 +803,7 @@ export default class ActivityService extends LoggerBase {
           // release lock no matter that
           await releaseLock(
             this.redisClient,
-            `member:processing:${tenantId}:${segmentId}:${platform}:${username}`,
+            `member:processing:${tenantId}:${platform}:${username}`,
             'check-member-inside-activity-exists',
           )
         }

@@ -135,6 +135,18 @@ class BaseQuery {
 
         return new RateLimitError(diffInSeconds + 5, query, err)
       }
+      // Handle secondary rate limits
+      if (err.headers && err.headers['Retry-After']) {
+        const retryAfter = parseInt(err.headers['Retry-After'], 10)
+        return new RateLimitError(retryAfter, 'Unknown GraphQL query!', err)
+      }
+      if (err.headers && err.headers['x-ratelimit-remaining'] === '0') {
+        const epochReset = parseInt(err.headers['x-ratelimit-reset'], 10)
+        const resetDate = new Date(epochReset * 1000) // JavaScript Date constructor takes milliseconds
+        const diffInSeconds = Math.floor((resetDate.getTime() - Date.now()) / 1000)
+
+        return new RateLimitError(diffInSeconds, 'Unknown GraphQL query!', err)
+      }
     }
 
     return err
