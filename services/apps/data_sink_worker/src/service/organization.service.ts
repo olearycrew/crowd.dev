@@ -136,7 +136,6 @@ export class OrganizationService extends LoggerBase {
           const updateData: Partial<IOrganization> = {}
           const fields = [
             'displayName',
-            'url',
             'description',
             'emails',
             'logo',
@@ -172,7 +171,6 @@ export class OrganizationService extends LoggerBase {
           // if it doesn't exists create it
           id = await this.repo.insert(tenantId, {
             displayName: cached.name,
-            url: cached.url,
             description: cached.description,
             emails: cached.emails,
             logo: cached.logo,
@@ -343,6 +341,8 @@ export class OrganizationService extends LoggerBase {
         const txRepo = new OrganizationRepository(txStore, this.log)
         const txIntegrationRepo = new IntegrationRepository(txStore, this.log)
 
+        const txService = new OrganizationService(txStore, this.log)
+
         const dbIntegration = await txIntegrationRepo.findById(integrationId)
         const segmentId = dbIntegration.segmentId
 
@@ -383,7 +383,7 @@ export class OrganizationService extends LoggerBase {
             organization.identities.unshift(...existingIdentities)
           }
 
-          await this.findOrCreate(tenantId, segmentId, integrationId, organization)
+          await txService.findOrCreate(tenantId, segmentId, integrationId, organization)
         } else {
           this.log.debug(
             'No organization found for enriching. This organization enrich process had no affect.',
