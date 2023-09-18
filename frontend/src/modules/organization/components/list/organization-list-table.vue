@@ -607,7 +607,10 @@
                     >
                       <app-tag-list
                         v-if="scope.row.tags?.length"
-                        :member="scope.row"
+                        :member="{
+                          ...scope.row,
+                          tags: scope.row.tags.map((t) => ({ id: t, name: t })),
+                        }"
                         :editable="false"
                       />
                       <span v-else class="text-gray-500">-</span>
@@ -747,7 +750,7 @@ const tagsColumnWidth = computed(() => {
   organizations.value.forEach((row) => {
     if (row.tags) {
       const tabWidth = row.tags
-        .map((tag) => tag.name.length * 20)
+        .map((tag) => tag.length * 20)
         .reduce((a, b) => a + b, 0);
 
       if (tabWidth > maxTabWidth) {
