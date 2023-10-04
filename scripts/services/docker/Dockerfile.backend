@@ -7,7 +7,14 @@ WORKDIR /usr/crowd/app
 # build libraries
 COPY ./services/scripts ./services/scripts
 COPY ./services/libs ./services/libs
-RUN cd services/scripts && ./install_lib_packages.sh && ./build_libs.sh && ./clear_lib_packages.sh
+
+RUN ls -l .
+RUN ls -l services
+RUN ls -l services/scripts
+
+RUN cd services/scripts && ./install_lib_packages.sh
+RUN cd services/scripts && ./build_libs.sh
+RUN cd services/scripts && ./clear_lib_packages.sh
 
 # install backend dependencies
 COPY ./backend/package.json ./backend/package-lock.json ./backend/

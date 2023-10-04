@@ -13,7 +13,7 @@ else
     RESET=`tput sgr0`
 fi
 
-set -eo pipefail
+set -eox pipefail
 CLI_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 FLAGS=$1

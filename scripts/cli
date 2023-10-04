@@ -51,6 +51,9 @@ function prepare_dev_env() {
 
 prepare_dev_env
 
+echo "_DC = $_DC"
+echo "_DC version = $($_DC version)"
+
 function prepare_service_string() {
     if [ $1 == "HELP" ]; then delimiter1=" | "; delimiter2=" => | "; fi
     if [ $1 == "LIST" ]; then delimiter1="\|"; delimiter2="\|"; fi
@@ -244,9 +247,9 @@ function start_service() {
     export GROUP_ID=$(id -g)
 
     if [[ ${DEV} ]]; then
-        $_DC --compatibility -p $PROJECT_NAME -f "$CLI_HOME/services/${1}.yaml" up --build -d ${1}-dev
+        $_DC --compatibility -p $PROJECT_NAME -f "$CLI_HOME/services/${1}.yaml" up --build --no-cache -d ${1}-dev
     else
-        $_DC --compatibility -p $PROJECT_NAME -f "$CLI_HOME/services/${1}.yaml" up --build -d ${1}
+        $_DC --compatibility -p $PROJECT_NAME -f "$CLI_HOME/services/${1}.yaml" up --build --no-cache -d ${1}
     fi
 }
 
