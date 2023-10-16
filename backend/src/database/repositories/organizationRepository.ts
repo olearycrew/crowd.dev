@@ -1532,10 +1532,12 @@ class OrganizationRepository {
           COUNT(*) OVER() AS total_count,
           otm."similarity"
         FROM organizations org
-        INNER JOIN "organizationToMerge" otm ON org.id = otm."organizationId"
+        JOIN "organizationToMerge" otm ON org.id = otm."organizationId"
         JOIN "organizationSegments" os ON os."organizationId" = org.id
+        JOIN "organizationSegments" to_merge_segments on to_merge_segments."organizationId" = otm."toMergeId"
         WHERE org."tenantId" = :tenantId
           AND os."segmentId" IN (:segmentIds)
+          AND  to_merge_segments."segmentId" IN (:segmentIds)
         ORDER BY Greatest(Hashtext(Concat(org.id, otm."toMergeId")), Hashtext(Concat(otm."toMergeId", org.id))), org.id
       ) AS "organizationsToMerge" 
     ORDER BY 
