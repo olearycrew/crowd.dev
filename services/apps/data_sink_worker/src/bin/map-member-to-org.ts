@@ -1,4 +1,4 @@
-import { DB_CONFIG, SQS_CONFIG } from '../conf'
+import { DB_CONFIG, SQS_CONFIG, REDIS_CONFIG } from '../conf'
 import { DbStore, getDbConnection } from '@crowd/database'
 import { getServiceTracer } from '@crowd/tracing'
 import { getServiceLogger } from '@crowd/logging'
@@ -12,6 +12,7 @@ import MemberRepository from '../repo/member.repo'
 import MemberService from '../service/member.service'
 import DataSinkRepository from '../repo/dataSink.repo'
 import { OrganizationService } from '../service/organization.service'
+import { getRedisClient } from '@crowd/redis'
 
 const tracer = getServiceTracer()
 const log = getServiceLogger()
@@ -26,6 +27,8 @@ if (processArguments.length !== 1) {
 const memberId = processArguments[0]
 
 setImmediate(async () => {
+  const redisClient = await getRedisClient(REDIS_CONFIG())
+
   const sqsClient = getSqsClient(SQS_CONFIG())
   const emitter = new DataSinkWorkerEmitter(sqsClient, tracer, log)
   await emitter.init()
@@ -42,8 +45,14 @@ setImmediate(async () => {
   const searchSyncWorkerEmitter = new SearchSyncWorkerEmitter(sqsClient, tracer, log)
   await searchSyncWorkerEmitter.init()
 
-  const memberService = new MemberService(store, nodejsWorkerEmitter, searchSyncWorkerEmitter, log)
-  const orgService = new OrganizationService(store, log)
+  const memberService = new MemberService(
+    store,
+    nodejsWorkerEmitter,
+    searchSyncWorkerEmitter,
+    redisClient,
+    log,
+  )
+  const orgService = new OrganizationService(store, redisClient, log)
 
   try {
     const member = await memberRepo.findById(memberId)

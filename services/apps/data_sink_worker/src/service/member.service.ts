@@ -23,12 +23,14 @@ import { NodejsWorkerEmitter, SearchSyncWorkerEmitter } from '@crowd/sqs'
 import IntegrationRepository from '../repo/integration.repo'
 import { OrganizationService } from './organization.service'
 import uniqby from 'lodash.uniqby'
+import { RedisClient } from '@crowd/redis'
 
 export default class MemberService extends LoggerBase {
   constructor(
     private readonly store: DbStore,
     private readonly nodejsWorkerEmitter: NodejsWorkerEmitter,
     private readonly searchSyncWorkerEmitter: SearchSyncWorkerEmitter,
+    private readonly redisClient: RedisClient,
     parentLog: Logger,
   ) {
     super(parentLog)
@@ -84,7 +86,7 @@ export default class MemberService extends LoggerBase {
         }
 
         const organizations = []
-        const orgService = new OrganizationService(txStore, this.log)
+        const orgService = new OrganizationService(txStore, this.redisClient, this.log)
         if (data.organizations) {
           for (const org of data.organizations) {
             const id = await orgService.findOrCreate(tenantId, segmentId, integrationId, org)
@@ -206,7 +208,7 @@ export default class MemberService extends LoggerBase {
         }
 
         const organizations = []
-        const orgService = new OrganizationService(txStore, this.log)
+        const orgService = new OrganizationService(txStore, this.redisClient, this.log)
         if (data.organizations) {
           for (const org of data.organizations) {
             const id = await orgService.findOrCreate(tenantId, segmentId, integrationId, org)
@@ -263,7 +265,7 @@ export default class MemberService extends LoggerBase {
     integrationId: string,
     emails: string[],
   ): Promise<IOrganizationIdSource[]> {
-    const orgService = new OrganizationService(this.store, this.log)
+    const orgService = new OrganizationService(this.store, this.redisClient, this.log)
     const organizations: IOrganizationIdSource[] = []
     const emailDomains = new Set<string>()
 
@@ -332,6 +334,7 @@ export default class MemberService extends LoggerBase {
           txStore,
           this.nodejsWorkerEmitter,
           this.searchSyncWorkerEmitter,
+          this.redisClient,
           this.log,
         )
 

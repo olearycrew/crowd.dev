@@ -20,6 +20,8 @@ import {
   IOrganizationIdSource,
 } from '@crowd/types'
 
+import { RedisClient } from '@crowd/redis'
+
 export class OrganizationRepository extends RepositoryBase<OrganizationRepository> {
   private readonly insertCacheOrganizationColumnSet: DbColumnSet
   private readonly updateCacheOrganizationColumnSet: DbColumnSet
@@ -27,7 +29,7 @@ export class OrganizationRepository extends RepositoryBase<OrganizationRepositor
   private readonly insertOrganizationColumnSet: DbColumnSet
   private readonly updateOrganizationColumnSet: DbColumnSet
 
-  constructor(dbStore: DbStore, parentLog: Logger) {
+  constructor(dbStore: DbStore, private readonly redisClient: RedisClient, parentLog: Logger) {
     super(dbStore, parentLog)
 
     this.insertCacheOrganizationColumnSet = getInsertCacheOrganizationColumnSet(this.dbInstance)
@@ -392,6 +394,11 @@ export class OrganizationRepository extends RepositoryBase<OrganizationRepositor
   }
 
   public async findByDomain(tenantId: string, domain: string): Promise<IOrganization> {
+    const cached = await this.redisClient.get(`organization:${tenantId}:website:${domain}`)
+    if (cached) {
+      return JSON.parse(cached)
+    }
+
     const result = await this.db().oneOrNone(
       `
       SELECT
@@ -425,6 +432,14 @@ export class OrganizationRepository extends RepositoryBase<OrganizationRepositor
         domain,
       },
     )
+
+    if (result) {
+      await this.redisClient.set(
+        `organization:${tenantId}:website:${domain}`,
+        JSON.stringify(result),
+        { EX: 60 },
+      )
+    }
 
     return result
   }

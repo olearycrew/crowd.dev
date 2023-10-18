@@ -128,6 +128,7 @@ export default class DataSinkService extends LoggerBase {
             this.store,
             this.nodejsWorkerEmitter,
             this.searchSyncWorkerEmitter,
+            this.redisClient,
             this.log,
           )
           const memberData = data.data as IMemberData
@@ -142,7 +143,7 @@ export default class DataSinkService extends LoggerBase {
         }
 
         case IntegrationResultType.ORGANIZATION_ENRICH: {
-          const service = new OrganizationService(this.store, this.log)
+          const service = new OrganizationService(this.store, this.redisClient, this.log)
           const organizationData = data.data as IOrganization
 
           await service.processOrganizationEnrich(

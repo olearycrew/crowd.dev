@@ -7,6 +7,7 @@ import { DbStore } from '@crowd/database'
 import { Logger, LoggerBase, getChildLogger } from '@crowd/logging'
 import { IOrganization, IOrganizationSocial, PlatformType } from '@crowd/types'
 import { websiteNormalizer } from '@crowd/common'
+import { RedisClient } from '@crowd/redis'
 
 export interface IOrganizationIdSource {
   id: string
@@ -16,10 +17,14 @@ export interface IOrganizationIdSource {
 export class OrganizationService extends LoggerBase {
   private readonly repo: OrganizationRepository
 
-  constructor(private readonly store: DbStore, parentLog: Logger) {
+  constructor(
+    private readonly store: DbStore,
+    private readonly redisClient: RedisClient,
+    parentLog: Logger,
+  ) {
     super(parentLog)
 
-    this.repo = new OrganizationRepository(store, this.log)
+    this.repo = new OrganizationRepository(store, redisClient, this.log)
   }
 
   public async findOrCreate(
@@ -41,7 +46,7 @@ export class OrganizationService extends LoggerBase {
 
     try {
       const id = await this.store.transactionally(async (txStore) => {
-        const txRepo = new OrganizationRepository(txStore, this.log)
+        const txRepo = new OrganizationRepository(txStore, this.redisClient, this.log)
 
         const primaryIdentity = data.identities[0]
 
@@ -371,10 +376,10 @@ export class OrganizationService extends LoggerBase {
       const primaryIdentity = organization.identities[0]
 
       await this.store.transactionally(async (txStore) => {
-        const txRepo = new OrganizationRepository(txStore, this.log)
+        const txRepo = new OrganizationRepository(txStore, this.redisClient, this.log)
         const txIntegrationRepo = new IntegrationRepository(txStore, this.log)
 
-        const txService = new OrganizationService(txStore, this.log)
+        const txService = new OrganizationService(txStore, this.redisClient, this.log)
 
         const dbIntegration = await txIntegrationRepo.findById(integrationId)
         const segmentId = dbIntegration.segmentId
