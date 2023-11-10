@@ -625,8 +625,16 @@ export default class MemberService extends LoggerBase {
       delete original.activities
       delete toMerge.activities
 
+      const timeoutId = setTimeout(() => {
+        this.options.log.error('Merging members taking too long')
+        this.options.log.error({ original, toMerge }, 'Merging members data')
+        this.options.log.info({ originalId, toMergeId }, 'Merging members!')
+      }, 1000 * 30)
+
       // Performs a merge and returns the fields that were changed so we can update
       const toUpdate: any = await MemberService.membersMerge(original, toMerge)
+
+      clearTimeout(timeoutId)
 
       // we will handle activities later manually
       delete toUpdate.activities
