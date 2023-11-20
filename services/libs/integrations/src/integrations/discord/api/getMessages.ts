@@ -22,7 +22,7 @@ async function getMessages(
     },
   }
 
-  return await retryWrapper(3, async () => {
+  return await retryWrapper(5, async () => {
     try {
       const response = await axios(config)
       const records: DiscordApiMessage[] = response.data

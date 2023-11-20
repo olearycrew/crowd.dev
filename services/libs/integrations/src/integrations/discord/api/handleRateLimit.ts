@@ -16,7 +16,8 @@ export const retryWrapper = async (maxRetries, fn) => {
       return result
     } catch (err) {
       if (err instanceof RateLimitError && i < maxRetries - 1) {
-        await new Promise((resolve) => setTimeout(resolve, (i + 1) * 1000))
+        const backoffTime = Math.pow(2, i) * 1000 // Exponential backoff
+        await new Promise((resolve) => setTimeout(resolve, backoffTime))
         continue
       }
       throw err

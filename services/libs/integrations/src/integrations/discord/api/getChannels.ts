@@ -41,7 +41,7 @@ async function getChannels(
     },
   }
 
-  return await retryWrapper(3, async () => {
+  return await retryWrapper(5, async () => {
     try {
       const response = await axios(config)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

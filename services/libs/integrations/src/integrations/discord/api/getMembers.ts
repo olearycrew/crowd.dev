@@ -21,7 +21,7 @@ async function getMembers(
     },
   }
 
-  return await retryWrapper(3, async () => {
+  return await retryWrapper(5, async () => {
     try {
       const response = await axios(config)
       const records: DiscordApiMember[] = response.data

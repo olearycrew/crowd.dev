@@ -16,7 +16,7 @@ async function getThreads(
     },
   }
 
-  return await retryWrapper(3, async () => {
+  return await retryWrapper(5, async () => {
     try {
       const response = await axios(config)
       return response.data.threads
