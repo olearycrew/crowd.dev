@@ -841,6 +841,10 @@ export default class ActivityService extends LoggerBase {
               },
               false,
             )
+
+            if (organizationId) {
+              await this.searchSyncWorkerEmitter.triggerOrganizationSync(tenantId, organizationId)
+            }
           }
         } finally {
           // release locks matter what
