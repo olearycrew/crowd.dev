@@ -144,11 +144,11 @@ if (parameters.help || (!parameters.tenant && (!parameters.organization || !para
         }
 
         if (enrichOrganizations) {
-          const organizations = await OrganizationRepository.findAndCountAll({}, optionsWithTenant)
+          // const organizations = await OrganizationRepository.findAndCountAll({}, optionsWithTenant)
+// 
+          // const totalOrganizations = organizations.count
 
-          const totalOrganizations = organizations.count
-
-          log.info({ tenantId }, `Total organizations found in the tenant: ${totalOrganizations}`)
+          log.info({ tenantId }, `Total organizations found in the tenant: -`)
 
           const payload = {
             type: NodeWorkerMessageType.NODE_MICROSERVICE,
