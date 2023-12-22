@@ -246,27 +246,26 @@ class MemberRepository {
 
     const mems = await options.database.sequelize.query(
       `SELECT 
-        "membersToMerge".id, 
-        "membersToMerge"."toMergeId",
-        "membersToMerge"."total_count",
-        "membersToMerge"."similarity"
-      FROM 
-      (
-        SELECT DISTINCT ON (Greatest(Hashtext(Concat(mem.id, mtm."toMergeId")), Hashtext(Concat(mtm."toMergeId", mem.id)))) 
-            mem.id, 
-            mtm."toMergeId", 
-            mem."joinedAt", 
-            COUNT(*) OVER() AS total_count,
-            mtm."similarity"
-          FROM members mem
-          INNER JOIN "memberToMerge" mtm ON mem.id = mtm."memberId"
-          JOIN "memberSegments" ms ON ms."memberId" = mem.id
-          WHERE mem."tenantId" = :tenantId
-            AND ms."segmentId" IN (:segmentIds)
-        ) AS "membersToMerge" 
-      ORDER BY 
-        "membersToMerge"."similarity" DESC 
-      LIMIT :limit OFFSET :offset
+      mtm."memberId" AS id, 
+      mtm."toMergeId",
+      COUNT(*) OVER() AS total_count,
+      mtm."similarity"
+  FROM 
+      "memberToMerge" mtm
+  JOIN 
+      "memberSegments" ms ON ms."memberId" = mtm."memberId"
+  WHERE 
+      mtm."memberId" IN (
+          SELECT id 
+          FROM members 
+          WHERE "tenantId" = :tenantId
+      )
+      AND ms."segmentId" IN (:segmentIds)
+  ORDER BY 
+      CASE WHEN mtm."similarity" IS NULL THEN 1 ELSE 0 END,
+      mtm."similarity" DESC 
+  LIMIT :limit OFFSET :offset;
+  
     `,
       {
         replacements: {
