@@ -1451,7 +1451,7 @@ class OrganizationRepository {
     const currentTenant = SequelizeRepository.getCurrentTenant(options)
     const segmentIds = SequelizeRepository.getSegmentIds(options)
 
-    const organizationFilter = organizationId ? ` WHERE ("organizationsToMerge".id = :organizationId OR "organizationsToMerge"."toMergeId" = :organizationId)` : ''
+    const organizationFilter = organizationId ? ` AND ("otm"."organizationId" = :organizationId OR "otm"."toMergeId" = :organizationId)` : ''
 
     const orgs = await options.database.sequelize.query(
       `WITH
@@ -1475,6 +1475,7 @@ class OrganizationRepository {
         WHERE org."tenantId" = :tenantId
           AND os."segmentId" IN (:segmentIds)
           AND (ma.id IS NULL OR ma.state = :mergeActionStatus)
+          ${organizationFilter}
       ),
       
       count_cte AS (
