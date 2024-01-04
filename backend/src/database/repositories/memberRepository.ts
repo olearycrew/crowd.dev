@@ -247,39 +247,53 @@ class MemberRepository {
 
     const mems = await options.database.sequelize.query(
       `
-  SELECT 
-      "membersToMerge".id, 
-      "membersToMerge"."toMergeId",
-      "membersToMerge"."total_count",
-      "membersToMerge"."similarity",
-      "membersToMerge"."activityEstimate"
-  FROM 
-      (
-      SELECT 
-          mem.id, 
+      WITH
+      cte AS (
+        SELECT
+          Greatest(Hashtext(Concat(mem.id, mtm."toMergeId")), Hashtext(Concat(mtm."toMergeId", mem.id))) as hash,
+          mem.id,
           mtm."toMergeId",
-          COUNT(*) OVER() as total_count,
+          mem."createdAt",
           mtm."similarity",
-          mtm."activityEstimate",
-          ROW_NUMBER() OVER (PARTITION BY Greatest(Hashtext(Concat(mem.id, mtm."toMergeId")), Hashtext(Concat(mtm."toMergeId", mem.id))) ORDER BY mem.id, mtm."toMergeId") as rn
-      FROM 
-          members mem
-      INNER JOIN 
-          "memberToMerge" mtm ON mem.id = mtm."memberId"
-      JOIN 
-          "memberSegments" ms ON ms."memberId" = mem.id
-      WHERE 
-          mem."tenantId" = :tenantId
+          mtm."activityEstimate"
+        FROM members mem
+        JOIN "memberToMerge" mtm ON mem.id = mtm."memberId"
+        JOIN "memberSegments" ms ON ms."memberId" = mem.id
+        WHERE mem."tenantId" = :tenantId
           AND ms."segmentId" IN (:segmentIds)
-      ) as "membersToMerge"
-  WHERE 
-      "membersToMerge".rn = 1
-  ORDER BY 
-      "membersToMerge"."activityEstimate", 
-      "membersToMerge"."similarity" DESC,
-      "membersToMerge".id, 
-      "membersToMerge"."toMergeId"
-  LIMIT :limit OFFSET :offset;
+      ),
+
+      count_cte AS (
+        SELECT COUNT(DISTINCT hash) AS total_count
+        FROM cte
+      ),
+
+      final_select AS (
+        SELECT DISTINCT ON (hash)
+          id,
+          "toMergeId",
+          "createdAt",
+          "similarity",
+          "activityEstimate"
+        FROM cte
+        ORDER BY hash, id
+      )
+
+      SELECT
+        "memberToMerge".id,
+        "memberToMerge"."toMergeId",
+        count_cte."total_count",
+        "memberToMerge"."similarity",
+        "memberToMerge"."activityEstimate"
+      FROM
+        final_select AS "memberToMerge",
+        count_cte
+      ORDER BY
+        "memberToMerge"."activityEstimate" desc,
+          "memberToMerge"."similarity" desc,
+          "memberToMerge".id,
+          "memberToMerge"."toMergeId"
+      LIMIT :limit OFFSET :offset
     `,
       {
         replacements: {
