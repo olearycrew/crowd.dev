@@ -1501,7 +1501,6 @@ class OrganizationRepository {
       FROM
         final_select AS "organizationsToMerge",
         count_cte
-      ${organizationFilter}
       ORDER BY
         "organizationsToMerge"."similarity" DESC, "organizationsToMerge".id
       LIMIT :limit OFFSET :offset
