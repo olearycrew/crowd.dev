@@ -250,17 +250,14 @@ class MemberRepository {
       WITH
       cte AS (
         SELECT
-          Greatest(Hashtext(Concat(mem.id, mtm."toMergeId")), Hashtext(Concat(mtm."toMergeId", mem.id))) as hash,
-          mem.id,
+          Greatest(Hashtext(Concat(mtm."memberId", mtm."toMergeId")), Hashtext(Concat(mtm."toMergeId", mtm."memberId"))) as hash,
+          mtm."memberId",
           mtm."toMergeId",
-          mem."createdAt",
           mtm."similarity",
           mtm."activityEstimate"
-        FROM members mem
-        JOIN "memberToMerge" mtm ON mem.id = mtm."memberId"
-        JOIN "memberSegments" ms ON ms."memberId" = mem.id
-        WHERE mem."tenantId" = :tenantId
-          AND ms."segmentId" IN (:segmentIds)
+        from "memberToMerge" mtm
+        JOIN "memberSegments" ms ON ms."memberId" = mtm."memberId"
+        WHERE ms."segmentId" IN (:segmentIds)
       ),
 
       count_cte AS (
@@ -270,17 +267,16 @@ class MemberRepository {
 
       final_select AS (
         SELECT DISTINCT ON (hash)
-          id,
+          "memberId",
           "toMergeId",
-          "createdAt",
           "similarity",
           "activityEstimate"
         FROM cte
-        ORDER BY hash, id
+        ORDER BY hash, "memberId"
       )
 
       SELECT
-        "memberToMerge".id,
+        "memberToMerge"."memberId" as id,
         "memberToMerge"."toMergeId",
         count_cte."total_count",
         "memberToMerge"."similarity",
@@ -291,13 +287,12 @@ class MemberRepository {
       ORDER BY
         "memberToMerge"."activityEstimate" desc,
           "memberToMerge"."similarity" desc,
-          "memberToMerge".id,
+          "memberToMerge"."memberId",
           "memberToMerge"."toMergeId"
       LIMIT :limit OFFSET :offset
     `,
       {
         replacements: {
-          tenantId: currentTenant.id,
           segmentIds,
           limit,
           offset,
