@@ -19,6 +19,7 @@ import Sequelize, { QueryTypes } from 'sequelize'
 import { Error400, Error404 } from '@crowd/common'
 import { FieldTranslatorFactory, OpensearchQueryParser } from '@crowd/opensearch'
 import { ActivityDisplayService } from '@crowd/integrations'
+import { logExecutionTimeV2 } from '@crowd/logging'
 import { KUBE_MODE, SERVICE } from '@/conf'
 import { ServiceType } from '../../conf/configTypes'
 import isFeatureEnabled from '../../feature-flags/isFeatureEnabled'
@@ -1146,26 +1147,35 @@ class MemberRepository {
     const segments = segmentId ? [segmentId] : SequelizeRepository.getSegmentIds(options)
 
     const memberAttributeSettings = (
-      await MemberAttributeSettingsRepository.findAndCountAll({}, options)
+      await logExecutionTimeV2(
+        () => MemberAttributeSettingsRepository.findAndCountAll({}, options),
+        options.log,
+        'MemberAttributeSettingsRepository.findAndCountAll',
+      )
     ).rows
 
-    const response = await this.findAndCountAllOpensearch(
-      {
-        filter: {
-          and: [
-            {
-              id: {
-                eq: id,
-              },
+    const response = await logExecutionTimeV2(
+      () =>
+        this.findAndCountAllOpensearch(
+          {
+            filter: {
+              and: [
+                {
+                  id: {
+                    eq: id,
+                  },
+                },
+              ],
             },
-          ],
-        },
-        limit: 1,
-        offset: 0,
-        attributesSettings: memberAttributeSettings,
-        segments,
-      },
-      options,
+            limit: 1,
+            offset: 0,
+            attributesSettings: memberAttributeSettings,
+            segments,
+          },
+          options,
+        ),
+      options.log,
+      'MemberRepository.findAndCountAllOpensearch',
     )
 
     if (response.count === 0) {
@@ -2190,10 +2200,15 @@ class MemberRepository {
       }
     }
 
-    const countResponse = await options.opensearch.count({
-      index: OpenSearchIndex.MEMBERS,
-      body: { query: parsed.query },
-    })
+    const countResponse = await logExecutionTimeV2(
+      () =>
+        options.opensearch.count({
+          index: OpenSearchIndex.MEMBERS,
+          body: { query: parsed.query },
+        }),
+      options.log,
+      'MemberRepository.findAndCountAllOpensearch opensearch.count',
+    )
 
     if (countOnly) {
       return {
@@ -2204,10 +2219,15 @@ class MemberRepository {
       }
     }
 
-    const response = await options.opensearch.search({
-      index: OpenSearchIndex.MEMBERS,
-      body: parsed,
-    })
+    const response = await logExecutionTimeV2(
+      () =>
+        options.opensearch.search({
+          index: OpenSearchIndex.MEMBERS,
+          body: parsed,
+        }),
+      options.log,
+      'MemberRepository.findAndCountAllOpensearch opensearch.search',
+    )
 
     const translatedRows = response.body.hits.hits.map((o) =>
       translator.translateObjectToCrowd(o._source),
@@ -2236,8 +2256,10 @@ class MemberRepository {
     if (memberIds.length > 0) {
       const seq = SequelizeRepository.getSequelize(options)
 
-      const lastActivities = await seq.query(
-        `
+      const lastActivities = await logExecutionTimeV2(
+        () =>
+          seq.query(
+            `
           WITH
             leaf_segment_ids AS (
               select id
@@ -2255,13 +2277,16 @@ class MemberRepository {
           FROM raw_data
           WHERE rn = 1;
         `,
-        {
-          replacements: {
-            tenantId: tenant.id,
-            memberIds,
-          },
-          type: QueryTypes.SELECT,
-        },
+            {
+              replacements: {
+                tenantId: tenant.id,
+                memberIds,
+              },
+              type: QueryTypes.SELECT,
+            },
+          ),
+        options.log,
+        'MemberRepository.findAndCountAllOpensearch seq.query',
       )
 
       for (const row of translatedRows) {

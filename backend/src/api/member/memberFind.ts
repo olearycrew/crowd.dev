@@ -1,4 +1,5 @@
 import { FeatureFlag } from '@crowd/types'
+import { logExecutionTimeV2 } from '@crowd/logging'
 import Permissions from '../../security/permissions'
 import MemberService from '../../services/memberService'
 import PermissionChecker from '../../services/user/permissionChecker'
@@ -36,7 +37,11 @@ export default async (req, res) => {
 
   let payload
   if (await isFeatureEnabled(FeatureFlag.SERVE_PROFILES_OPENSEARCH, req)) {
-    payload = await new MemberService(req).findByIdOpensearch(req.params.id, segmentId)
+    payload = await logExecutionTimeV2(
+      () => new MemberService(req).findByIdOpensearch(req.params.id, segmentId),
+      req.log,
+      'MemberService.findByIdOpensearch',
+    )
   } else {
     payload = await new MemberService(req).findById(req.params.id, true, true, segmentId)
   }
