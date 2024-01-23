@@ -50,7 +50,9 @@ async function purgeTenantsAndData(): Promise<void> {
   // initialize database with 15 minutes query timeout
   const prodDb = await databaseInit(1000 * 60 * 15, true)
 
-  let count = 0
+  const BATCH_SIZE = 25
+  let offset
+
   let purgeableTenants
 
   const transaction = await prodDb.sequelize.transaction()
@@ -59,95 +61,98 @@ async function purgeTenantsAndData(): Promise<void> {
 
   const doNotPurgeTenantIds = parameters.tenantIds.split(',')
 
-  purgeableTenants = await prodDb.sequelize.query(
-    `
-      select id
-      from tenants
-      where "trialEndsAt" is not null and "trialEndsAt" < now()`,
-    {
-      type: QueryTypes.SELECT,
-    },
-  )
+  do {
+    offset = purgeableTenants ? offset + BATCH_SIZE : 0
+    purgeableTenants = await prodDb.sequelize.query(
+      `
+        select id
+        from tenants
+        where "trialEndsAt" is not null and "trialEndsAt" < now()
+        limit ${BATCH_SIZE}
+        offset ${offset};`,
+      {
+        type: QueryTypes.SELECT,
+      },
+    )
 
-  purgeableTenants = purgeableTenants.filter((t) => !doNotPurgeTenantIds.includes(t.id))
+    purgeableTenants = purgeableTenants.filter((t) => !doNotPurgeTenantIds.includes(t.id))
 
-  log.info(`Found ${purgeableTenants.length} tenants to purge!`)
+    log.info(`Found ${purgeableTenants.length} tenants to purge!`)
 
-  const tables = [
-    'memberSegments',
-    'organizationSegments',
-    'microservices',
-    'conversations',
-    'activities',
-    'githubRepos',
-    'integrations',
-    'reports',
-    'settings',
-    'widgets',
-    'recurringEmailsHistory',
-    'eagleEyeContents',
-    'members',
-    'memberAttributeSettings',
-    'tasks',
-    'organizationCacheLinks',
-    'organizations',
-  ]
+    const tables = [
+      'memberSegments',
+      'organizationSegments',
+      'microservices',
+      'conversations',
+      'activities',
+      'githubRepos',
+      'integrations',
+      'reports',
+      'settings',
+      'widgets',
+      'recurringEmailsHistory',
+      'eagleEyeContents',
+      'members',
+      'memberAttributeSettings',
+      'tasks',
+      'organizationCacheLinks',
+      'organizations',
+    ]
 
-  try {
-    for (const tenant of purgeableTenants) {
-      for (const table of tables) {
-        // The 'organizationCacheLinks' table has a foreign key constraint on 'organizations' table.
-        // So, before deleting any record from 'organizations', we need to delete the corresponding records from 'organizationCacheLinks'.
-        if (table === 'organizationCacheLinks') {
-          await prodDb.sequelize.query(
-            `
-            delete from "${table}"
-            where "organizationId" IN
-                  (select id
-                   from organizations
-                   where "tenantId" = :tenantId)`,
-            {
-              replacements: { tenantId: tenant.id },
-              type: QueryTypes.DELETE,
-              transaction,
-            },
-          )
-        } else {
-          await prodDb.sequelize.query(
-            `
-            delete from "${table}"
-            where "tenantId" = :tenantId`,
-            {
-              replacements: { tenantId: tenant.id },
-              type: QueryTypes.DELETE,
-              transaction,
-            },
-          )
+    try {
+      for (const tenant of purgeableTenants) {
+        for (const table of tables) {
+          // The 'organizationCacheLinks' table has a foreign key constraint on 'organizations' table.
+          // So, before deleting any record from 'organizations', we need to delete the corresponding records from 'organizationCacheLinks'.
+          if (table === 'organizationCacheLinks') {
+            await prodDb.sequelize.query(
+              `
+              delete from "${table}"
+              where "organizationId" IN
+                    (select id
+                     from organizations
+                     where "tenantId" = :tenantId)`,
+              {
+                replacements: { tenantId: tenant.id },
+                type: QueryTypes.DELETE,
+                transaction,
+              },
+            )
+          } else {
+            await prodDb.sequelize.query(
+              `
+              delete from "${table}"
+              where "tenantId" = :tenantId`,
+              {
+                replacements: { tenantId: tenant.id },
+                type: QueryTypes.DELETE,
+                transaction,
+              },
+            )
+          }
         }
+
+        // remove tenant from tenants table
+        await prodDb.sequelize.query(
+          `
+          delete from tenants
+          where id = :tenantId`,
+          {
+            replacements: { tenantId: tenant.id },
+            type: QueryTypes.DELETE,
+            transaction,
+          },
+        )
+
+        log.info(`Purged tenant ${tenant.id} and its data!`)
       }
-
-      // remove tenant from tenants table
-      await prodDb.sequelize.query(
-        `
-        delete from tenants
-        where id = :tenantId`,
-        {
-          replacements: { tenantId: tenant.id },
-          type: QueryTypes.DELETE,
-          transaction,
-        },
-      )
-
-      count++
-      log.info(`Purged ${count}/${purgeableTenants.length} tenants!`)
+      await transaction.commit()
+    } catch (error) {
+      await transaction.rollback()
+      log.error(`Error purging tenants and their data: ${error.message}`)
+      process.exit(1)
     }
-    await transaction.commit()
-    log.info('Revoked access and purged data for free tenants!')
-  } catch (error) {
-    await transaction.rollback()
-    log.error(`Error purging tenants and their data: ${error.message}`)
-    process.exit(1)
-  }
+  } while (purgeableTenants.length > 0)
 }
 
 if (parameters.help) {
