@@ -72,13 +72,14 @@ async function purgeTenantsAndData(): Promise<void> {
   log.info(`Found ${purgeableTenants.length} tenants to purge!`)
 
   const tables = [
+    'githubRepos',
+    'integrations',
+    'incomingWebhooks',
     'memberSegments',
     'organizationSegments',
     'microservices',
     'conversations',
     'activities',
-    'githubRepos',
-    'integrations',
     'reports',
     'settings',
     'widgets',
