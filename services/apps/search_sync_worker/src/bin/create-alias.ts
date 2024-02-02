@@ -20,3 +20,5 @@ setImmediate(async () => {
   await openSearchService.createAlias(index, alias)
   process.exit(0)
 })
+
+// hello world from the search_sync_worker

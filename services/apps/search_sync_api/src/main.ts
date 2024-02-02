@@ -77,3 +77,5 @@ setImmediate(async () => {
     log.info(`Search Sync API listening on port ${config.port}!`)
   })
 })
+
+// hello world from the search_sync_api
