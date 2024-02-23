@@ -67,25 +67,28 @@ setImmediate(async () => {
     await streamWorkerEmitter.init()
     await dataSinkWorkerEmitter.init()
 
-    let processing = false
-    setInterval(async () => {
-      try {
-        if (!processing) {
-          processing = true
-          await processOldDataJob(
-            dbConnection,
-            redisClient,
-            streamWorkerEmitter,
-            dataSinkWorkerEmitter,
-            log,
-          )
-        }
-      } catch (err) {
-        log.error(err, 'Failed to process old data!')
-      } finally {
-        processing = false
-      }
-    }, PROCESSING_INTERVAL_MINUTES * 60 * 1000)
+    // let processing = false
+    // setInterval(
+    //   async () => {
+    //     try {
+    //       if (!processing) {
+    //         processing = true
+    //         await processOldDataJob(
+    //           dbConnection,
+    //           redisClient,
+    //           streamWorkerEmitter,
+    //           dataSinkWorkerEmitter,
+    //           log,
+    //         )
+    //       }
+    //     } catch (err) {
+    //       log.error(err, 'Failed to process old data!')
+    //     } finally {
+    //       processing = false
+    //     }
+    //   },
+    //   PROCESSING_INTERVAL_MINUTES * 60 * 1000,
+    // )
     await queue.start()
   } catch (err) {
     log.error({ err }, 'Failed to start queues!')
