@@ -4,11 +4,11 @@ import {
   IMemberPartialAggregatesOpensearchRawResult,
   IMemberQueryBody,
   ISimilarMemberOpensearch,
-} from 'types'
+} from '../../types'
 import { svc } from '../../main'
 import { IMemberMergeSuggestion, OpenSearchIndex } from '@crowd/types'
-import { calculateSimilarity } from 'utils'
-import MemberMergeSuggestionsRepository from 'repo/memberMergeSuggestions.repo'
+import { calculateSimilarity } from '../../utils'
+import MemberMergeSuggestionsRepository from '@crowd/data-access-layer/src/old/apps/merge_suggestions_worker/memberMergeSuggestions.repo'
 
 /**
  * Finds similar members of given member in a tenant
