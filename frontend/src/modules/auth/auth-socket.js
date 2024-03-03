@@ -78,7 +78,7 @@ export const connectSocket = (token) => {
       'a',
       {
         href: `${window.location.origin}/members/${primaryId}`,
-        class: 'underline',
+        class: 'underline text-gray-600',
       },
       primaryDisplayName,
     );
@@ -86,7 +86,7 @@ export const connectSocket = (token) => {
       'a',
       {
         href: `${window.location.origin}/members/${secondaryId}`,
-        class: 'underline',
+        class: 'underline text-gray-600',
       },
       secondaryDisplayName,
     );
@@ -95,11 +95,16 @@ export const connectSocket = (token) => {
       {},
       ' unmerged from ',
     );
+    const after = h(
+      'span',
+      {},
+      '. Syncing contact activities might take some time to complete.',
+    );
     Message.closeAll();
     Message.success(h(
       'div',
       {},
-      [secondaryMember, between, primaryMember],
+      [secondaryMember, between, primaryMember, after],
     ), {
       title: 'Contributors merged successfully',
     });
