@@ -44,5 +44,3 @@ setImmediate(async () => {
     process.exit(1)
   }
 })
-
-// trigger worker build for staging

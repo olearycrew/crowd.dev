@@ -77,5 +77,3 @@ setImmediate(async () => {
     log.info(`Search Sync API listening on port ${config.port}!`)
   })
 })
-
-// trigger service build for staging
