@@ -25,7 +25,7 @@ export const processOldDataJob = async (
   )
 
   const loadNextBatch = async (): Promise<string[]> => {
-    const dataIds = await repo.getOldDataToProcess(5)
+    const dataIds = await repo.getOldDataToProcess(50)
     await repo.touchUpdatedAt(dataIds)
     return dataIds
   }
