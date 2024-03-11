@@ -70,7 +70,10 @@ export default class IntegrationDataService extends LoggerBase {
 
     if (dataInfo.runId) {
       if (dataInfo.runState === IntegrationRunState.INTEGRATION_DELETED) {
-        this.log.warn('Integration was deleted! Skipping data processing!')
+        this.log.warn(
+          'Integration was deleted! Skipping data processing but deleting apiData entry!',
+        )
+        await this.repo.deleteData(dataId)
         return false
       }
 
