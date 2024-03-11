@@ -280,6 +280,7 @@ export default class IntegrationDataService extends LoggerBase {
         onboarding,
       )
     } catch (err) {
+      this.log.error(err, 'Error while publishing custom result!')
       await this.triggerDataError(
         dataId,
         'run-data-publish-custom',
@@ -312,6 +313,7 @@ export default class IntegrationDataService extends LoggerBase {
         onboarding,
       )
     } catch (err) {
+      this.log.error(err, 'Error while publishing activity result!')
       await this.triggerDataError(
         dataId,
         'run-data-publish-activity',
