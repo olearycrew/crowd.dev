@@ -291,14 +291,11 @@ export default class IntegrationDataRepository extends RepositoryBase<Integratio
   }
 
   public async deleteData(dataId: string): Promise<void> {
-    const result = await this.db().result(
-      `delete from integration."apiData" where id = $(dataId)`,
-      {
-        dataId,
-      },
-    )
+    await this.db().none(`delete from integration."apiData" where id = $(dataId)`, {
+      dataId,
+    })
 
-    this.checkUpdateRowCount(result.rowCount, 1)
+    // this.checkUpdateRowCount(result.rowCount, 1)
   }
 
   public async delayData(dataId: string, until: Date): Promise<void> {
