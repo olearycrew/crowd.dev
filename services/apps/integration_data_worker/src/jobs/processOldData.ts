@@ -12,6 +12,8 @@ export const processOldDataJob = async (
   dataSinkWorkerEmitter: DataSinkWorkerEmitter,
   log: Logger,
 ): Promise<void> => {
+  log.info('Starting process old data job!')
+
   const store = new DbStore(log, dbConn)
   const repo = new IntegrationDataRepository(store, log)
   const service = new IntegrationDataService(
@@ -53,4 +55,6 @@ export const processOldDataJob = async (
 
     dataToProcess = await loadNextBatch()
   }
+
+  log.info('Stopping process old data job!')
 }
