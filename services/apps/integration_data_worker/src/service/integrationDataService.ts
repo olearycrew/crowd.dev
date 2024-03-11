@@ -268,17 +268,17 @@ export default class IntegrationDataService extends LoggerBase {
     this.log.debug(`Publishing entity with custom type!`)
 
     try {
-      const resultId = await this.repo.publishResult(dataId, {
+      await this.repo.publishResult(dataId, {
         type,
         data: entity,
       })
-      await this.dataSinkWorkerEmitter.triggerResultProcessing(
-        tenantId,
-        platform,
-        resultId,
-        resultId,
-        onboarding,
-      )
+      // await this.dataSinkWorkerEmitter.triggerResultProcessing(
+      //   tenantId,
+      //   platform,
+      //   resultId,
+      //   resultId,
+      //   onboarding,
+      // )
     } catch (err) {
       this.log.error(err, 'Error while publishing custom result!')
       await this.triggerDataError(
@@ -301,17 +301,17 @@ export default class IntegrationDataService extends LoggerBase {
   ): Promise<void> {
     try {
       this.log.debug('Publishing activity!')
-      const resultId = await this.repo.publishResult(dataId, {
+      await this.repo.publishResult(dataId, {
         type: IntegrationResultType.ACTIVITY,
         data: activity,
       })
-      await this.dataSinkWorkerEmitter.triggerResultProcessing(
-        tenantId,
-        platform,
-        resultId,
-        activity.sourceId,
-        onboarding,
-      )
+      // await this.dataSinkWorkerEmitter.triggerResultProcessing(
+      //   tenantId,
+      //   platform,
+      //   resultId,
+      //   activity.sourceId,
+      //   onboarding,
+      // )
     } catch (err) {
       this.log.error(err, 'Error while publishing activity result!')
       await this.triggerDataError(
