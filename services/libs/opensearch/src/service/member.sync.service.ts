@@ -242,7 +242,7 @@ export class MemberSyncService {
         }),
       )
 
-      memberIds = await this.memberRepo.getTenantMembersForSync(tenantId, batchSize)
+      memberIds = await this.memberRepo.getTenantMembersForSync(tenantId, batchSize, segmentIds)
     }
 
     this.log.info(

@@ -241,7 +241,11 @@ export class OrganizationSyncService {
               }
             }),
           )
-          organizationIds = await this.orgRepo.getTenantOrganizationsForSync(tenantId, batchSize)
+          organizationIds = await this.orgRepo.getTenantOrganizationsForSync(
+            tenantId,
+            batchSize,
+            segmentIds,
+          )
         }
       },
       this.log,
