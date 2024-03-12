@@ -207,6 +207,8 @@ export class MemberSyncService {
     segmentIds?: string[],
   ): Promise<void> {
     this.log.debug({ tenantId }, 'Syncing all tenant members!')
+    console.log('SEGMENT IDS: ')
+    console.log(segmentIds)
     let docCount = 0
     let memberCount = 0
 
