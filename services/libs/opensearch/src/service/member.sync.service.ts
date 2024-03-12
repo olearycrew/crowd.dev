@@ -215,6 +215,8 @@ export class MemberSyncService {
     const now = new Date()
 
     let memberIds = await this.memberRepo.getTenantMembersForSync(tenantId, batchSize, segmentIds)
+    console.log('MEMBERIDS: ')
+    console.log(memberIds)
 
     while (memberIds.length > 0) {
       const { membersSynced, documentsIndexed } = await this.syncMembers(memberIds, segmentIds)
