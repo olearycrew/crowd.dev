@@ -141,7 +141,7 @@ export abstract class SqsQueueReceiver extends SqsQueueBase {
       }
 
       complete()
-    }, this.maxConcurrentMessageProcessing)
+    })
 
     this.started = true
 
