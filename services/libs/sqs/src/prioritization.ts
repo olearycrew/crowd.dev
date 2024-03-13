@@ -72,9 +72,8 @@ export abstract class SqsPrioritizedQueueReciever {
     await Promise.all([this.defaultReceiver.start(), this.levelReceiver.start()])
   }
 
-  public stop(): void {
-    this.defaultReceiver.stop()
-    this.levelReceiver.stop()
+  public async stop(): Promise<void> {
+    await Promise.all([this.defaultReceiver.stop(), this.levelReceiver.stop()])
   }
 
   public abstract processMessage(data: IQueueMessage, receiptHandle?: string): Promise<void>

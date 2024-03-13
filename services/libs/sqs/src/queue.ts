@@ -19,6 +19,7 @@ import {
 import { ISqsQueueConfig, SqsClient, SqsMessage, SqsQueueType } from './types'
 import { IQueueMessage, ISqsQueueEmitter } from '@crowd/types'
 import { Tracer } from '@crowd/tracing'
+import { QueueObject, queue } from 'async'
 
 export abstract class SqsQueueBase extends LoggerBase {
   private readonly queueName: string
@@ -104,8 +105,8 @@ export abstract class SqsQueueBase extends LoggerBase {
 }
 
 export abstract class SqsQueueReceiver extends SqsQueueBase {
-  private processingMessages = 0
   private started = false
+  private queue: QueueObject<{ data: IQueueMessage; receiptHandle?: string }>
 
   constructor(
     sqsClient: SqsClient,
@@ -120,68 +121,66 @@ export abstract class SqsQueueReceiver extends SqsQueueBase {
     super(sqsClient, queueConf, tracer, parentLog)
   }
 
-  private isAvailable(): boolean {
-    return this.processingMessages < this.maxConcurrentMessageProcessing
-  }
-
-  private addJob() {
-    this.processingMessages++
-  }
-
-  private removeJob() {
-    this.processingMessages--
-  }
-
   public async start(): Promise<void> {
     await this.init()
 
+    const log = this.log
+    this.queue = queue(async (msg, complete) => {
+      try {
+        await this.processMessage(msg.data, msg.receiptHandle)
+      } catch (err) {
+        log.error(err, 'Error while processing message!')
+      }
+
+      if (!this.deleteMessageImmediately) {
+        try {
+          await this.deleteMessage(msg.receiptHandle)
+        } catch (err) {
+          log.error(err, 'Error while deleting a message!')
+        }
+      }
+
+      complete()
+    }, this.maxConcurrentMessageProcessing)
+
     this.started = true
+
+    process.on('SIGTERM', async () => {
+      await this.stop()
+    })
+
     this.log.info({ url: this.getQueueUrl() }, 'Starting listening to queue...')
     while (this.started) {
-      if (this.isAvailable()) {
-        // first receive the message
+      if (this.queue.length() < 10) {
         const messages = await this.receiveMessage()
         if (messages.length > 0) {
           for (const message of messages) {
-            if (this.isAvailable()) {
-              this.log.trace({ messageId: message.MessageId }, 'Received message from queue!')
-              this.addJob()
-              this.processMessage(JSON.parse(message.Body), message.ReceiptHandle)
-                // when the message is processed, delete it from the queue
-                .then(async () => {
-                  this.log.trace(
-                    { messageReceiptHandle: message.ReceiptHandle },
-                    'Deleting message',
-                  )
-                  if (!this.deleteMessageImmediately) {
-                    await this.deleteMessage(message.ReceiptHandle)
-                  }
-                  this.removeJob()
-                })
-                // if error is detected don't delete the message from the queue
-                .catch((err) => {
-                  this.log.error(err, 'Error processing message!')
-                  this.removeJob()
-                })
+            this.queue.push({
+              data: JSON.parse(message.Body),
+              receiptHandle: message.ReceiptHandle,
+            })
 
-              if (this.deleteMessageImmediately) {
-                await this.deleteMessage(message.ReceiptHandle)
-              }
-            } else {
-              this.log.trace('Queue is busy, waiting...')
-              await timeout(100)
+            if (this.deleteMessageImmediately) {
+              await this.deleteMessage(message.ReceiptHandle)
             }
           }
+        } else {
+          await timeout(200)
         }
       } else {
         this.log.trace('Queue is busy, waiting...')
-        await timeout(200)
+        await timeout(50)
       }
     }
   }
 
-  public stop() {
+  public async stop() {
+    this.log.warn('Stopping processing...')
     this.started = false
+
+    if (this.queue) {
+      await this.queue.drain()
+    }
   }
 
   protected abstract processMessage(data: IQueueMessage, receiptHandle?: string): Promise<void>

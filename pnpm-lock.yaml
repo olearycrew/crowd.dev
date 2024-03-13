@@ -1880,10 +1880,16 @@ importers:
       '@smithy/util-retry':
         specifier: ^2.0.1
         version: 2.1.1
+      async:
+        specifier: ^3.2.5
+        version: 3.2.5
     devDependencies:
       '@aws-sdk/types':
         specifier: ^3.329.0
         version: 3.511.0
+      '@types/async':
+        specifier: ^3.2.24
+        version: 3.2.24
       '@types/node':
         specifier: ^18.16.3
         version: 18.19.16
@@ -6499,6 +6505,10 @@ packages:
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
     dev: true
 
+  /@types/async@3.2.24:
+    resolution: {integrity: sha512-8iHVLHsCCOBKjCF2KwFe0p9Z3rfM9mL+sSP8btyR5vTjJRAqpBYD28/ZLgXPf0pjG1VxOvtCV/BgXkQbpSe8Hw==}
+    dev: true
+
   /@types/babel__core@7.20.5:
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
     dependencies:
@@ -7595,6 +7605,10 @@ packages:
     resolution: {integrity: sha512-wfr/jstw9xNi/0teMHrRW7dsz3Lt5ARhYNZ2ewpadnhaIp5mbALhOAP+EAdsC7t4Z6wqsDVv9+W6gm1Dk9mEyw==}
     dependencies:
       retry: 0.13.1
+    dev: false
+
+  /async@3.2.5:
+    resolution: {integrity: sha512-baNZyqaaLhyLVKm/DlvdW051MSgO6b8eVfIezl9E5PqWxFgzLm/wQntEW4zOytVburDEr0JlALEpdOFwvErLsg==}
     dev: false
 
   /asynckit@0.4.0:
@@ -16202,6 +16216,7 @@ packages:
       '@crowd/tracing': link:services/libs/tracing
       '@crowd/types': link:services/libs/types
       '@smithy/util-retry': 2.1.1
+      async: 3.2.5
     transitivePeerDependencies:
       - aws-crt
     dev: false

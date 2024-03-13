@@ -10,10 +10,12 @@
   "devDependencies": {
     "@aws-sdk/types": "^3.329.0",
     "@types/node": "^18.16.3",
+    "@types/async": "^3.2.24",
     "typescript": "^5.0.4"
   },
   "dependencies": {
     "@aws-sdk/client-sqs": "^3.332.0",
+    "async": "^3.2.5",
     "@crowd/common": "workspace:*",
     "@crowd/logging": "workspace:*",
     "@crowd/tracing": "workspace:*",
