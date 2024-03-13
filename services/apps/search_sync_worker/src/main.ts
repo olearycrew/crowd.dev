@@ -31,7 +31,7 @@ setImmediate(async () => {
     openSearchService,
     tracer,
     log,
-    MAX_CONCURRENT_PROCESSING + 5,
+    MAX_CONCURRENT_PROCESSING + 10,
   )
 
   const initService = new InitService(openSearchService, log)
