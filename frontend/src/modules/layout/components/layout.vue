@@ -3,6 +3,7 @@
     <app-menu />
     <el-container v-if="currentTenant" :style="elMainStyle">
       <el-main id="main-page-wrapper" class="relative">
+        <!-- Revert to "showBanner" when last banner is removed -->
         <div
           :class="{
             'pt-14': showBanner,
