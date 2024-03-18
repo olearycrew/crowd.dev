@@ -35,6 +35,7 @@ export const processOldDataJob = async (
   let errorCount = 0
 
   while (dataToProcess.length > 0) {
+    const promise = loadNextBatch()
     for (const dataId of dataToProcess) {
       try {
         const result = await service.processData(dataId)
@@ -51,6 +52,6 @@ export const processOldDataJob = async (
 
     log.info(`Processed ${successCount} old data successfully and ${errorCount} with errors.`)
 
-    dataToProcess = await loadNextBatch()
+    dataToProcess = await promise
   }
 }
