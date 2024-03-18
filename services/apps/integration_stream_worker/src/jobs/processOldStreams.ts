@@ -64,6 +64,8 @@ export const processOldStreamsJob = async (
   let errorCount = 0
 
   while (streamsToProcess.length > 0) {
+    const batchPromise = loadNextBatch()
+    const webhookPromise = prepareWebhooks()
     for (const streamId of streamsToProcess) {
       try {
         const result = await service.processStream(streamId)
@@ -81,7 +83,7 @@ export const processOldStreamsJob = async (
 
     log.info(`Processed ${successCount} old streams successfully and ${errorCount} with errors.`)
 
-    await prepareWebhooks()
-    streamsToProcess = await loadNextBatch()
+    const results = await Promise.all([batchPromise, webhookPromise])
+    streamsToProcess = results[0]
   }
 }

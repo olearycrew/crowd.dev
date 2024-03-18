@@ -76,9 +76,10 @@ export const processOldResultsJob = async (
 
   // eslint-disable-next-line no-constant-condition
   while (true) {
+    let promise: Promise<string[]>
     if (resultsToProcess.length > 0) {
+      promise = loadNextBatch()
       log.info(`Processing ${resultsToProcess.length} old results...`)
-
       while (resultsToProcess.length > 0) {
         await loop()
       }
@@ -86,8 +87,9 @@ export const processOldResultsJob = async (
       log.info(`Processed ${totalCount} results in total!`)
     } else {
       await timeout(5000)
+      promise = loadNextBatch()
     }
 
-    resultsToProcess = await loadNextBatch()
+    resultsToProcess = await promise
   }
 }
