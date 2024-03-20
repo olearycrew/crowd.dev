@@ -47,8 +47,8 @@ export default (app) => {
   app.put(`/reddit-onboard/:tenantId`, safeWrap(require('./helpers/redditOnboard').default))
   app.put('/linkedin-connect/:tenantId', safeWrap(require('./helpers/linkedinConnect').default))
   app.post('/linkedin-onboard/:tenantId', safeWrap(require('./helpers/linkedinOnboard').default))
-  
-  app.get(
+
+  app.post(
     `/tenant/:tenantId/integration/progress/list`,
     safeWrap(require('./integrationProgressList').default),
   )
