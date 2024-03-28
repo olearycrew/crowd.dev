@@ -221,6 +221,27 @@ export class MemberSyncService {
     )
 
     while (memberIds.length > 0) {
+      await logExecutionTimeV2(
+        async () =>
+          this.indexingRepo.markEntitiesIndexed(
+            IndexedEntityType.MEMBER,
+            memberIds.map((id) => {
+              return {
+                id,
+                tenantId,
+              }
+            }),
+          ),
+        this.log,
+        'markEntitiesAsIndexed',
+      )
+
+      const loadMemberIdPromise = logExecutionTimeV2(
+        async () => this.memberRepo.getTenantMembersForSync(tenantId, batchSize),
+        this.log,
+        'getTenantMembersForSync',
+      )
+
       const { membersSynced, documentsIndexed } = await logExecutionTimeV2(
         async () => this.syncMembers(memberIds),
         this.log,
@@ -238,26 +259,7 @@ export class MemberSyncService {
         )} members/second!`,
       )
 
-      await logExecutionTimeV2(
-        async () =>
-          this.indexingRepo.markEntitiesIndexed(
-            IndexedEntityType.MEMBER,
-            memberIds.map((id) => {
-              return {
-                id,
-                tenantId,
-              }
-            }),
-          ),
-        this.log,
-        'markEntitiesAsIndexed',
-      )
-
-      memberIds = await logExecutionTimeV2(
-        async () => this.memberRepo.getTenantMembersForSync(tenantId, batchSize),
-        this.log,
-        'getTenantMembersForSync',
-      )
+      memberIds = await loadMemberIdPromise
     }
 
     this.log.info(
