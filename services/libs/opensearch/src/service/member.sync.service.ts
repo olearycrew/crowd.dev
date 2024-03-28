@@ -1,6 +1,6 @@
 import { distinct, distinctBy, trimUtf8ToMaxByteLength } from '@crowd/common'
 import { DbStore } from '@crowd/database'
-import { Logger, getChildLogger } from '@crowd/logging'
+import { Logger, getChildLogger, logExecutionTimeV2 } from '@crowd/logging'
 import { RedisClient } from '@crowd/redis'
 import {
   Edition,
@@ -214,10 +214,18 @@ export class MemberSyncService {
 
     const now = new Date()
 
-    let memberIds = await this.memberRepo.getTenantMembersForSync(tenantId, batchSize)
+    let memberIds = await logExecutionTimeV2(
+      async () => this.memberRepo.getTenantMembersForSync(tenantId, batchSize),
+      this.log,
+      'getTenantMembersForSync',
+    )
 
     while (memberIds.length > 0) {
-      const { membersSynced, documentsIndexed } = await this.syncMembers(memberIds)
+      const { membersSynced, documentsIndexed } = await logExecutionTimeV2(
+        async () => this.syncMembers(memberIds),
+        this.log,
+        'syncMembers',
+      )
 
       docCount += documentsIndexed
       memberCount += membersSynced
@@ -230,17 +238,26 @@ export class MemberSyncService {
         )} members/second!`,
       )
 
-      await this.indexingRepo.markEntitiesIndexed(
-        IndexedEntityType.MEMBER,
-        memberIds.map((id) => {
-          return {
-            id,
-            tenantId,
-          }
-        }),
+      await logExecutionTimeV2(
+        async () =>
+          this.indexingRepo.markEntitiesIndexed(
+            IndexedEntityType.MEMBER,
+            memberIds.map((id) => {
+              return {
+                id,
+                tenantId,
+              }
+            }),
+          ),
+        this.log,
+        'markEntitiesAsIndexed',
       )
 
-      memberIds = await this.memberRepo.getTenantMembersForSync(tenantId, batchSize)
+      memberIds = await logExecutionTimeV2(
+        async () => this.memberRepo.getTenantMembersForSync(tenantId, batchSize),
+        this.log,
+        'getTenantMembersForSync',
+      )
     }
 
     this.log.info(
