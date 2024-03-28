@@ -43,12 +43,16 @@ export class MemberRepository extends RepositoryBase<MemberRepository> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const results = await this.db().any(
       `
-        select m.id
-        from members m
-        left join indexed_entities ie on m.id = ie.entity_id and ie.type = $(type)
-        where m."tenantId" = $(tenantId) and 
-              ie.entity_id is null
-        limit ${perPage};`,
+      with already_indexed as (select entity_id
+              from indexed_entities
+              where type = $(type)
+                and tenant_id = $(tenantId))
+      select m.id
+      from members m
+      left join already_indexed ai on ai.entity_id = m.id
+      where m."tenantId" = $(tenantId) and ai.entity_id is null
+      limit ${perPage};
+      `,
       {
         tenantId,
         type: IndexedEntityType.MEMBER,
