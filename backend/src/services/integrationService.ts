@@ -65,13 +65,14 @@ export default class IntegrationService {
     this.options = options
   }
 
-  async createOrUpdate(data, transaction?: any) {
+  async createOrUpdate(data, transaction?: any, options?: IRepositoryOptions) {
     try {
       const record = await IntegrationRepository.findByPlatform(data.platform, {
-        ...this.options,
+        ...(options || this.options),
         transaction,
       })
-      const updatedRecord = await this.update(record.id, data, transaction)
+
+      const updatedRecord = await this.update(record.id, data, transaction, options)
       if (!IS_TEST_ENV) {
         track(
           'Integration Updated',
@@ -86,7 +87,7 @@ export default class IntegrationService {
       return updatedRecord
     } catch (error) {
       if (error.code === 404) {
-        const record = await this.create(data, transaction)
+        const record = await this.create(data, transaction, options)
         if (!IS_TEST_ENV) {
           track(
             'Integration Created',
@@ -129,10 +130,10 @@ export default class IntegrationService {
     return IntegrationRepository.findAllByPlatform(platform, this.options)
   }
 
-  async create(data, transaction?: any) {
+  async create(data, transaction?: any, options?: IRepositoryOptions) {
     try {
       const record = await IntegrationRepository.create(data, {
-        ...this.options,
+        ...(options || this.options),
         transaction,
       })
 
@@ -143,10 +144,10 @@ export default class IntegrationService {
     }
   }
 
-  async update(id, data, transaction?: any) {
+  async update(id, data, transaction?: any, options?: IRepositoryOptions) {
     try {
       const record = await IntegrationRepository.update(id, data, {
-        ...this.options,
+        ...(options || this.options),
         transaction,
       })
 
@@ -467,6 +468,7 @@ export default class IntegrationService {
           }
           try {
             await IntegrationRepository.findByPlatform(PlatformType.GIT, segmentOptions)
+
             isGitintegrationConfigured = true
           } catch (err) {
             isGitintegrationConfigured = false
@@ -1319,6 +1321,7 @@ export default class IntegrationService {
           status: 'done',
         },
         transaction,
+        options,
       )
 
       await SequelizeRepository.commitTransaction(transaction)
