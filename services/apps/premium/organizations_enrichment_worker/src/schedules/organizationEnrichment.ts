@@ -9,7 +9,7 @@ export const scheduleOrganizationCachesEnrichment = async () => {
       scheduleId: 'organization-caches-enrichment',
       spec: {
         // every hour (at minute 0)
-        cronExpressions: IS_DEV_ENV || IS_TEST_ENV ? ['*/2 * * * *'] : ['0 * * * *'],
+        cronExpressions: IS_DEV_ENV || IS_TEST_ENV ? ['*/2 * * * *'] : ['0 0 * * *'],
       },
       policies: {
         overlap: ScheduleOverlapPolicy.BUFFER_ONE,
@@ -38,7 +38,7 @@ export const scheduleOrganizationUpdate = async () => {
       scheduleId: 'tenant-organization-enrichment-update',
       spec: {
         // every hour (at minute 0)
-        cronExpressions: IS_DEV_ENV || IS_TEST_ENV ? ['*/2 * * * *'] : ['0 * * * *'],
+        cronExpressions: IS_DEV_ENV || IS_TEST_ENV ? ['*/2 * * * *'] : ['0 0 * * *'],
       },
       policies: {
         overlap: ScheduleOverlapPolicy.BUFFER_ONE,
