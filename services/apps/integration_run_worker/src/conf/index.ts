@@ -16,6 +16,11 @@ export interface ISlackAlertingConfig {
   url: string
 }
 
+export interface ILokiDbConfig {
+  url: string
+  token: string
+}
+
 let sqsConfig: ISqsClientConfig
 export const SQS_CONFIG = (): ISqsClientConfig => {
   if (sqsConfig) return sqsConfig
@@ -102,4 +107,12 @@ export const UNLEASH_CONFIG = (): IUnleashConfig | undefined => {
   unleashConfig = Object.assign({ appName: SERVICE }, config.get<IUnleashConfig>('unleash'))
 
   return unleashConfig
+}
+
+let lokiDbConfig: ILokiDbConfig
+export const LOKI_DB_CONFIG = (): ILokiDbConfig => {
+  if (lokiDbConfig) return lokiDbConfig
+
+  lokiDbConfig = config.get<ILokiDbConfig>('loki')
+  return lokiDbConfig
 }
