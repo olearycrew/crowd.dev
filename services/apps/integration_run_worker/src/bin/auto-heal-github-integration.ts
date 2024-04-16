@@ -141,9 +141,9 @@ setImmediate(async () => {
       process.exit(1)
     }
 
-    let repoFullNames = []
-    let partialMap = new Map<string, Array<GithubManualStreamType>>()
-    let detailedMap = new Map<Repo, Array<GithubManualStreamType>>()
+    const repoFullNames = []
+    const partialMap = new Map<string, Array<GithubManualStreamType>>()
+    const detailedMap = new Map<Repo, Array<GithubManualStreamType>>()
 
     for (const row of rows) {
       const repoFullName = row[0].value
@@ -173,7 +173,7 @@ setImmediate(async () => {
       integrationId,
     )) as GithubIntegrationSettings
 
-    let repos: Repo[] = []
+    const repos: Repo[] = []
 
     for (const repoFullName of repoFullNames) {
       const repoURL = `https://github.com/${repoFullName}`
