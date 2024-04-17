@@ -1,4 +1,4 @@
-import { get } from 'lodash'
+import lodash from 'lodash'
 import GoogleStrategy from 'passport-google-oauth20'
 import { getServiceChildLogger } from '@crowd/logging'
 import { AuthProvider } from '@crowd/types'
@@ -19,9 +19,9 @@ export function getGoogleStrategy(): GoogleStrategy {
     (accessToken, refreshToken, profile, done) => {
       databaseInit()
         .then((database) => {
-          const email = get(profile, 'emails[0].value')
-          const emailVerified = get(profile, 'emails[0].verified', false)
-          const displayName = get(profile, 'displayName')
+          const email = lodash.get(profile, 'emails[0].value')
+          const emailVerified = lodash.get(profile, 'emails[0].verified', false)
+          const displayName = lodash.get(profile, 'displayName')
           const { firstName, lastName } = splitFullName(displayName)
 
           return AuthService.signinFromSocial(

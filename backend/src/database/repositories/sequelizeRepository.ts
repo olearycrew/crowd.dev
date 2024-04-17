@@ -10,7 +10,7 @@ import {
   QueryExecutor,
   SequelizeQueryExecutor,
   TransactionalSequelizeQueryExecutor,
-} from '@crowd/data-access-layer/src/queryExecutor'
+} from '@crowd/data-access-layer'
 import { API_CONFIG, IS_TEST_ENV, REDIS_CONFIG, TEMPORAL_CONFIG, UNLEASH_CONFIG } from '../../conf'
 import { databaseInit } from '../databaseConnection'
 import { IRepositoryOptions } from './IRepositoryOptions'

@@ -1,10 +1,6 @@
 import { Error400, Error404, Error409, PageData } from '@crowd/common'
 import { FieldTranslatorFactory, OpensearchQueryParser } from '@crowd/opensearch'
-import {
-  addOrgIdentity,
-  cleanUpOrgIdentities,
-  fetchOrgIdentities,
-} from '@crowd/data-access-layer/src/org_identities'
+import { addOrgIdentity, cleanUpOrgIdentities, fetchOrgIdentities } from '@crowd/data-access-layer'
 import {
   FeatureFlag,
   IEnrichableOrganization,
@@ -21,7 +17,7 @@ import {
   SegmentProjectNestedData,
   SyncStatus,
 } from '@crowd/types'
-import lodash, { chunk } from 'lodash'
+import lodash from 'lodash'
 import Sequelize, { QueryTypes } from 'sequelize'
 import {
   captureApiChange,
@@ -1118,7 +1114,7 @@ class OrganizationRepository {
     )
 
     // Process suggestions in chunks of 100 or less
-    const suggestionChunks: IOrganizationMergeSuggestion[][] = chunk(suggestions, 100)
+    const suggestionChunks: IOrganizationMergeSuggestion[][] = lodash.chunk(suggestions, 100)
 
     const insertValues = (
       organizationId: string,

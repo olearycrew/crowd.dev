@@ -9,7 +9,7 @@ import { getServiceChildLogger } from '@crowd/logging'
 import { DB_CONFIG, SERVICE } from '../../conf'
 import * as configTypes from '../../conf/configTypes'
 
-const { highlight } = require('cli-highlight')
+import { highlight } from 'cli-highlight'
 
 const log = getServiceChildLogger('Database')
 

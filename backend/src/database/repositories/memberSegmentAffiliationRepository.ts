@@ -5,7 +5,7 @@ import {
   deleteMemberAffiliations,
   findMemberAffiliations,
   insertMemberAffiliations,
-} from '@crowd/data-access-layer/src/member_segment_affiliations'
+} from '@crowd/data-access-layer'
 import { captureApiChange, memberEditAffiliationsAction } from '@crowd/audit-logs'
 import {
   MemberSegmentAffiliation,

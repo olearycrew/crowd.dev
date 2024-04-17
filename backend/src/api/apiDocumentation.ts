@@ -1,20 +1,25 @@
 import { API_CONFIG } from '../conf'
 
-const express = require('express')
-const fs = require('fs')
-const path = require('path')
+import express from 'express'
+import fs from 'fs'
+import { dirname, resolve } from 'path'
+import { fileURLToPath } from 'url'
 
-export default function setupSwaggerUI(app) {
+const __dirname = dirname(fileURLToPath(import.meta.url))
+
+export default async function setupSwaggerUI(app) {
   if (API_CONFIG.documentation) {
     return
   }
 
   const serveSwaggerDef = function serveSwaggerDef(req, res) {
-    res.sendFile(path.resolve(`${__dirname}/../documentation/openapi.json`))
+    res.sendFile(resolve(`${__dirname}/../documentation/openapi.json`))
   }
   app.get('/documentation-config', serveSwaggerDef)
 
-  const swaggerUiAssetPath = require('swagger-ui-dist').getAbsoluteFSPath()
+  const module = await import('swagger-ui-dist')
+
+  const swaggerUiAssetPath = module.default.getAbsoluteFSPath()
   const swaggerFiles = express.static(swaggerUiAssetPath)
 
   const urlRegex = /url: "[^"]*",/

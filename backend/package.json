@@ -1,6 +1,7 @@
 {
   "name": "app-backend",
   "description": "Backend",
+  "type": "module",
   "scripts": {
     "start:api": "SERVICE=api TS_NODE_TRANSPILE_ONLY=true tsx src/bin/api.ts",
     "start:api:dev": "nodemon --watch \"src/**/*.ts\" --watch ../services/libs -e ts,json --exec \"pnpm run start:api\"",

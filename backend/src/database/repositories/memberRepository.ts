@@ -15,7 +15,7 @@ import {
   SegmentProjectNestedData,
   SyncStatus,
 } from '@crowd/types'
-import lodash, { chunk } from 'lodash'
+import lodash from 'lodash'
 import moment from 'moment'
 import Sequelize, { QueryTypes } from 'sequelize'
 
@@ -33,7 +33,7 @@ import {
   updateVerifiedFlag,
   deleteMemberIdentitiesByCombinations,
   moveToNewMember,
-} from '@crowd/data-access-layer/src/member_identities'
+} from '@crowd/data-access-layer'
 import { FieldTranslatorFactory, OpensearchQueryParser } from '@crowd/opensearch'
 import { KUBE_MODE, SERVICE } from '@/conf'
 import { ServiceType } from '../../conf/configTypes'
@@ -411,7 +411,7 @@ class MemberRepository {
     )
 
     // Process suggestions in chunks of 100 or less
-    const suggestionChunks = chunk(suggestions, 100)
+    const suggestionChunks = lodash.chunk(suggestions, 100)
 
     const insertValues = (
       memberId: string,

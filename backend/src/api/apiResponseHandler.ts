@@ -1,7 +1,7 @@
 import { LoggerBase } from '@crowd/logging'
 import { IServiceOptions } from '../services/IServiceOptions'
 
-const io = require('@pm2/io')
+import io from '@pm2/io'
 
 /* eslint-disable class-methods-use-this */
 export default class ApiResponseHandler extends LoggerBase {

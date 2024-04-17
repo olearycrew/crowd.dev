@@ -1,4 +1,4 @@
-import { get } from 'lodash'
+import lodash from 'lodash'
 import GithubStrategy from 'passport-github2'
 import { getServiceChildLogger } from '@crowd/logging'
 import { AuthProvider } from '@crowd/types'
@@ -20,11 +20,11 @@ export function getGithubStrategy(): GithubStrategy {
     (accessToken, refreshToken, profile, done) => {
       databaseInit()
         .then((database) => {
-          const email = get(profile, 'emails[0].value')
+          const email = lodash.get(profile, 'emails[0].value')
           // GitHub user's profile doesn't include 'verified' field
           // However, GitHub accounts require email verification for activation
           const emailVerified = !!email
-          const displayName = get(profile, 'displayName')
+          const displayName = lodash.get(profile, 'displayName')
           const { firstName, lastName } = splitFullName(displayName)
 
           return AuthService.signinFromSocial(

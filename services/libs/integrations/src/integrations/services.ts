@@ -1,13 +1,16 @@
 import { getServiceChildLogger } from '@crowd/logging'
 import fs from 'fs'
-import path from 'path'
 import { IIntegrationDescriptor } from '../types'
+import { dirname, resolve } from 'path'
+import { fileURLToPath } from 'url'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 const log = getServiceChildLogger('integrations')
 
 export const INTEGRATION_SERVICES: IIntegrationDescriptor[] = []
 
-const intFolder = path.resolve(`${__dirname}/`)
+const intFolder = resolve(`${__dirname}/`)
 
 const integrationFolders = fs
   .readdirSync(intFolder, { withFileTypes: true })
@@ -20,11 +23,12 @@ const integrationFolders = fs
 
 for (const intFolder of integrationFolders) {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  INTEGRATION_SERVICES.push(require(`./${intFolder.name}`).default)
+  const module = await import(`./${intFolder.name}`)
+  INTEGRATION_SERVICES.push(module.default)
 }
 
 // add premium integrations - check for js because library is compiled to javascript
-const premiumFolder = path.resolve(`${__dirname}/premium`)
+const premiumFolder = resolve(`${__dirname}/premium`)
 
 if (fs.existsSync(premiumFolder)) {
   const premiumIntFolders = fs
@@ -34,7 +38,8 @@ if (fs.existsSync(premiumFolder)) {
   if (premiumIntFolders.length > 0) {
     for (const premiumIntFolder of premiumIntFolders) {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
-      INTEGRATION_SERVICES.push(require(`./premium/${premiumIntFolder.name}`).default)
+      const module = await import(`./premium/${premiumIntFolder.name}`)
+      INTEGRATION_SERVICES.push(module.default)
     }
   }
 }

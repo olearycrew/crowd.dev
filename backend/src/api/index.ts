@@ -254,11 +254,11 @@ setImmediate(async () => {
 
   app.use('/webhooks', webhookRoutes)
 
-  const io = require('@pm2/io')
+  const io = await import('@pm2/io')
 
   app.use(errorMiddleware)
 
-  app.use(io.expressErrorHandler())
+  app.use(io.default.expressErrorHandler())
 })
 
 export default server

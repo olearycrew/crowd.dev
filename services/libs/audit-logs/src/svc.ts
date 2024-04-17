@@ -1,10 +1,6 @@
-import {
-  addAuditAction,
-  AuditLogAction,
-  AuditLogRequestOptions,
-} from '@crowd/data-access-layer/src/audit_logs/repo'
+import { addAuditAction, AuditLogAction, AuditLogRequestOptions } from '@crowd/data-access-layer'
 import { BuildActionFn } from './baseActions'
-import { getDbConnection } from '@crowd/data-access-layer/src/database'
+import { getDbConnection } from '@crowd/data-access-layer'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function convertRepositoryOptions(options: any): AuditLogRequestOptions {

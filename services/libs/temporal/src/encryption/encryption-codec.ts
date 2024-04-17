@@ -1,6 +1,6 @@
 import { webcrypto as crypto } from 'node:crypto'
 import { METADATA_ENCODING_KEY, Payload, PayloadCodec, ValueError } from '@temporalio/common'
-import { temporal } from '@temporalio/proto'
+import * as temporal from '@temporalio/proto'
 import { decode, encode } from '@temporalio/common/lib/encoding'
 import { decrypt, encrypt } from './crypto'
 
@@ -28,7 +28,7 @@ export class EncryptionCodec implements PayloadCodec {
         },
         // Encrypt entire payload, preserving metadata
         data: await encrypt(
-          temporal.api.common.v1.Payload.encode(payload).finish(),
+          temporal.temporal.api.common.v1.Payload.encode(payload).finish(),
           this.keys.get(this.defaultKeyId)!, // eslint-disable-line @typescript-eslint/no-non-null-assertion
         ),
       })),
