@@ -1772,38 +1772,70 @@ export default class MemberService extends LoggerBase {
         !data.username,
       )
 
-      await SequelizeRepository.commitTransaction(transaction)
-      await this.options.temporal.workflow.start('memberUpdate', {
-        taskQueue: 'profiles',
-        workflowId: `${TemporalWorkflowId.MEMBER_UPDATE}/${this.options.currentTenant.id}/${id}`,
-        workflowIdReusePolicy: WorkflowIdReusePolicy.WORKFLOW_ID_REUSE_POLICY_TERMINATE_IF_RUNNING,
-        retry: {
-          maximumAttempts: 10,
-        },
-        args: [
-          {
-            member: {
-              id,
+      await logExecutionTimeV2(
+        () => SequelizeRepository.commitTransaction(transaction),
+        this.options.log,
+        'SequelizeRepository.commitTransaction',
+      )
+      await logExecutionTimeV2(
+        () =>
+          this.options.temporal.workflow.start('memberUpdate', {
+            taskQueue: 'profiles',
+            workflowId: `${TemporalWorkflowId.MEMBER_UPDATE}/${this.options.currentTenant.id}/${id}`,
+            workflowIdReusePolicy:
+              WorkflowIdReusePolicy.WORKFLOW_ID_REUSE_POLICY_TERMINATE_IF_RUNNING,
+            retry: {
+              maximumAttempts: 10,
             },
-          },
-        ],
-        searchAttributes: {
-          TenantId: [this.options.currentTenant.id],
-        },
-      })
+            args: [
+              {
+                member: {
+                  id,
+                },
+              },
+            ],
+            searchAttributes: {
+              TenantId: [this.options.currentTenant.id],
+            },
+          }),
+        this.options.log,
+        'this.options.temporal.workflow.start',
+      )
 
       if (syncToOpensearch) {
         try {
-          await searchSyncService.triggerMemberSync(this.options.currentTenant.id, record.id)
-          if (data.organizations) {
-            for (const org of data.organizations) {
-              await searchSyncService.triggerOrganizationSync(this.options.currentTenant.id, org.id)
-            }
-          }
+          await logExecutionTimeV2(
+            () => searchSyncService.triggerMemberSync(this.options.currentTenant.id, record.id),
+            this.options.log,
+            'searchSyncService.triggerMemberSync(record.id)',
+          )
+          await logExecutionTimeV2(
+            async () => {
+              if (data.organizations) {
+                for (const org of data.organizations) {
+                  await logExecutionTimeV2(
+                    () =>
+                      searchSyncService.triggerOrganizationSync(
+                        this.options.currentTenant.id,
+                        org.id,
+                      ),
+                    this.options.log,
+                    'searchSyncService.triggerOrganizationSync',
+                  )
+                }
+              }
+            },
+            this.options.log,
+            'searchSyncService.triggerOrganizationSync all',
+          )
 
           // return updated record from OpenSearch instead of db
           // quick hack to ensure tests that use this method don't fail if OpenSearch is disabled
-          return await MemberRepository.findByIdOpensearch(record.id, this.options)
+          return await logExecutionTimeV2(
+            () => MemberRepository.findByIdOpensearch(record.id, this.options),
+            this.options.log,
+            'MemberRepository.findByIdOpensearch(record.id, this.options)',
+          )
         } catch (emitErr) {
           this.log.error(
             emitErr,
