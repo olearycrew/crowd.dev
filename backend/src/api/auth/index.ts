@@ -1,8 +1,18 @@
 import { createRateLimiter } from '../apiRateLimiter'
 import { safeWrap } from '../../middlewares/errorMiddleware'
+import authPasswordReset from './authPasswordReset'
+import authSendEmailAddressVerificationEmail from './authSendEmailAddressVerificationEmail'
+import authSendPasswordResetEmail from './authSendPasswordResetEmail'
+import authSignIn from './authSignIn'
+import authSignUp from './authSignUp'
+import authUpdateProfile from './authUpdateProfile'
+import authPasswordChange from './authPasswordChange'
+import authVerifyEmail from './authVerifyEmail'
+import authMe from './authMe'
+import ssoCallback from './ssoCallback'
 
 export default (app) => {
-  app.put(`/auth/password-reset`, safeWrap(require('./authPasswordReset').default))
+  app.put(`/auth/password-reset`, safeWrap(authPasswordReset))
 
   const emailRateLimiter = createRateLimiter({
     max: 6,
@@ -13,13 +23,13 @@ export default (app) => {
   app.post(
     `/auth/send-email-address-verification-email`,
     emailRateLimiter,
-    safeWrap(require('./authSendEmailAddressVerificationEmail').default),
+    safeWrap(authSendEmailAddressVerificationEmail),
   )
 
   app.post(
     `/auth/send-password-reset-email`,
     emailRateLimiter,
-    safeWrap(require('./authSendPasswordResetEmail').default),
+    safeWrap(authSendPasswordResetEmail),
   )
 
   const signInRateLimiter = createRateLimiter({
@@ -28,7 +38,7 @@ export default (app) => {
     message: 'errors.429',
   })
 
-  app.post(`/auth/sign-in`, signInRateLimiter, safeWrap(require('./authSignIn').default))
+  app.post(`/auth/sign-in`, signInRateLimiter, safeWrap(authSignIn))
 
   const signUpRateLimiter = createRateLimiter({
     max: 20,
@@ -36,15 +46,15 @@ export default (app) => {
     message: 'errors.429',
   })
 
-  app.post(`/auth/sign-up`, signUpRateLimiter, safeWrap(require('./authSignUp').default))
+  app.post(`/auth/sign-up`, signUpRateLimiter, safeWrap(authSignUp))
 
-  app.put(`/auth/profile`, safeWrap(require('./authUpdateProfile').default))
+  app.put(`/auth/profile`, safeWrap(authUpdateProfile))
 
-  app.put(`/auth/change-password`, safeWrap(require('./authPasswordChange').default))
+  app.put(`/auth/change-password`, safeWrap(authPasswordChange))
 
-  app.put(`/auth/verify-email`, safeWrap(require('./authVerifyEmail').default))
+  app.put(`/auth/verify-email`, safeWrap(authVerifyEmail))
 
-  app.get(`/auth/me`, safeWrap(require('./authMe').default))
+  app.get(`/auth/me`, safeWrap(authMe))
 
-  app.post(`/auth/sso/callback`, safeWrap(require('./ssoCallback').default))
+  app.post(`/auth/sso/callback`, safeWrap(ssoCallback))
 }

@@ -7,7 +7,6 @@ import lodash from 'lodash'
  * @return {Object}            Object with the fields from newObject that are different from original
  */
 function difference(newObject, original) {
-  const lodash = require('lodash')
   const differentFields = Object.keys(newObject)
     .map((field) =>
       lodash.isEqual(newObject[field], original[field]) || newObject[field] === null ? null : field,

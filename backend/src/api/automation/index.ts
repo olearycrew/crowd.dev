@@ -4,12 +4,17 @@ import { API_CONFIG } from '../../conf'
 import { authMiddleware } from '../../middlewares/authMiddleware'
 import TenantService from '../../services/tenantService'
 import { getSlackNotifierStrategy } from '../../services/auth/passportStrategies/slackStrategy'
+import automationSlackConnect from './automationSlackConnect'
+import automationSlackCallback from './automationSlackCallback'
+import automationCreate from './automationCreate'
+import automationUpdate from './automationUpdate'
+import automationDestroy from './automationDestroy'
+import automationExecutionFind from './automationExecutionFind'
+import automationFind from './automationFind'
+import automationList from './automationList'
 
 export default (app) => {
-  app.get(
-    '/tenant/:tenantId/automation/slack',
-    safeWrap(require('./automationSlackConnect').default),
-  )
+  app.get('/tenant/:tenantId/automation/slack', safeWrap(automationSlackConnect))
   app.get(
     '/tenant/automation/slack/callback',
     passport.authorize(getSlackNotifierStrategy(), {
@@ -27,24 +32,15 @@ export default (app) => {
       req.currentTenant = await new TenantService(req).findById(tenantId)
       next()
     },
-    safeWrap(require('./automationSlackCallback').default),
+    safeWrap(automationSlackCallback),
   )
-  app.post('/tenant/:tenantId/automation', safeWrap(require('./automationCreate').default))
-  app.put(
-    '/tenant/:tenantId/automation/:automationId',
-    safeWrap(require('./automationUpdate').default),
-  )
-  app.delete(
-    '/tenant/:tenantId/automation/:automationId',
-    safeWrap(require('./automationDestroy').default),
-  )
+  app.post('/tenant/:tenantId/automation', safeWrap(automationCreate))
+  app.put('/tenant/:tenantId/automation/:automationId', safeWrap(automationUpdate))
+  app.delete('/tenant/:tenantId/automation/:automationId', safeWrap(automationDestroy))
   app.get(
     '/tenant/:tenantId/automation/:automationId/executions',
-    safeWrap(require('./automationExecutionFind').default),
+    safeWrap(automationExecutionFind),
   )
-  app.get(
-    '/tenant/:tenantId/automation/:automationId',
-    safeWrap(require('./automationFind').default),
-  )
-  app.get('/tenant/:tenantId/automation', safeWrap(require('./automationList').default))
+  app.get('/tenant/:tenantId/automation/:automationId', safeWrap(automationFind))
+  app.get('/tenant/:tenantId/automation', safeWrap(automationList))
 }

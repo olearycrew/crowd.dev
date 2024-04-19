@@ -1,14 +1,18 @@
 import { safeWrap } from '../../middlewares/errorMiddleware'
+import conversationCreate from './conversationCreate'
+import conversationUpdate from './conversationUpdate'
+import conversationDestroy from './conversationDestroy'
+import conversationQuery from './conversationQuery'
+import conversationList from './conversationList'
+import conversationFind from './conversationFind'
+import conversationSettingsUpdate from './conversationSettingsUpdate'
 
 export default (app) => {
-  app.post(`/tenant/:tenantId/conversation`, safeWrap(require('./conversationCreate').default))
-  app.put(`/tenant/:tenantId/conversation/:id`, safeWrap(require('./conversationUpdate').default))
-  app.delete(`/tenant/:tenantId/conversation`, safeWrap(require('./conversationDestroy').default))
-  app.post(`/tenant/:tenantId/conversation/query`, safeWrap(require('./conversationQuery').default))
-  app.get(`/tenant/:tenantId/conversation`, safeWrap(require('./conversationList').default))
-  app.get(`/tenant/:tenantId/conversation/:id`, safeWrap(require('./conversationFind').default))
-  app.post(
-    `/tenant/:tenantId/conversation/settings`,
-    safeWrap(require('./conversationSettingsUpdate').default),
-  )
+  app.post(`/tenant/:tenantId/conversation`, safeWrap(conversationCreate))
+  app.put(`/tenant/:tenantId/conversation/:id`, safeWrap(conversationUpdate))
+  app.delete(`/tenant/:tenantId/conversation`, safeWrap(conversationDestroy))
+  app.post(`/tenant/:tenantId/conversation/query`, safeWrap(conversationQuery))
+  app.get(`/tenant/:tenantId/conversation`, safeWrap(conversationList))
+  app.get(`/tenant/:tenantId/conversation/:id`, safeWrap(conversationFind))
+  app.post(`/tenant/:tenantId/conversation/settings`, safeWrap(conversationSettingsUpdate))
 }

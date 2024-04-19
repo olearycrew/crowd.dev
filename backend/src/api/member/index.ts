@@ -1,51 +1,52 @@
 import { FeatureFlag } from '@crowd/types'
 import { safeWrap } from '../../middlewares/errorMiddleware'
 import { featureFlagMiddleware } from '../../middlewares/featureFlagMiddleware'
+import memberQuery from './memberQuery'
+import memberExport from './memberExport'
+import memberCreate from './memberCreate'
+import memberUpdate from './memberUpdate'
+import memberImport from './memberImport'
+import memberDestroy from './memberDestroy'
+import memberAutocomplete from './memberAutocomplete'
+import memberList from './memberList'
+import memberActiveList from './memberActiveList'
+import memberFind from './memberFind'
+import memberFindGithub from './memberFindGithub'
+import memberMerge from './memberMerge'
+import memberUnmergePreview from './memberUnmergePreview'
+import memberUnmerge from './memberUnmerge'
+import memberNotMerge from './memberNotMerge'
+import memberUpdateBulk from './memberUpdateBulk'
 
 export default (app) => {
-  app.post(`/tenant/:tenantId/member/query`, safeWrap(require('./memberQuery').default))
+  app.post(`/tenant/:tenantId/member/query`, safeWrap(memberQuery))
 
   app.post(
     `/tenant/:tenantId/member/export`,
     featureFlagMiddleware(FeatureFlag.CSV_EXPORT, 'errors.csvExport.planLimitExceeded'),
-    safeWrap(require('./memberExport').default),
+    safeWrap(memberExport),
   )
 
-  app.post(`/tenant/:tenantId/member`, safeWrap(require('./memberCreate').default))
-  app.put(`/tenant/:tenantId/member/:id`, safeWrap(require('./memberUpdate').default))
-  app.post(`/tenant/:tenantId/member/import`, safeWrap(require('./memberImport').default))
-  app.delete(`/tenant/:tenantId/member`, safeWrap(require('./memberDestroy').default))
-  app.get(
-    `/tenant/:tenantId/member/autocomplete`,
-    safeWrap(require('./memberAutocomplete').default),
-  )
-  app.post(
-    `/tenant/:tenantId/member/orautocomplete`,
-    safeWrap(require('./memberAutocomplete').default),
-  )
-  app.get(`/tenant/:tenantId/member`, safeWrap(require('./memberList').default))
-  app.get(`/tenant/:tenantId/member/active`, safeWrap(require('./memberActiveList').default))
-  app.get(`/tenant/:tenantId/member/:id`, safeWrap(require('./memberFind').default))
+  app.post(`/tenant/:tenantId/member`, safeWrap(memberCreate))
+  app.put(`/tenant/:tenantId/member/:id`, safeWrap(memberUpdate))
+  app.post(`/tenant/:tenantId/member/import`, safeWrap(memberImport))
+  app.delete(`/tenant/:tenantId/member`, safeWrap(memberDestroy))
+  // TODO uros check with gasper
+  app.post(`/tenant/:tenantId/member/autocomplete`, safeWrap(memberAutocomplete))
+  app.get(`/tenant/:tenantId/member`, safeWrap(memberList))
+  app.get(`/tenant/:tenantId/member/active`, safeWrap(memberActiveList))
+  app.get(`/tenant/:tenantId/member/:id`, safeWrap(memberFind))
   app.get(
     `/tenant/:tenantId/member/github/:id`,
     featureFlagMiddleware(FeatureFlag.FIND_GITHUB, 'errors.featureFlag.notEnabled'),
-    safeWrap(require('./memberFindGithub').default),
+    safeWrap(memberFindGithub),
   )
-  app.put(`/tenant/:tenantId/member/:memberId/merge`, safeWrap(require('./memberMerge').default))
+  app.put(`/tenant/:tenantId/member/:memberId/merge`, safeWrap(memberMerge))
 
-  app.post(
-    `/tenant/:tenantId/member/:memberId/unmerge/preview`,
-    safeWrap(require('./memberUnmergePreview').default),
-  )
+  app.post(`/tenant/:tenantId/member/:memberId/unmerge/preview`, safeWrap(memberUnmergePreview))
 
-  app.post(
-    `/tenant/:tenantId/member/:memberId/unmerge`,
-    safeWrap(require('./memberUnmerge').default),
-  )
+  app.post(`/tenant/:tenantId/member/:memberId/unmerge`, safeWrap(memberUnmerge))
 
-  app.put(
-    `/tenant/:tenantId/member/:memberId/no-merge`,
-    safeWrap(require('./memberNotMerge').default),
-  )
-  app.patch(`/tenant/:tenantId/member`, safeWrap(require('./memberUpdateBulk').default))
+  app.put(`/tenant/:tenantId/member/:memberId/no-merge`, safeWrap(memberNotMerge))
+  app.patch(`/tenant/:tenantId/member`, safeWrap(memberUpdateBulk))
 }

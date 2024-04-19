@@ -6,6 +6,53 @@ import { authMiddleware } from '../../middlewares/authMiddleware'
 import { safeWrap } from '../../middlewares/errorMiddleware'
 import TenantService from '../../services/tenantService'
 import { featureFlagMiddleware } from '@/middlewares/featureFlagMiddleware'
+import integrationQuery from './integrationQuery'
+import integrationCreate from './integrationCreate'
+import integrationUpdate from './integrationUpdate'
+import integrationImport from './integrationImport'
+import integrationDestroy from './integrationDestroy'
+import integrationAutocomplete from './integrationAutocomplete'
+import integrationList from './integrationList'
+import integrationFind from './integrationFind'
+import integrationProgressList from './integrationProgressList'
+import integrationProgress from './integrationProgress'
+import githubAuthenticate from './helpers/githubAuthenticate'
+import githubMapRepos from './helpers/githubMapRepos'
+import githubMapReposGet from './helpers/githubMapReposGet'
+import discordAuthenticate from './helpers/discordAuthenticate'
+import redditOnboard from './helpers/redditOnboard'
+import linkedinConnect from './helpers/linkedinConnect'
+import linkedinOnboard from './helpers/linkedinOnboard'
+import gitAuthenticate from './helpers/gitAuthenticate'
+import gitGetRemotes from './helpers/gitGetRemotes'
+import confluenceAuthenticate from './helpers/confluenceAuthenticate'
+import gerritAuthenticate from './helpers/gerritAuthenticate'
+import devtoValidators from './helpers/devtoValidators'
+import redditValidator from './helpers/redditValidator'
+import devtoCreateOrUpdate from './helpers/devtoCreateOrUpdate'
+import hackerNewsCreateOrUpdate from './helpers/hackerNewsCreateOrUpdate'
+import stackOverflowCreateOrUpdate from './helpers/stackOverflowCreateOrUpdate'
+import stackOverflowValidator from './helpers/stackOverflowValidator'
+import stackOverflowVolume from './helpers/stackOverflowVolume'
+import discourseCreateOrUpdate from './helpers/discourseCreateOrUpdate'
+import discourseValidator from './helpers/discourseValidator'
+import discourseTestWebhook from './helpers/discourseTestWebhook'
+import hubspotConnect from './helpers/hubspotConnect'
+import hubspotOnboard from './helpers/hubspotOnboard'
+import hubspotUpdateProperties from './helpers/hubspotUpdateProperties'
+import hubspotGetMappableFields from './helpers/hubspotGetMappableFields'
+import hubspotGetLists from './helpers/hubspotGetLists'
+import hubspotSyncMember from './helpers/hubspotSyncMember'
+import hubspotStopSyncMember from './helpers/hubspotStopSyncMember'
+import hubspotSyncOrganization from './helpers/hubspotSyncOrganization'
+import hubspotStopSyncOrganization from './helpers/hubspotStopSyncOrganization'
+import groupsioConnectOrUpdate from './helpers/groupsioConnectOrUpdate'
+import groupsioGetToken from './helpers/groupsioGetToken'
+import groupsioVerifyGroup from './helpers/groupsioVerifyGroup'
+import twitterAuthenticate from './helpers/twitterAuthenticate'
+import twitterAuthenticateCallback from './helpers/twitterAuthenticateCallback'
+import slackAuthenticate from './helpers/slackAuthenticate'
+import slackAuthenticateCallback from './helpers/slackAuthenticateCallback'
 
 const decodeBase64Url = (data) => {
   data = data.replaceAll('-', '+').replaceAll('_', '/')
@@ -16,172 +63,99 @@ const decodeBase64Url = (data) => {
 }
 
 export default (app) => {
-  app.post(`/tenant/:tenantId/integration/query`, safeWrap(require('./integrationQuery').default))
-  app.post(`/tenant/:tenantId/integration`, safeWrap(require('./integrationCreate').default))
-  app.put(`/tenant/:tenantId/integration/:id`, safeWrap(require('./integrationUpdate').default))
-  app.post(`/tenant/:tenantId/integration/import`, safeWrap(require('./integrationImport').default))
-  app.delete(`/tenant/:tenantId/integration`, safeWrap(require('./integrationDestroy').default))
-  app.get(
-    `/tenant/:tenantId/integration/autocomplete`,
-    safeWrap(require('./integrationAutocomplete').default),
-  )
-  app.get(`/tenant/:tenantId/integration`, safeWrap(require('./integrationList').default))
-  app.get(`/tenant/:tenantId/integration/:id`, safeWrap(require('./integrationFind').default))
+  app.post(`/tenant/:tenantId/integration/query`, safeWrap(integrationQuery))
+  app.post(`/tenant/:tenantId/integration`, safeWrap(integrationCreate))
+  app.put(`/tenant/:tenantId/integration/:id`, safeWrap(integrationUpdate))
+  app.post(`/tenant/:tenantId/integration/import`, safeWrap(integrationImport))
+  app.delete(`/tenant/:tenantId/integration`, safeWrap(integrationDestroy))
+  app.get(`/tenant/:tenantId/integration/autocomplete`, safeWrap(integrationAutocomplete))
+  app.get(`/tenant/:tenantId/integration`, safeWrap(integrationList))
+  app.get(`/tenant/:tenantId/integration/:id`, safeWrap(integrationFind))
 
-  app.put(
-    `/authenticate/:tenantId/:code`,
-    safeWrap(require('./helpers/githubAuthenticate').default),
-  )
-  app.put(
-    `/tenant/:tenantId/integration/:id/github/repos`,
-    safeWrap(require('./helpers/githubMapRepos').default),
-  )
-  app.get(
-    `/tenant/:tenantId/integration/:id/github/repos`,
-    safeWrap(require('./helpers/githubMapReposGet').default),
-  )
-  app.put(
-    `/discord-authenticate/:tenantId/:guild_id`,
-    safeWrap(require('./helpers/discordAuthenticate').default),
-  )
-  app.put(`/reddit-onboard/:tenantId`, safeWrap(require('./helpers/redditOnboard').default))
-  app.put('/linkedin-connect/:tenantId', safeWrap(require('./helpers/linkedinConnect').default))
-  app.post('/linkedin-onboard/:tenantId', safeWrap(require('./helpers/linkedinOnboard').default))
+  app.put(`/authenticate/:tenantId/:code`, safeWrap(githubAuthenticate))
+  app.put(`/tenant/:tenantId/integration/:id/github/repos`, safeWrap(githubMapRepos))
+  app.get(`/tenant/:tenantId/integration/:id/github/repos`, safeWrap(githubMapReposGet))
+  app.put(`/discord-authenticate/:tenantId/:guild_id`, safeWrap(discordAuthenticate))
+  app.put(`/reddit-onboard/:tenantId`, safeWrap(redditOnboard))
+  app.put('/linkedin-connect/:tenantId', safeWrap(linkedinConnect))
+  app.post('/linkedin-onboard/:tenantId', safeWrap(linkedinOnboard))
 
-  app.post(
-    `/tenant/:tenantId/integration/progress/list`,
-    safeWrap(require('./integrationProgressList').default),
-  )
-
-  app.get(
-    `/tenant/:tenantId/integration/progress/:id`,
-    safeWrap(require('./integrationProgress').default),
-  )
+  app.post(`/tenant/:tenantId/integration/progress/list`, safeWrap(integrationProgressList))
+  app.get(`/tenant/:tenantId/integration/progress/:id`, safeWrap(integrationProgress))
 
   // Git
-  app.put(`/tenant/:tenantId/git-connect`, safeWrap(require('./helpers/gitAuthenticate').default))
-  app.get('/tenant/:tenantId/git', safeWrap(require('./helpers/gitGetRemotes').default))
-  app.put(
-    `/tenant/:tenantId/confluence-connect`,
-    safeWrap(require('./helpers/confluenceAuthenticate').default),
-  )
-  app.put(
-    `/tenant/:tenantId/gerrit-connect`,
-    safeWrap(require('./helpers/gerritAuthenticate').default),
-  )
-  app.get(
-    '/tenant/:tenantId/devto-validate',
-    safeWrap(require('./helpers/devtoValidators').default),
-  )
-  app.get(
-    '/tenant/:tenantId/reddit-validate',
-    safeWrap(require('./helpers/redditValidator').default),
-  )
-  app.post(
-    '/tenant/:tenantId/devto-connect',
-    safeWrap(require('./helpers/devtoCreateOrUpdate').default),
-  )
-  app.post(
-    '/tenant/:tenantId/hackernews-connect',
-    safeWrap(require('./helpers/hackerNewsCreateOrUpdate').default),
-  )
-
-  app.post(
-    '/tenant/:tenantId/stackoverflow-connect',
-    safeWrap(require('./helpers/stackOverflowCreateOrUpdate').default),
-  )
-  app.get(
-    '/tenant/:tenantId/stackoverflow-validate',
-    safeWrap(require('./helpers/stackOverflowValidator').default),
-  )
-  app.get(
-    '/tenant/:tenantId/stackoverflow-volume',
-    safeWrap(require('./helpers/stackOverflowVolume').default),
-  )
-
-  app.post(
-    '/tenant/:tenantId/discourse-connect',
-    safeWrap(require('./helpers/discourseCreateOrUpdate').default),
-  )
-
-  app.post(
-    '/tenant/:tenantId/discourse-validate',
-    safeWrap(require('./helpers/discourseValidator').default),
-  )
-
-  app.post(
-    '/tenant/:tenantId/discourse-test-webhook',
-    safeWrap(require('./helpers/discourseTestWebhook').default),
-  )
-
+  app.put(`/tenant/:tenantId/git-connect`, safeWrap(gitAuthenticate))
+  app.get('/tenant/:tenantId/git', safeWrap(gitGetRemotes))
+  app.put(`/tenant/:tenantId/confluence-connect`, safeWrap(confluenceAuthenticate))
+  app.put(`/tenant/:tenantId/gerrit-connect`, safeWrap(gerritAuthenticate))
+  app.get('/tenant/:tenantId/devto-validate', safeWrap(devtoValidators))
+  app.get('/tenant/:tenantId/reddit-validate', safeWrap(redditValidator))
+  app.post('/tenant/:tenantId/devto-connect', safeWrap(devtoCreateOrUpdate))
+  app.post('/tenant/:tenantId/hackernews-connect', safeWrap(hackerNewsCreateOrUpdate))
+  app.post('/tenant/:tenantId/stackoverflow-connect', safeWrap(stackOverflowCreateOrUpdate))
+  app.get('/tenant/:tenantId/stackoverflow-validate', safeWrap(stackOverflowValidator))
+  app.get('/tenant/:tenantId/stackoverflow-volume', safeWrap(stackOverflowVolume))
+  app.post('/tenant/:tenantId/discourse-connect', safeWrap(discourseCreateOrUpdate))
+  app.post('/tenant/:tenantId/discourse-validate', safeWrap(discourseValidator))
+  app.post('/tenant/:tenantId/discourse-test-webhook', safeWrap(discourseTestWebhook))
   app.post(
     '/tenant/:tenantId/hubspot-connect',
     featureFlagMiddleware(FeatureFlag.HUBSPOT, 'hubspot.errors.notInPlan'),
-    safeWrap(require('./helpers/hubspotConnect').default),
+    safeWrap(hubspotConnect),
   )
 
   app.post(
     '/tenant/:tenantId/hubspot-onboard',
     featureFlagMiddleware(FeatureFlag.HUBSPOT, 'hubspot.errors.notInPlan'),
-    safeWrap(require('./helpers/hubspotOnboard').default),
+    safeWrap(hubspotOnboard),
   )
 
   app.post(
     '/tenant/:tenantId/hubspot-update-properties',
     featureFlagMiddleware(FeatureFlag.HUBSPOT, 'hubspot.errors.notInPlan'),
-    safeWrap(require('./helpers/hubspotUpdateProperties').default),
+    safeWrap(hubspotUpdateProperties),
   )
 
   app.get(
     '/tenant/:tenantId/hubspot-mappable-fields',
     featureFlagMiddleware(FeatureFlag.HUBSPOT, 'hubspot.errors.notInPlan'),
-    safeWrap(require('./helpers/hubspotGetMappableFields').default),
+    safeWrap(hubspotGetMappableFields),
   )
 
   app.get(
     '/tenant/:tenantId/hubspot-get-lists',
     featureFlagMiddleware(FeatureFlag.HUBSPOT, 'hubspot.errors.notInPlan'),
-    safeWrap(require('./helpers/hubspotGetLists').default),
+    safeWrap(hubspotGetLists),
   )
 
   app.post(
     '/tenant/:tenantId/hubspot-sync-member',
     featureFlagMiddleware(FeatureFlag.HUBSPOT, 'hubspot.errors.notInPlan'),
-    safeWrap(require('./helpers/hubspotSyncMember').default),
+    safeWrap(hubspotSyncMember),
   )
 
   app.post(
     '/tenant/:tenantId/hubspot-stop-sync-member',
     featureFlagMiddleware(FeatureFlag.HUBSPOT, 'hubspot.errors.notInPlan'),
-    safeWrap(require('./helpers/hubspotStopSyncMember').default),
+    safeWrap(hubspotStopSyncMember),
   )
 
   app.post(
     '/tenant/:tenantId/hubspot-sync-organization',
     featureFlagMiddleware(FeatureFlag.HUBSPOT, 'hubspot.errors.notInPlan'),
-    safeWrap(require('./helpers/hubspotSyncOrganization').default),
+    safeWrap(hubspotSyncOrganization),
   )
 
   app.post(
     '/tenant/:tenantId/hubspot-stop-sync-organization',
     featureFlagMiddleware(FeatureFlag.HUBSPOT, 'hubspot.errors.notInPlan'),
-    safeWrap(require('./helpers/hubspotStopSyncOrganization').default),
+    safeWrap(hubspotStopSyncOrganization),
   )
 
-  app.post(
-    '/tenant/:tenantId/groupsio-connect',
-    safeWrap(require('./helpers/groupsioConnectOrUpdate').default),
-  )
+  app.post('/tenant/:tenantId/groupsio-connect', safeWrap(groupsioConnectOrUpdate))
+  app.post('/tenant/:tenantId/groupsio-get-token', safeWrap(groupsioGetToken))
 
-  app.post(
-    '/tenant/:tenantId/groupsio-get-token',
-    safeWrap(require('./helpers/groupsioGetToken').default),
-  )
-
-  app.post(
-    '/tenant/:tenantId/groupsio-verify-group',
-    safeWrap(require('./helpers/groupsioVerifyGroup').default),
-  )
+  app.post('/tenant/:tenantId/groupsio-verify-group', safeWrap(groupsioVerifyGroup))
 
   if (TWITTER_CONFIG.clientId) {
     /**
@@ -193,14 +167,10 @@ export default (app) => {
      * This state is sent using the authenticator options and
      * manipulated through twitterStrategy.staticPKCEStore
      */
-    app.get(
-      '/twitter/:tenantId/connect',
-      safeWrap(require('./helpers/twitterAuthenticate').default),
-      () => {
-        // The request will be redirected for authentication, so this
-        // function will not be called.
-      },
-    )
+    app.get('/twitter/:tenantId/connect', safeWrap(twitterAuthenticate), () => {
+      // The request will be redirected for authentication, so this
+      // function will not be called.
+    })
 
     /**
      * OAuth2 callback endpoint.  After user successfully
@@ -240,7 +210,7 @@ export default (app) => {
         req.currentTenant = await new TenantService(req).findById(tenantId)
         next()
       },
-      safeWrap(require('./helpers/twitterAuthenticateCallback').default),
+      safeWrap(twitterAuthenticateCallback),
     )
   }
 
@@ -250,7 +220,7 @@ export default (app) => {
    */
   if (SLACK_CONFIG.clientId) {
     // path to start the OAuth flow
-    app.get('/slack/:tenantId/connect', safeWrap(require('./helpers/slackAuthenticate').default))
+    app.get('/slack/:tenantId/connect', safeWrap(slackAuthenticate))
 
     // OAuth callback url
     app.get(
@@ -280,7 +250,7 @@ export default (app) => {
         req.currentSegments = await segmentRepository.findInIds(segmentIds)
         next()
       },
-      safeWrap(require('./helpers/slackAuthenticateCallback').default),
+      safeWrap(slackAuthenticateCallback),
     )
   }
 }

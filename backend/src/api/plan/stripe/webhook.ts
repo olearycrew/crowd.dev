@@ -2,9 +2,12 @@ import lodash from 'lodash'
 import { PLANS_CONFIG } from '../../../conf'
 import Plans from '../../../security/plans'
 import TenantService from '../../../services/tenantService'
+import Stripe from 'stripe'
 
 export default async (req, res) => {
-  const stripe = require('stripe')(PLANS_CONFIG.stripeSecretKey)
+  const stripe = new Stripe(PLANS_CONFIG.stripeSecretKey, {
+    apiVersion: '2022-08-01',
+  })
 
   const event = stripe.webhooks.constructEvent(
     req.rawBody,

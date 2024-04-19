@@ -3,13 +3,16 @@ import { TenantPlans } from '@crowd/types'
 import { PLANS_CONFIG } from '../../../conf'
 import TenantService from '../../../services/tenantService'
 import { tenantSubdomain } from '../../../services/tenantSubdomain'
+import Stripe from 'stripe'
 
 export default async (req, res) => {
   if (!PLANS_CONFIG.stripeSecretKey) {
     throw new Error400(req.language, 'tenant.stripeNotConfigured')
   }
 
-  const stripe = require('stripe')(PLANS_CONFIG.stripeSecretKey)
+  const stripe = new Stripe(PLANS_CONFIG.stripeSecretKey, {
+    apiVersion: '2022-08-01',
+  })
 
   const { currentTenant } = req
   const { currentUser } = req
