@@ -2088,7 +2088,7 @@ class MemberRepository {
       }
     }
 
-    if (filter.and[0].id.eq === '83a2df60-4b45-11ee-b167-9783d68b859c') {
+    if (filter.and.length > 0 && filter.and[0]?.id?.eq === '83a2df60-4b45-11ee-b167-9783d68b859c') {
       console.log('parsed', JSON.stringify(parsed))
     }
 
