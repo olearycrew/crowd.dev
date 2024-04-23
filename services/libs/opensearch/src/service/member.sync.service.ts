@@ -216,6 +216,54 @@ export class MemberSyncService {
               uuid_memberId: memberId,
             },
           },
+          {
+            nested: {
+              path: 'nested_identities',
+              query: {
+                bool: {
+                  must: [
+                    {
+                      exists: {
+                        field: 'nested_identities.string_platform',
+                      },
+                    },
+                  ],
+                  must_not: [
+                    {
+                      exists: {
+                        field: 'nested_identities.string_value',
+                      },
+                    },
+                    {
+                      exists: {
+                        field: 'nested_identities.keyword_value',
+                      },
+                    },
+                    {
+                      exists: {
+                        field: 'nested_identities.keyword_type',
+                      },
+                    },
+                    {
+                      exists: {
+                        field: 'nested_identities.bool_verified',
+                      },
+                    },
+                    {
+                      exists: {
+                        field: 'nested_identities.keyword_sourceId',
+                      },
+                    },
+                    {
+                      exists: {
+                        field: 'nested_identities.keyword_integrationId',
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+          },
         ],
       },
     }
