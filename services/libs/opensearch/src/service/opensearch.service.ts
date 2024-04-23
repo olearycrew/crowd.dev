@@ -137,6 +137,15 @@ export class OpenSearchService extends LoggerBase {
     }
   }
 
+  public async count(index: string, query: object): Promise<number> {
+    const response = await this.client.count({
+      index,
+      body: { query },
+    })
+
+    return response.body.count
+  }
+
   public async reIndex(sourceIndex: string, targetIndex: string): Promise<void> {
     try {
       const response = await this.client.reindex({

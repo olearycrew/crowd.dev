@@ -25,7 +25,7 @@ setImmediate(async () => {
 
   const service = new MemberSyncService(redis, store, openSearchService, log, SERVICE_CONFIG())
 
-  const result = await service.getMemberDocs(memberId)
+  const result = await service.getMemberDocs()
 
   console.log(JSON.stringify(result, null, 2))
 

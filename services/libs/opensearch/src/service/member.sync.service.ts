@@ -207,15 +207,10 @@ export class MemberSyncService {
     }
   }
 
-  public async getMemberDocs(memberId: string) {
+  public async getMemberDocs() {
     const query = {
       bool: {
         must: [
-          {
-            term: {
-              uuid_memberId: memberId,
-            },
-          },
           {
             nested: {
               path: 'nested_identities',
@@ -268,15 +263,9 @@ export class MemberSyncService {
       },
     }
 
-    const pageSize = 10000 // max page size
-    const results = (await this.openSearchService.search(
-      OpenSearchIndex.MEMBERS,
-      query,
-      undefined,
-      pageSize,
-    )) as ISearchHit<unknown>[]
+    const count = await this.openSearchService.count(OpenSearchIndex.MEMBERS, query)
 
-    return results
+    return count
   }
 
   public async syncTenantMembers(tenantId: string, batchSize = 200): Promise<void> {
