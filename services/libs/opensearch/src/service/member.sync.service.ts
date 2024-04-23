@@ -207,6 +207,30 @@ export class MemberSyncService {
     }
   }
 
+  public async getMemberDocs(memberId: string) {
+    const query = {
+      bool: {
+        must: [
+          {
+            term: {
+              uuid_memberId: memberId,
+            },
+          },
+        ],
+      },
+    }
+
+    const pageSize = 10000 // max page size
+    const results = (await this.openSearchService.search(
+      OpenSearchIndex.MEMBERS,
+      query,
+      undefined,
+      pageSize,
+    )) as ISearchHit<unknown>[]
+
+    return results
+  }
+
   public async syncTenantMembers(tenantId: string, batchSize = 200): Promise<void> {
     this.log.debug({ tenantId }, 'Syncing all tenant members!')
     let docCount = 0
