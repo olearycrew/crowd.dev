@@ -1523,6 +1523,7 @@ class MemberRepository {
       {
         ...memberSearchQuery,
         segments,
+        findById: true,
       },
       options,
     )
@@ -1989,6 +1990,8 @@ class MemberRepository {
       attributesSettings = [] as AttributeData[],
       segments = [] as string[],
       customSortFunction = undefined,
+      findById = false,
+      autoCompletion = false,
     },
     options: IRepositoryOptions,
   ): Promise<PageData<any>> {
@@ -2088,11 +2091,13 @@ class MemberRepository {
       }
     }
 
-    if (filter.and.length > 0 && filter.and[0]?.id?.eq === '83a2df60-4b45-11ee-b167-9783d68b859c') {
-      options.log.info('Kiki parsed query', JSON.stringify(parsed))
-    }
+   if (autoCompletion){
+    options.log.info('parsed autoComplete', JSON.stringify(parsed))
+  }
 
-    options.log.info('parsed', JSON.stringify(parsed))
+   if (findById){
+    options.log.info('parsed findById', JSON.stringify(parsed))
+  }
 
     const response = await options.opensearch.search({
       index: OpenSearchIndex.MEMBERS,

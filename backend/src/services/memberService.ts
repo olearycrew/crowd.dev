@@ -1811,6 +1811,7 @@ export default class MemberService extends LoggerBase {
         limit: data.limit,
         segments: data.segments,
         attributesSettings: memberAttributeSettings,
+        autoCompletion: true,
       },
       this.options,
     )
