@@ -222,6 +222,16 @@ export class MemberSyncService {
                         field: 'nested_identities.string_platform',
                       },
                     },
+                    {
+                      exists: {
+                        field: 'nested_identities.string_username',
+                      },
+                    },
+                    {
+                      exists: {
+                        field: 'nested_identities.string_username',
+                      },
+                    },
                   ],
                   must_not: [
                     {
