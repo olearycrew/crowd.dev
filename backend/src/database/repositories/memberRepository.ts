@@ -1530,6 +1530,7 @@ class MemberRepository {
 
     // if not found, try to find it in all segments and return the first one
     if (response.count === 0) {
+      options.log.debug('Member not found in segment, trying to find in all segments')
       response = await this.findAndCountAllOpensearch(memberSearchQuery, options)
 
       // still not found, throw 404
