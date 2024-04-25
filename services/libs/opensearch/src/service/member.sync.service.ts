@@ -273,7 +273,7 @@ export class MemberSyncService {
       },
     }
 
-    const pageSize = 500
+    const pageSize = 200
     const docs = (await this.openSearchService.search(
       OpenSearchIndex.MEMBERS,
       query,
