@@ -378,7 +378,7 @@ export class MemberSyncService {
         docs = await this.getMemberDocs()
       }
     } catch (err) {
-      console.error(err.meta.body) // Log the error body
+      console.error(err) // Log the error body
     }
   }
 
