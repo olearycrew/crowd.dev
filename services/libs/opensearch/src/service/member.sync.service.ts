@@ -279,8 +279,6 @@ export class MemberSyncService {
       query,
       undefined,
       pageSize,
-      undefined,
-      undefined,
     )) as ISearchHit<{ uuid_memberId: string }>[]
 
     return docs
