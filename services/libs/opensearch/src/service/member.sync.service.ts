@@ -361,7 +361,7 @@ export class MemberSyncService {
         const memberIds = docs.map((doc) => doc._source.uuid_memberId)
         // remove duplicate memberIds
         const uniqueMemberIds = distinct(memberIds)
-        this.log.info(`Resyncing members`, memberIds)
+        this.log.info(`Resyncing members`, uniqueMemberIds)
         for (const memberId of uniqueMemberIds) {
           await this.removeMember(memberId)
           await this.syncMembers([memberId])
