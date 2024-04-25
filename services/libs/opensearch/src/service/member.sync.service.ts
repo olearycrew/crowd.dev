@@ -273,18 +273,41 @@ export class MemberSyncService {
       },
     }
 
-    const docs = await this.openSearchService.search(OpenSearchIndex.MEMBERS, query)
+    const pageSize = 500
+    const docs = (await this.openSearchService.search(
+      OpenSearchIndex.MEMBERS,
+      query,
+      undefined,
+      pageSize,
+      undefined,
+      undefined,
+    )) as ISearchHit<{ uuid_memberId: string }>[]
 
     return docs
   }
 
   public async resyncMembers() {
-    const docs = await this.getMemberDocs()
-    const memberIds = docs.map((doc) => doc.memberId)
+    this.log.debug('Resyncing all members!')
+    let docs = await this.getMemberDocs()
+    const startTime = Date.now()
 
-    for (const memberId of memberIds) {
-      await this.removeMember(memberId)
-      await this.syncMembers([memberId])
+    while (docs.length > 0) {
+      const memberIds = docs.map((doc) => doc._source.uuid_memberId)
+
+      for (const memberId of memberIds) {
+        await this.removeMember(memberId)
+        await this.syncMembers([memberId])
+      }
+
+      const elapsedTime = Date.now() - startTime
+      const speed = memberIds.length / (elapsedTime / 1000) // members per second
+      this.log.info(
+        `Processed ${memberIds.length} members in ${
+          elapsedTime / 1000
+        } seconds. Speed: ${speed} members/second`,
+      )
+
+      docs = await this.getMemberDocs()
     }
   }
 
