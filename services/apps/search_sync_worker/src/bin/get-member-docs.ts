@@ -25,9 +25,9 @@ setImmediate(async () => {
 
   const service = new MemberSyncService(redis, store, openSearchService, log, SERVICE_CONFIG())
 
-  const result = await service.getMemberDocs()
+  const result = await service.getMemberDocsCount()
 
-  console.log(JSON.stringify(result, null, 2))
+  console.log('total count:', result)
 
   process.exit(0)
 })
