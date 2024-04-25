@@ -35,7 +35,8 @@
     "script:remove-alias": "SERVICE=script tsx src/bin/remove-alias.ts",
     "script:get-index-info": "SERVICE=script tsx src/bin/get-index-info.ts",
     "script:get-doc-count": "SERVICE=script tsx src/bin/get-doc-count.ts",
-    "script:get-member-docs": "SERVICE=script tsx src/bin/get-member-docs.ts"
+    "script:get-member-docs": "SERVICE=script tsx src/bin/get-member-docs.ts",
+    "script:fix-old-format": "SERVICE=script tsx src/bin/fix-old-format.ts"
   },
   "dependencies": {
     "@crowd/common": "workspace:*",

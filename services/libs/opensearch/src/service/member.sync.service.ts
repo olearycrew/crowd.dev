@@ -273,9 +273,19 @@ export class MemberSyncService {
       },
     }
 
-    const count = await this.openSearchService.count(OpenSearchIndex.MEMBERS, query)
+    const docs = await this.openSearchService.search(OpenSearchIndex.MEMBERS, query)
 
-    return count
+    return docs
+  }
+
+  public async resyncMembers() {
+    const docs = await this.getMemberDocs()
+    const memberIds = docs.map((doc) => doc.memberId)
+
+    for (const memberId of memberIds) {
+      await this.removeMember(memberId)
+      await this.syncMembers([memberId])
+    }
   }
 
   public async syncTenantMembers(tenantId: string, batchSize = 200): Promise<void> {
