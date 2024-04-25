@@ -284,6 +284,75 @@ export class MemberSyncService {
     return docs
   }
 
+  public async getMemberDocsCount() {
+    const query = {
+      bool: {
+        must: [
+          {
+            nested: {
+              path: 'nested_identities',
+              query: {
+                bool: {
+                  must: [
+                    {
+                      exists: {
+                        field: 'nested_identities.string_platform',
+                      },
+                    },
+                    {
+                      exists: {
+                        field: 'nested_identities.string_username',
+                      },
+                    },
+                    {
+                      exists: {
+                        field: 'nested_identities.string_username',
+                      },
+                    },
+                  ],
+                  must_not: [
+                    {
+                      exists: {
+                        field: 'nested_identities.string_value',
+                      },
+                    },
+                    {
+                      exists: {
+                        field: 'nested_identities.keyword_value',
+                      },
+                    },
+                    {
+                      exists: {
+                        field: 'nested_identities.keyword_type',
+                      },
+                    },
+                    {
+                      exists: {
+                        field: 'nested_identities.bool_verified',
+                      },
+                    },
+                    {
+                      exists: {
+                        field: 'nested_identities.keyword_sourceId',
+                      },
+                    },
+                    {
+                      exists: {
+                        field: 'nested_identities.keyword_integrationId',
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+          },
+        ],
+      },
+    }
+
+    return this.openSearchService.count(OpenSearchIndex.MEMBERS, query)
+  }
+
   public async resyncMembers() {
     this.log.debug('Resyncing all members!')
     let docs = await this.getMemberDocs()

@@ -16,6 +16,12 @@ setImmediate(async () => {
 
   const service = new MemberSyncService(redis, store, openSearchService, log, SERVICE_CONFIG())
 
+  console.log('started fixing old format members...')
+
+  const count = await service.getMemberDocsCount()
+
+  console.log('count:', count)
+
   await service.resyncMembers()
 
   console.log('completed resyncing members...')
