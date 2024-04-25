@@ -344,6 +344,9 @@ export class OpenSearchService extends LoggerBase {
             }
           })
 
+        this.log.info({ body }, 'Bulk index result!')
+        console.error(result)
+
         this.log.error({ errorItems }, 'Failed to bulk index documents!')
         throw new Error(`Failed to bulk index documents in index ${index}!`)
       }
