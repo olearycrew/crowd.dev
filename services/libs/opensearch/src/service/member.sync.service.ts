@@ -355,11 +355,11 @@ export class MemberSyncService {
 
   public async resyncMembers() {
     try {
-      this.log.debug('Resyncing all members!')
+      this.log.info('Resyncing all members!')
       const docs = await this.getMemberDocs()
       while (docs.length > 0) {
         const memberIds = docs.map((doc) => doc._source.uuid_memberId)
-
+        this.log.info('Resyncing members:', memberIds)
         for (const memberId of memberIds) {
           await this.removeMember(memberId)
           await this.syncMembers([memberId])
