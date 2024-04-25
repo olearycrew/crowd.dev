@@ -356,9 +356,7 @@ export class MemberSyncService {
   public async resyncMembers() {
     try {
       this.log.debug('Resyncing all members!')
-      let docs = await this.getMemberDocs()
-      const startTime = Date.now()
-
+      const docs = await this.getMemberDocs()
       while (docs.length > 0) {
         const memberIds = docs.map((doc) => doc._source.uuid_memberId)
 
@@ -366,16 +364,6 @@ export class MemberSyncService {
           await this.removeMember(memberId)
           await this.syncMembers([memberId])
         }
-
-        const elapsedTime = Date.now() - startTime
-        const speed = memberIds.length / (elapsedTime / 1000) // members per second
-        this.log.info(
-          `Processed ${memberIds.length} members in ${
-            elapsedTime / 1000
-          } seconds. Speed: ${speed} members/second`,
-        )
-
-        docs = await this.getMemberDocs()
       }
     } catch (err) {
       console.error(err) // Log the error body
