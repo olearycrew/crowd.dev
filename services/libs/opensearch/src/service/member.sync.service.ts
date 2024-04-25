@@ -361,10 +361,11 @@ export class MemberSyncService {
         const memberIds = docs.map((doc) => doc._source.uuid_memberId)
         // remove duplicate memberIds
         const uniqueMemberIds = distinct(memberIds)
-        this.log.info(`Resyncing members`, uniqueMemberIds)
         for (const memberId of uniqueMemberIds) {
           await this.removeMember(memberId)
+          this.log.info({ memberId }, 'Removed member from index!')
           await this.syncMembers([memberId])
+          this.log.info({ memberId }, 'Synced member again to index!')
         }
       }
     } catch (err) {
