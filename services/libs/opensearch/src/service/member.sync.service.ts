@@ -364,6 +364,8 @@ export class MemberSyncService {
         for (const memberId of uniqueMemberIds) {
           await this.removeMember(memberId)
           this.log.info({ memberId }, 'Removed member from index!')
+          await this.syncMembers([memberId])
+          this.log.info({ memberId }, 'Synced member to index!')
         }
       }
     } catch (err) {
