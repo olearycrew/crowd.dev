@@ -4,7 +4,7 @@ import { IDbSegmentInfo } from '../repo/segment.data'
 import { SegmentRepository } from '../repo/segment.repo'
 import { distinct } from '@crowd/common'
 import { DbStore } from '@crowd/database'
-import { Logger, getChildLogger, logExecutionTime } from '@crowd/logging'
+import { Logger, getChildLogger, logExecutionTime, logExecutionTimeV2 } from '@crowd/logging'
 import { Edition, OpenSearchIndex } from '@crowd/types'
 import { IPagedSearchResponse, ISearchHit } from './opensearch.data'
 import { OpenSearchService } from './opensearch.service'
@@ -245,6 +245,94 @@ export class OrganizationSyncService {
     )
   }
 
+  public static prepareData(orgId, segmentId, data) {
+    return {
+      id: `${orgId}-${segmentId}`,
+      body: OrganizationSyncService.prefixData(data),
+    }
+  }
+
+  private async generateSyncStreams(orgId, orgSegments) {
+    const result = []
+
+    // All segments processed, push the segment related docs into syncStream
+    result.push(
+      ...orgSegments.map((s) =>
+        OrganizationSyncService.prepareData(s.data.organizationId, s.data.segmentId, s.data),
+      ),
+    )
+
+    // also calculate and push for parent and grandparent segments
+    const childSegmentIds: string[] = distinct(orgSegments.map((m) => m.segmentId))
+    const segmentInfos = await logExecutionTimeV2(
+      () => this.segmentRepo.getParentSegmentIds(childSegmentIds),
+      this.log,
+      'sync-organizations-get-parent-segment-ids',
+    )
+
+    const parentIds: string[] = distinct(segmentInfos.map((s) => s.parentId))
+    for (const parentId of parentIds) {
+      const aggregated = OrganizationSyncService.aggregateData(
+        orgSegments.map((s) => s.data),
+        segmentInfos,
+        parentId,
+      )
+      result.push(OrganizationSyncService.prepareData(orgId, parentId, aggregated))
+    }
+
+    const grandParentIds = distinct(segmentInfos.map((s) => s.grandParentId))
+    for (const grandParentId of grandParentIds) {
+      const aggregated = OrganizationSyncService.aggregateData(
+        orgSegments.map((s) => s.data),
+        segmentInfos,
+        undefined,
+        grandParentId,
+      )
+      result.push(
+        OrganizationSyncService.prepareData(orgId, grandParentId, {
+          ...aggregated,
+          grandParentSegment: true,
+        }),
+      )
+    }
+
+    return result
+  }
+
+  private async processSegmentsStream(databaseStream, orgSegmentCouples) {
+    const results = await logExecutionTimeV2(
+      () => Promise.all(databaseStream.map((s) => s.promise)),
+      this.log,
+      'database-streams',
+    )
+
+    let index = 0
+
+    const syncStreams = []
+
+    while (results.length > 0) {
+      const result = results.shift()
+      const { orgId, segmentId } = databaseStream[index]
+      const orgSegments = orgSegmentCouples[orgId]
+
+      // Find the correct segment and mark it as processed and add the data
+      const targetSegment = orgSegments.find((s) => s.segmentId === segmentId)
+      targetSegment.processed = true
+      targetSegment.data = result
+
+      // Check if all segments for the organization have been processed
+      const allSegmentsOfOrgIsProcessed = orgSegments.every((s) => s.processed)
+      if (allSegmentsOfOrgIsProcessed) {
+        syncStreams.push(...(await this.generateSyncStreams(orgId, orgSegmentCouples[orgId])))
+        delete orgSegmentCouples[orgId]
+      }
+
+      index += 1
+    }
+
+    return syncStreams
+  }
+
   /**
    * Gets segment specific aggregates of an organization and syncs to opensearch
    * Aggregate data is gathered for each segment in separate sql queries
@@ -263,89 +351,33 @@ export class OrganizationSyncService {
     const BULK_INDEX_DOCUMENT_BATCH_SIZE = 2500
 
     // get all orgId-segmentId couples
-    const orgSegmentCouples: IOrganizationSegmentMatrix =
-      await this.orgRepo.getOrganizationSegmentCouples(organizationIds, segmentIds)
+    const orgSegmentCouples: IOrganizationSegmentMatrix = await logExecutionTimeV2(
+      () => this.orgRepo.getOrganizationSegmentCouples(organizationIds, segmentIds),
+      this.log,
+      'sync-organizations-get-organization-segment-couples',
+    )
+
+    const orgSegmentPairs = Object.keys(orgSegmentCouples).reduce((acc, orgId) => {
+      for (const segment of orgSegmentCouples[orgId]) {
+        acc.push({ orgId, segmentId: segment.segmentId })
+      }
+      return acc
+    }, [])
+
+    // for (const pair of orgSegmentPairs) {
+    //   const { orgId, segmentId } = pair
+    // }
+
+    // return {
+    //   organizationsSynced: 0,
+    //   documentsIndexed: 0,
+    // }
+
     let databaseStream = []
     let syncStream = []
     let documentsIndexed = 0
     const allOrgIds = Object.keys(orgSegmentCouples)
     const totalOrgIds = allOrgIds.length
-
-    const processSegmentsStream = async (databaseStream): Promise<void> => {
-      const results = await Promise.all(databaseStream.map((s) => s.promise))
-
-      let index = 0
-
-      while (results.length > 0) {
-        const result = results.shift()
-        const { orgId, segmentId } = databaseStream[index]
-        const orgSegments = orgSegmentCouples[orgId]
-
-        // Find the correct segment and mark it as processed and add the data
-        const targetSegment = orgSegments.find((s) => s.segmentId === segmentId)
-        targetSegment.processed = true
-        targetSegment.data = result
-
-        // Check if all segments for the organization have been processed
-        const allSegmentsOfOrgIsProcessed = orgSegments.every((s) => s.processed)
-        if (allSegmentsOfOrgIsProcessed) {
-          // All segments processed, push the segment related docs into syncStream
-          syncStream.push(
-            ...orgSegmentCouples[orgId].map((s) => {
-              return {
-                id: `${s.data.organizationId}-${s.data.segmentId}`,
-                body: OrganizationSyncService.prefixData(s.data),
-              }
-            }),
-          )
-
-          const isMultiSegment = this.serviceConfig.edition === Edition.LFX
-
-          if (isMultiSegment) {
-            // also calculate and push for parent and grandparent segments
-            const childSegmentIds: string[] = distinct(orgSegments.map((m) => m.segmentId))
-            const segmentInfos = await this.segmentRepo.getParentSegmentIds(childSegmentIds)
-
-            const parentIds: string[] = distinct(segmentInfos.map((s) => s.parentId))
-            for (const parentId of parentIds) {
-              const aggregated = OrganizationSyncService.aggregateData(
-                orgSegmentCouples[orgId].map((s) => s.data),
-                segmentInfos,
-                parentId,
-              )
-              const prepared = OrganizationSyncService.prefixData(aggregated)
-              syncStream.push({
-                id: `${orgId}-${parentId}`,
-                body: prepared,
-              })
-            }
-
-            const grandParentIds = distinct(segmentInfos.map((s) => s.grandParentId))
-            for (const grandParentId of grandParentIds) {
-              const aggregated = OrganizationSyncService.aggregateData(
-                orgSegmentCouples[orgId].map((s) => s.data),
-                segmentInfos,
-                undefined,
-                grandParentId,
-              )
-              const prepared = OrganizationSyncService.prefixData({
-                ...aggregated,
-                grandParentSegment: true,
-              })
-              syncStream.push({
-                id: `${orgId}-${grandParentId}`,
-                body: prepared,
-              })
-            }
-          }
-
-          // delete the orgId from matrix, we already created syncStreams for indexing to opensearch
-          delete orgSegmentCouples[orgId]
-        }
-
-        index += 1
-      }
-    }
 
     for (let i = 0; i < totalOrgIds; i++) {
       const orgId = allOrgIds[i]
@@ -353,6 +385,7 @@ export class OrganizationSyncService {
 
       for (let j = 0; j < totalSegments; j++) {
         const segment = orgSegmentCouples[orgId][j]
+
         databaseStream.push({
           orgId: orgId,
           segmentId: segment.segmentId,
@@ -361,14 +394,19 @@ export class OrganizationSyncService {
 
         // databaseStreams will create syncStreams items in processSegmentsStream, which'll later be used to sync to opensearch in bulk
         if (databaseStream.length >= CONCURRENT_DATABASE_QUERIES) {
-          await processSegmentsStream(databaseStream)
+          syncStream.push(...(await this.processSegmentsStream(databaseStream, orgSegmentCouples)))
           databaseStream = []
         }
 
         while (syncStream.length >= BULK_INDEX_DOCUMENT_BATCH_SIZE) {
-          await this.openSearchService.bulkIndex(
-            OpenSearchIndex.ORGANIZATIONS,
-            syncStream.slice(0, BULK_INDEX_DOCUMENT_BATCH_SIZE),
+          await logExecutionTimeV2(
+            () =>
+              this.openSearchService.bulkIndex(
+                OpenSearchIndex.ORGANIZATIONS,
+                syncStream.slice(0, BULK_INDEX_DOCUMENT_BATCH_SIZE),
+              ),
+            this.log,
+            'sync-organizations-bulk-index-1',
           )
           documentsIndexed += syncStream.slice(0, BULK_INDEX_DOCUMENT_BATCH_SIZE).length
           syncStream = syncStream.slice(BULK_INDEX_DOCUMENT_BATCH_SIZE)
@@ -378,12 +416,18 @@ export class OrganizationSyncService {
         if (i === totalOrgIds - 1 && j === totalSegments - 1) {
           // check if there are remaining databaseStreams to process
           if (databaseStream.length > 0) {
-            await processSegmentsStream(databaseStream)
+            syncStream.push(
+              ...(await this.processSegmentsStream(databaseStream, orgSegmentCouples)),
+            )
           }
 
           // check if there are remaining syncStreams to process
           if (syncStream.length > 0) {
-            await this.openSearchService.bulkIndex(OpenSearchIndex.ORGANIZATIONS, syncStream)
+            await logExecutionTimeV2(
+              () => this.openSearchService.bulkIndex(OpenSearchIndex.ORGANIZATIONS, syncStream),
+              this.log,
+              'sync-organizations-bulk-index-2',
+            )
             documentsIndexed += syncStream.length
           }
         }
