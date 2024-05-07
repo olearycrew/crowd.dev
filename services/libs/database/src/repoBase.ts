@@ -46,8 +46,11 @@ export abstract class RepositoryBase<TRepo extends RepositoryBase<TRepo>> extend
   public async transactionally<T>(
     process: (repo: TRepo) => Promise<T> | T,
     transaction?: DbTransaction,
+    actuallyTransactionally?: boolean,
   ): Promise<T> {
+    console.log('transactionally on repo', { actuallyTransactionally })
     if (this.isTransactional() && transaction === undefined) {
+      console.log('already in transaction')
       return process(this as unknown as TRepo)
     }
 
@@ -55,14 +58,16 @@ export abstract class RepositoryBase<TRepo extends RepositoryBase<TRepo>> extend
     cloned.inTransaction = true
 
     if (transaction !== undefined) {
+      console.log('using provided transaction')
       cloned.database = transaction
       return process(cloned)
     }
 
+    console.log('creating new transaction')
     return this.store.transactionally(async (store) => {
       cloned.database = store.connection() as DbTransaction
       return process(cloned)
-    })
+    }, actuallyTransactionally)
   }
 
   private clone(): TRepo {

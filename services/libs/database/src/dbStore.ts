@@ -49,20 +49,27 @@ export class DbStore extends LoggerBase {
     throw logError(this.log, new Error('Store is not in transaction!'))
   }
 
-  public transactionally<T>(inTransaction: (store: DbStore) => Promise<T>): Promise<T> {
+  public transactionally<T>(
+    inTransaction: (store: DbStore) => Promise<T>,
+    actuallyTransactionally?: boolean,
+  ): Promise<T> {
     this.checkValid()
 
-    if (!this.withTransactions) {
+    console.log('transactionally', {
+      withTransactions: this.withTransactions,
+      actuallyTransactionally,
+    })
+    if (!this.withTransactions && !actuallyTransactionally) {
       return inTransaction(this)
     }
 
     if (this.isTransaction()) {
-      this.log.debug('Using an existing transaction!')
+      this.log.info('Using an existing transaction!')
       return inTransaction(this)
     }
 
     if (this.dbConnection !== undefined) {
-      this.log.debug('Creating a new transaction!')
+      this.log.info('Creating a new transaction!')
       return this.dbConnection.tx((t: DbTransaction) => {
         return inTransaction(new DbStore(this.log, undefined, t))
       })

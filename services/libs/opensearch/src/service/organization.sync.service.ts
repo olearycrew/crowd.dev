@@ -5,13 +5,18 @@ import { SegmentRepository } from '../repo/segment.repo'
 import { distinct } from '@crowd/common'
 import { DbStore } from '@crowd/database'
 import { Logger, getChildLogger, logExecutionTime, logExecutionTimeV2 } from '@crowd/logging'
-import { Edition, OpenSearchIndex } from '@crowd/types'
+import { OpenSearchIndex } from '@crowd/types'
 import { IPagedSearchResponse, ISearchHit } from './opensearch.data'
 import { OpenSearchService } from './opensearch.service'
 import { IOrganizationSyncResult } from './organization.sync.data'
 import { IServiceConfig } from '@crowd/types'
 import { IndexingRepository } from '../repo/indexing.repo'
 import { IndexedEntityType } from '../repo/indexing.data'
+import {
+  cleanupForOganization,
+  insertOrganizationSegments,
+} from '@crowd/data-access-layer/src/org_segments'
+import { repoQx } from '@crowd/data-access-layer/src/queryExecutor'
 
 export class OrganizationSyncService {
   private log: Logger
@@ -372,6 +377,46 @@ export class OrganizationSyncService {
     //   organizationsSynced: 0,
     //   documentsIndexed: 0,
     // }
+
+    for (const organizationId of organizationIds) {
+      let orgData
+      try {
+        orgData = await logExecutionTimeV2(
+          () => this.orgRepo.getOrganizationAggregateData(organizationId),
+          this.log,
+          'getOrganizationAggregateData',
+        )
+      } catch (e) {
+        console.error(e)
+        throw e
+      }
+
+      try {
+        await this.orgRepo.transactionally(
+          async (txRepo) => {
+            const qx = repoQx(txRepo)
+            console.log('qx', qx)
+            await logExecutionTimeV2(
+              () => cleanupForOganization(qx, organizationId),
+              this.log,
+              'cleanupForOganization',
+            )
+            await logExecutionTimeV2(
+              () => insertOrganizationSegments(qx, orgData),
+              this.log,
+              'insertOrganizationSegments',
+            )
+          },
+          undefined,
+          true,
+        )
+      } catch (e) {
+        console.error(e)
+        throw e
+      }
+    }
+
+    return
 
     let databaseStream = []
     let syncStream = []
