@@ -1,4 +1,4 @@
-CREATE TABLE "organizationSegments" (
+CREATE TABLE "organizationSegmentsAgg" (
     "id" UUID PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
     "organizationId" UUID NOT NULL,
     "segmentId" UUID NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE "organizationSegments" (
     UNIQUE ("organizationId", "segmentId")
 );
 
-INSERT INTO "organizationSegments"
+INSERT INTO "organizationSegmentsAgg"
 WITH
     segments_with_children AS (
         SELECT

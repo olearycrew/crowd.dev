@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS "organizationSegments";
+DROP TABLE IF EXISTS "organizationSegmentsAgg";
