@@ -102,7 +102,8 @@ export interface IOrganizationSegment {
 export interface IOrganizationSegmentAggregates {
   organizationId: string
   segmentId: string
-  memberIds: string[]
+  tenantId?: string
+  memberIds?: string[]
   memberCount: number
   activityCount: number
   activeOn: string[]
